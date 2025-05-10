@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NewsTally - Player Biography</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Gradient background for top bar and footer */
+    .gradient-bg {
+      background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+    }
+    /* Enhanced card styling with gradient and shadow */
+    .bio-card {
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .bio-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+    }
+    /* Hover animation for related player cards */
+    .related-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .related-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+    /* Main content background */
+    .content-bg {
+      background: linear-gradient(180deg, #f3f4f6, #ffffff);
+    }
+    /* Improved typography */
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    /* Player image styling */
+    .player-image {
+      border-radius: 1rem;
+      border: 4px solid #3b82f6;
+      transition: border-color 0.3s ease;
+    }
+    .player-image:hover {
+      border-color: #1e3a8a;
+    }
+    /* Related player image styling */
+    .related-image {
+      border-radius: 0.5rem;
+      object-fit: cover;
+    }
+    /* Smooth button animations */
+    .btn {
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+      background-color: #2563eb;
+    }
+    /* Filter dropdown styling */
+    .filter-select {
+      transition: border-color 0.3s ease;
+    }
+    .filter-select:focus {
+      border-color: #3b82f6;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div id="root" class="min-h-screen flex flex-col">
+    <!-- Top Bar -->
+    <div class="gradient-bg text-white py-3">
+      <div class="container mx-auto px-4 flex justify-between items-center">
+        <div class="flex space-x-4">
+          <a href="#" class="hover:text-gray-200 transition"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="hover:text-gray-200 transition"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="hover:text-gray-200 transition"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="hover:text-gray-200 transition"><i class="fab fa-instagram"></i></a>
+        </div>
+        <a href="index.html"><h1 class="text-2xl font-extrabold tracking-tight">NewsTally</h1></a>
+        <div class="w-6"></div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-10 flex flex-col md:flex-row gap-8 content-bg flex-1">
+      <!-- Player Biography (70%) -->
+      <section class="md:w-3/4">
+        <!-- Breadcrumb -->
+        <nav class="text-sm text-gray-600 mb-6" aria-label="Breadcrumb">
+          <ol class="list-none p-0 inline-flex">
+            <li class="flex items-center">
+              <a href="index.html" class="hover:text-blue-600 transition font-medium">Home</a>
+              <i class="fas fa-chevron-right mx-2"></i>
+            </li>
+            <li class="flex items-center">
+              <a href="sports.html" class="hover:text-blue-600 transition font-medium">Sports</a>
+              <i class="fas fa-chevron-right mx-2"></i>
+            </li>
+            <li class="flex items-center">
+              <a href="biography.html" class="hover:text-blue-600 transition font-medium">All Players</a>
+              <i class="fas fa-chevron-right mx-2"></i>
+            </li>
+            <li class="text-gray-800 font-medium" aria-current="page">Player Biography</li>
+          </ol>
+        </nav>
+
+        <!-- Player Details -->
+        <div class="bio-card p-8">
+          <div class="flex flex-col md:flex-row items-start space-y-6 md:space-y-0 md:space-x-8">
+            <img id="player-image" src="https://via.placeholder.com/300x300" alt="Player Image" class="player-image w-full md:w-2/5 h-auto">
+            <div class="flex-1">
+              <h1 id="player-name" class="text-4xl md:text-5xl font-bold text-gray-800 mb-3"></h1>
+              <div class="space-y-2 mb-6">
+                <p id="player-rank" class="text-lg text-gray-600 font-medium"></p>
+                <p id="player-country" class="text-lg text-gray-600 font-medium"></p>
+                <p id="player-category" class="text-lg text-gray-600 font-medium"></p>
+                <p id="player-status" class="text-lg text-gray-600 font-medium"></p>
+              </div>
+              <h2 class="text-2xl font-semibold text-gray-800 mb-4">Biography</h2>
+              <p id="player-biography" class="text-gray-700 text-lg leading-loose"></p>
+            </div>
+          </div>
+          <div class="mt-8">
+            <a href="biography.html" class="btn inline-block bg-blue-600 text-white px-8 py-3 rounded-full shadow-lg hover:bg-blue-700 text-lg font-medium">Back to All Players</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sidebar (30%) -->
+      <aside class="md:w-1/4 mt-8 md:mt-0">
+        <!-- Related Players -->
+        <div class="bg-white p-6 rounded-xl shadow-lg">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-2xl font-semibold text-gray-800">Related Players</h3>
+            <select id="related-category-filter" class="filter-select px-3 py-1 border rounded-full shadow-sm focus:ring-2 focus:ring-blue-500 text-sm">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+          <div id="related-players" class="space-y-4"></div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Footer -->
+    <footer class="gradient-bg text-white py-10">
+      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">About NewsTally</h3>
+          <p class="text-gray-200">Your one-stop destination for the latest news across all categories, powered by NewsTally.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="hover:underline text-gray-200 hover:text-white transition">Home</a></li>
+            <li><a href="#" class="hover:underline text-gray-200 hover:text-white transition">About</a></li>
+            <li><a href="#" class="hover:underline text-gray-200 hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Follow Us</h3>
+          <div class="flex space-x-4">
+            <a href="#" class="hover:text-blue-200 transition"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="hover:text-blue-200 transition"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="hover:text-blue-200 transition"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="hover:text-blue-200 transition"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-8">
+        <p class="text-gray-300">© 2025 NewsTally. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
+    const SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
+    const SHEET_NAME = 'Sheet2';
+
+    let allPlayers = [];
+    let categories = new Set();
+
+    // Fetch player data from Google Sheet
+    async function fetchPlayers() {
+      try {
+        const response = await fetch(
+          `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`
+        );
+        const data = await response.json();
+        const rows = data.values;
+        const headers = rows[0];
+        allPlayers = rows.slice(1).map(row => ({
+          rank: parseInt(row[0]) || 0,
+          playerName: row[1],
+          biography: row[2],
+          image: row[3] || 'https://via.placeholder.com/300x300',
+          category: row[4],
+          country: row[5],
+          status: row[6]
+        }));
+
+        // Populate categories for related players filter
+        populateRelatedFilter();
+        displayPlayer(allPlayers);
+      } catch (error) {
+        console.error('Error fetching player data:', error);
+        document.getElementById('player-name').innerText = 'Failed to load player data. Please check API key and sheet access.';
+      }
+    }
+
+    // Populate filter dropdown for related players
+    function populateRelatedFilter() {
+      allPlayers.forEach(player => {
+        categories.add(player.category);
+      });
+
+      const relatedCategoryFilter = document.getElementById('related-category-filter');
+      categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        relatedCategoryFilter.appendChild(option);
+      });
+
+      relatedCategoryFilter.addEventListener('change', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const playerName = urlParams.get('player');
+        const player = allPlayers.find(item => item.playerName === playerName);
+        if (player) {
+          displayRelatedPlayers(player.category, player.playerName);
+        }
+      });
+    }
+
+    // Display the selected player's biography
+    function displayPlayer(players) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const playerName = urlParams.get('player');
+      const player = players.find(item => item.playerName === playerName);
+
+      if (player) {
+        document.getElementById('player-name').innerText = player.playerName;
+        document.getElementById('player-rank').innerText = `Rank: ${player.rank}`;
+        document.getElementById('player-country').innerText = `Country: ${player.country}`;
+        document.getElementById('player-category').innerText = `Category: ${player.category}`;
+        document.getElementById('player-status').innerText = `Status: ${player.status}`;
+        document.getElementById('player-biography').innerText = player.biography;
+        document.getElementById('player-image').src = player.image;
+
+        // Display related players
+        displayRelatedPlayers(player.category, player.playerName);
+      } else {
+        document.getElementById('player-name').innerText = 'Player not found.';
+      }
+    }
+
+    // Display related players based on category
+    function displayRelatedPlayers(currentCategory, currentPlayerName) {
+      const relatedPlayersContainer = document.getElementById('related-players');
+      const selectedCategory = document.getElementById('related-category-filter').value || currentCategory;
+
+      const relatedPlayers = allPlayers
+        .filter(item => item.category.toLowerCase() === selectedCategory.toLowerCase() && item.playerName !== currentPlayerName)
+        .slice(0, 3); // Limit to 3 related players
+
+      const relatedPlayersHTML = relatedPlayers.length > 0
+        ? relatedPlayers.map(item => `
+            <div class="related-card p-4 rounded-lg border flex items-start space-x-3">
+              <img src="${item.image}" alt="${item.playerName}" class="related-image w-16 h-16">
+              <div class="flex-1">
+                <h4 class="text-base font-semibold hover:text-blue-600 transition">
+                  <a href="playerbio.html?player=${encodeURIComponent(item.playerName)}">${item.playerName}</a>
+                </h4>
+                <p class="text-sm text-gray-600 mt-1">${item.country} • ${item.status}</p>
+              </div>
+            </div>
+          `).join('')
+        : '<p class="text-gray-600 text-sm">No related players available.</p>';
+
+      relatedPlayersContainer.innerHTML = relatedPlayersHTML;
+    }
+
+    // Fetch players on load
+    fetchPlayers();
+  </script>
+</body>
+</html>

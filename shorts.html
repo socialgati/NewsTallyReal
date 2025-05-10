@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NewsTally - Shorts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+  <style>
+    /* Reset default margins and ensure full viewport height */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+    }
+    /* Main container to center content */
+    .main-container {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(180deg, #f3f4f6, #ffffff);
+    }
+    /* Shorts section with arrows */
+    .shorts-section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+    }
+    /* Shorts feed container */
+    .shorts-feed {
+      width: 100%;
+      max-width: 360px;
+      margin: 0 auto;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+      height: 100vh;
+      scroll-behavior: smooth;
+    }
+    /* Enhanced shorts card */
+    .shorts-card {
+      width: 100%;
+      height: 640px;
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      scroll-snap-align: start;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .shorts-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+    }
+    /* Enhanced gradient overlay */
+    .card-overlay {
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent 50%);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      color: white;
+    }
+    /* Typography improvements */
+    .card-date {
+      font-size: 0.85rem;
+      color: #d1d5db;
+      letter-spacing: 0.05em;
+    }
+    .card-headline {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-top: 8px;
+      line-height: 1.2;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    .card-description {
+      font-size: 0.95rem;
+      margin-top: 12px;
+      line-height: 1.4;
+      color: #e5e7eb;
+    }
+    /* Enhanced button styling */
+    .read-button {
+      background: linear-gradient(90deg, #ef4444, #f87171);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .read-button:hover {
+      background: linear-gradient(90deg, #dc2626, #f87171);
+      transform: scale(1.05);
+    }
+    /* Navigation arrows */
+    .nav-arrows {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+      position: absolute;
+      right: 0;
+      height: 640px;
+      padding-right: 10px;
+    }
+    .nav-arrow {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .nav-arrow:hover {
+      background-color: #dc2626;
+    }
+    /* Progress dots */
+    .progress-dot {
+      transition: background-color 0.3s ease;
+    }
+    /* Enhanced interaction buttons */
+    .interaction-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .interaction-btn:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+      transform: scale(1.1);
+    }
+    /* Responsive adjustments */
+    @media (max-width: 420px) {
+      .shorts-section {
+        max-width: 100%;
+      }
+      .shorts-feed {
+        max-width: 100%;
+      }
+      .shorts-card {
+        height: 640px;
+      }
+      .nav-arrows {
+        padding-right: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <!-- Shorts Section -->
+    <section class="shorts-section">
+      <div id="shorts-feed" class="shorts-feed"></div>
+      <!-- Navigation Arrows -->
+      <div class="nav-arrows">
+        <div id="up-arrow" class="nav-arrow">
+          <i class="fas fa-chevron-up"></i>
+        </div>
+        <div id="down-arrow" class="nav-arrow">
+          <i class="fas fa-chevron-down"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress Dots -->
+    <div id="progress-dots" class="flex justify-center space-x-2 mt-6"></div>
+  </div>
+
+  <script>
+    const API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
+    const SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
+    const SHEET_NAME = 'Sheet1';
+
+    let news = [];
+    let currentIndex = 0;
+
+    // Fetch news from Google Sheet
+    async function fetchNews() {
+      try {
+        const response = await fetch(
+          `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`
+        );
+        const data = await response.json();
+        const rows = data.values;
+        const headers = rows[0];
+        news = rows.slice(1).map(row => ({
+          rank: parseInt(row[0]) || 0,
+          headline: row[1],
+          source: row[2],
+          date: row[3],
+          description: row[4],
+          link: row[5],
+          category: row[6],
+          image: row[7] || 'https://via.placeholder.com/360x640'
+        }));
+
+        // Sort by date (newest first)
+        news.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        renderShorts();
+        setupProgressDots();
+        setupNavigationArrows();
+      } catch (error) {
+        console.error('Error fetching news:', error);
+        document.getElementById('shorts-feed').innerHTML = '<p class="text-red-600">Failed to load news. Please check API key and sheet access.</p>';
+      }
+    }
+
+    // Render news in Shorts format
+    function renderShorts() {
+      const shortsFeed = document.getElementById('shorts-feed');
+      const shortsHTML = news.map(item => `
+        <div class="shorts-card bg-white">
+          <img src="${item.image}" alt="${item.headline}" class="w-full h-full object-cover">
+          <div class="card-overlay">
+            <p class="card-date">${item.date}</p>
+            <h3 class="card-headline">${item.headline}</h3>
+            <p class="card-description">${item.description}</p>
+            <div class="mt-4 flex justify-between items-center">
+              <a href="${item.link}" class="read-button">Read Full Story</a>
+              <p class="text-xs text-gray-400">Click on • to next</p>
+            </div>
+          </div>
+          <div class="absolute top-1/2 right-4 transform -translate-y-1/2 flex flex-col space-y-4">
+            <button class="like-btn interaction-btn text-white hover:text-red-500 transition" data-headline="${item.headline}">
+              <i class="fas fa-heart"></i>
+            </button>
+            <button class="share-btn interaction-btn text-white hover:text-blue-400 transition" data-headline="${item.headline}">
+              <i class="fas fa-share"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      shortsFeed.innerHTML = shortsHTML;
+    }
+
+    // Setup progress dots
+    function setupProgressDots() {
+      const progressDots = document.getElementById('progress-dots');
+      const dotsHTML = news.map((_, index) => `
+        <div class="progress-dot w-3 h-3 rounded-full bg-gray-300" data-index="${index}"></div>
+      `).join('');
+      progressDots.innerHTML = dotsHTML;
+
+      // Highlight the first dot initially
+      updateProgressDots(0);
+
+      // Update dots on scroll
+      const shortsFeed = document.getElementById('shorts-feed');
+      shortsFeed.addEventListener('scroll', () => {
+        const scrollTop = shortsFeed.scrollTop;
+        const cardHeight = 640;
+        currentIndex = Math.round(scrollTop / cardHeight);
+        updateProgressDots(currentIndex);
+      });
+    }
+
+    // Update progress dots based on current index
+    function updateProgressDots(index) {
+      document.querySelectorAll('.progress-dot').forEach(dot => {
+        dot.classList.remove('bg-blue-600');
+        dot.classList.add('bg-gray-300');
+      });
+      const currentDot = document.querySelector(`.progress-dot[data-index="${index}"]`);
+      if (currentDot) {
+        currentDot.classList.remove('bg-gray-300');
+        currentDot.classList.add('bg-blue-600');
+      }
+    }
+
+    // Setup navigation arrows
+    function setupNavigationArrows() {
+      const shortsFeed = document.getElementById('shorts-feed');
+      const upArrow = document.getElementById('up-arrow');
+      const downArrow = document.getElementById('down-arrow');
+      const cardHeight = 640;
+
+      upArrow.addEventListener('click', () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          shortsFeed.scrollTo({
+            top: currentIndex * cardHeight,
+            behavior: 'smooth'
+          });
+          updateProgressDots(currentIndex);
+        }
+      });
+
+      downArrow.addEventListener('click', () => {
+        if (currentIndex < news.length - 1) {
+          currentIndex++;
+          shortsFeed.scrollTo({
+            top: currentIndex * cardHeight,
+            behavior: 'smooth'
+          });
+          updateProgressDots(currentIndex);
+        }
+      });
+    }
+
+    // Setup interaction buttons (like and share)
+    function setupInteractionButtons() {
+      document.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.classList.toggle('text-red-500');
+          btn.classList.toggle('text-white');
+        });
+      });
+
+      document.querySelectorAll('.share-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const headline = btn.dataset.headline;
+          const url = `${window.location.origin}/opennews.html?headline=${encodeURIComponent(headline)}`;
+          const shareText = `${headline} ${url}`;
+          
+          if (navigator.share) {
+            navigator.share({
+              title: headline,
+              url: url
+            }).catch(err => console.error('Share failed:', err));
+          } else {
+            navigator.clipboard.writeText(shareText).then(() => {
+              alert('Link copied to clipboard!');
+            });
+          }
+        });
+      });
+    }
+
+    // Fetch news on load
+    fetchNews();
+  </script>
+</body>
+</html>
