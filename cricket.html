@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WBPCRDT2');</script>
+  <!-- End Google Tag Manager -->
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- SEO Meta Tags -->
+  <title>NewsTally - Latest Cricket News Worldwide</title>
+  <meta name="description" content="Stay updated with NewsTally, your source for the latest cricket news, match updates, player stats, and more from around the world." />
+  <meta name="keywords" content="cricket news, latest cricket news, cricket updates, cricket scores, cricket players, NewsTally" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="NewsTally Team" />
+  <link rel="canonical" href="https://newstally.online/cricket.html" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1e3a8a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+  <!-- Open Graph (OG) Tags for Social Media -->
+  <meta property="og:title" content="NewsTally - Latest Cricket News Worldwide" />
+  <meta property="og:description" content="Stay updated with NewsTally, your source for the latest cricket news, match updates, player stats, and more from around the world." />
+  <meta property="og:url" content="https://newstally.online/cricket.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://newstally.online/images/logo.png" />
+  <meta property="og:site_name" content="NewsTally" />
+
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NewsTally - Latest Cricket News Worldwide" />
+  <meta name="twitter:description" content="Stay updated with NewsTally, your source for the latest cricket news, match updates, player stats, and more from around the world." />
+  <meta name="twitter:image" content="https://newstally.online/images/logo.png" />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JYEMEVD1J4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-JYEMEVD1J4');
+  </script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- External Stylesheet -->
+  <link href="style.css" rel="stylesheet" />
+
+  <!-- Structured Data (JSON-LD) for Organization and Website -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "name": "NewsTally",
+          "url": "https://newstally.online",
+          "logo": "https://newstally.online/images/logo.png",
+          "sameAs": [
+            "https://www.facebook.com/newstally",
+            "https://www.twitter.com/newstally",
+            "https://www.instagram.com/newstally",
+            "https://www.youtube.com/newstally"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "url": "https://newstally.online",
+          "name": "NewsTally",
+          "description": "Latest cricket news from around the world.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://newstally.online/cricket.html?search={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+  </script>
+
+  <!-- Inline Styles -->
+  <style>
+    @media (max-width: 768px) {
+      .carousel img {
+        height: 200px;
+      }
+    }
+    /* Gradient background for top bar and footer */
+    .gradient-bg {
+      background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+    }
+    /* Hover animation for news cards */
+    .news-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease;
+      opacity: 0;
+    }
+    .news-card.loaded {
+      opacity: 1;
+    }
+    .news-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+    /* Active nav link underline */
+    .nav-active {
+      position: relative;
+    }
+    .nav-active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #dc2626;
+    }
+    /* Smooth load more button animation */
+    #load-more-btn {
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    #load-more-btn:hover {
+      transform: scale(1.05);
+    }
+    /* Circular image styling for top players */
+    .player-image {
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #3b82f6;
+      transition: border-color 0.3s ease;
+    }
+    .player-image:hover {
+      border-color: #1e3a8a;
+    }
+    /* Hover animation for player cards */
+    .player-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .player-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    /* Enhanced Carousel Styling */
+    .carousel {
+      position: relative;
+      overflow: hidden;
+    }
+    .carousel img {
+      transition: opacity 0.5s ease;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      opacity: 1;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .carousel img.loading {
+      opacity: 0;
+    }
+    .carousel img.loaded {
+      opacity: 1;
+    }
+    /* Gradient overlay for carousel images */
+    .carousel .image-container {
+      position: relative;
+    }
+    .carousel .image-container::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+      border-radius: 0 0 15px 15px;
+    }
+    /* Caption styling */
+    .carousel .caption {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      color: white;
+      font-size: 1.25rem;
+      font-weight: 600;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      z-index: 10;
+    }
+    /* Navigation buttons */
+    .carousel button {
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+    .carousel button:hover {
+      transform: scale(1.1) translateY(-50%);
+      background-color: #f3f4f6;
+    }
+    /* Navigation dots */
+    .carousel-dots {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .carousel-dot.active {
+      background-color: #ffffff;
+    }
+    /* Featured News Scrollable Section */
+    .featured-news-container {
+      position: relative;
+      overflow: hidden;
+    }
+    .featured-news-scroll {
+      display: flex;
+      overflow-x-auto;
+      scroll-behavior: smooth;
+      gap: 1rem;
+      padding-bottom: 0.5rem;
+      scrollbar-width: none; /* Firefox */
+    }
+    .featured-news-scroll::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Edge */
+    }
+    .featured-news-card {
+      flex: 0 0 auto;
+      width: 150px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .featured-news-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+    .featured-news-card img {
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    /* Scroll buttons */
+    .scroll-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: white;
+      border-radius: 50%;
+      padding: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+    .scroll-btn:hover {
+      transform: translateY(-50%) scale(1.1);
+      background-color: #f3f4f6;
+    }
+    .scroll-btn.left {
+      left: -1rem;
+    }
+    .scroll-btn.right {
+      right: -1rem;
+    }
+    /* Bottom Navigation for Mobile */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 0.25rem 0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 30;
+    }
+    .bottom-nav a {
+      color: black;
+      text-align: center;
+      flex: 1;
+      padding: 0.25rem;
+      transition: background-color 0.3s ease;
+    }
+    .bottom-nav a:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    .bottom-nav i {
+      font-size: 1.25rem;
+    }
+    .bottom-nav span {
+      display: block;
+      font-size: 0.65rem;
+      margin-top: 0.15rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WBPCRDT2"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <div id="root" class="min-h-screen pb-16 md:pb-0">
+    <!-- Top Bar (Sticky) -->
+    <header class="gradient-bg text-white py-3 sticky top-0 z-20">
+      <div class="container mx-auto px-4 flex justify-between items-center">
+        <a href="index.html" class="flex items-center space-x-2">
+          <img src="https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small" alt="NewsTally Favicon" class="w-6 h-6">
+          <h1 class="text-2xl font-extrabold tracking-tight">NewsTally</h1>
+        </a>
+        <div class="flex space-x-2">
+          <a href="https://www.facebook.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Facebook"><i class="fab fa-facebook-f text-sm"></i></a>
+          <a href="https://www.twitter.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Twitter"><i class="fab fa-twitter text-sm"></i></a>
+          <a href="https://www.youtube.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on YouTube"><i class="fab fa-youtube text-sm"></i></a>
+          <a href="https://www.instagram.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Instagram"><i class="fab fa-instagram text-sm"></i></a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Menu (Sticky, below Top Bar) -->
+    <nav class="bg-white shadow-lg sticky top-[48px] z-10">
+      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center">
+          <button id="menu-toggle" class="md:hidden mr-4" aria-label="Toggle navigation menu">
+            <i class="fas fa-bars text-xl text-gray-700"></i>
+          </button>
+          <div id="nav-menu" class="hidden md:block absolute md:static top-[112px] left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none">
+            <ul class="flex flex-col md:flex-row md:space-x-6 p-4 md:p-0">
+              <li><a href="live.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Live News</a></li>
+              <li><a href="latest.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Latest News</a></li>
+              <li><a href="breaking.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Breaking News</a></li>
+              <li><a href="politics.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Politics</a></li>
+              <li><a href="sports.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Sports</a></li>
+              <li><a href="tech.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Technology</a></li>
+              <li><a href="entertainment.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Entertainment</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="hidden md:block">
+          <input
+            id="search-input"
+            type="search"
+            placeholder="Search cricket news..."
+            class="px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Search cricket news articles"
+          />
+        </div>
+      </div>
+    </nav>
+
+    <!-- Top Cricket Stories Section (Reduced Padding) -->
+    <section class="container mx-auto px-4 py-10 pt-2">
+      <!-- Date and Time (Plain Text) -->
+      <div class="mb-4">
+        <p class="text-sm text-gray-600">
+          <time id="current-date" datetime=""></time> | <time id="current-time" datetime=""></time>
+        </p>
+      </div>
+
+      <h2 class="text-4xl font-extrabold mb-6 border-b-4 border-red-600 inline-block">Top Cricket Stories</h2>
+      <div class="flex flex-col md:flex-row gap-8">
+        <!-- Left: News List -->
+        <div id="top-stories" class="md:w-1/2 space-y-6"></div>
+
+        <!-- Right: Enhanced Carousel -->
+        <div class="md:w-1/2 relative carousel">
+          <div class="image-container">
+            <a id="carousel-link" href="#">
+              <img id="carousel-image" src="https://via.placeholder.com/600x400" alt="Featured Cricket News Image" class="w-full h-96 object-cover" loading="lazy">
+            </a>
+            <div class="caption" id="carousel-caption"></div>
+          </div>
+          <button id="prev-slide" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-md" aria-label="Previous slide">
+            <i class="fas fa-chevron-left text-gray-600"></i>
+          </button>
+          <button id="next-slide" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-md" aria-label="Next slide">
+            <i class="fas fa-chevron-right text-gray-600"></i>
+          </button>
+          <div class="carousel-dots" id="carousel-dots"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-10 flex flex-col md:flex-row gap-8">
+      <!-- News Feed (70%) -->
+      <section class="md:w-3/4">
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="text-xl font-extrabold">Latest Cricket News</h2>
+          <select id="category-filter" class="px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Filter cricket news by category"></select>
+        </div>
+        <div id="news-feed" class="space-y-4"></div>
+        <div id="load-more" class="text-center mt-8">
+          <button id="load-more-btn" class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700" aria-label="Load more cricket news">Load More</button>
+        </div>
+      </section>
+
+      <!-- Sidebar (30%) -->
+      <aside class="md:w-1/4 mt-8 md:mt-0">
+        <!-- Top 3 Players -->
+        <section class="bg-white p-6 rounded-xl shadow-lg mb-6">
+          <h3 class="text-xl font-bold mb-4 text-gray-800">Top 3 Players</h3>
+          <div id="top-players" class="space-y-4"></div>
+        </section>
+
+        <!-- Featured News -->
+        <section class="bg-white p-6 rounded-xl shadow-lg mb-6">
+          <h3 class="text-xl font-bold mb-4 text-gray-800">Featured Cricket News</h3>
+          <div class="featured-news-container">
+            <div class="featured-news-scroll" id="featured-news-scroll">
+              <!-- News cards will be populated here -->
+            </div>
+            <button class="scroll-btn left" id="scroll-left-btn" aria-label="Scroll left">
+              <i class="fas fa-chevron-left text-gray-600"></i>
+            </button>
+            <button class="scroll-btn right" id="scroll-right-btn" aria-label="Scroll right">
+              <i class="fas fa-chevron-right text-gray-600"></i>
+            </button>
+          </div>
+        </section>
+
+        <!-- Popular Categories -->
+        <section id="popular-categories" class="bg-white p-6 rounded-xl shadow-lg mb-6">
+          <h3 class="text-xl font-bold mb-4 text-gray-800">Popular Categories</h3>
+          <ul class="space-y-3"></ul>
+        </section>
+
+        <!-- Newsletter -->
+        <section class="bg-white p-6 rounded-xl shadow-lg">
+          <h3 class="text-xl font-bold mb-4 text-gray-800">Newsletter</h3>
+          <div>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              class="w-full px-4 py-2 border rounded-full mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="Enter your email for newsletter subscription"
+            />
+            <button class="w-full bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition" aria-label="Subscribe to newsletter">Subscribe</button>
+          </div>
+        </section>
+      </aside>
+    </main>
+
+    <!-- Bottom Navigation for Mobile -->
+    <nav class="bottom-nav md:hidden">
+      <a href="index.html">
+        <i class="fas fa-house"></i>
+        <span>Home</span>
+      </a>
+      <a href="live.html">
+        <i class="fas fa-tower-broadcast"></i>
+        <span>Live</span>
+      </a>
+      <a href="quick.html">
+        <i class="fas fa-bolt"></i>
+        <span>Quick</span>
+      </a>
+      <a href="trending.html">
+        <i class="fas fa-fire"></i>
+        <span>Trending</span>
+      </a>
+      <a href="cricket.html" class="nav-active">
+        <i class="fas fa-baseball-ball"></i>
+        <span>Cricket</span>
+      </a>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="gradient-bg text-white py-10">
+      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">About NewsTally</h3>
+          <p class="text-gray-200">Your one-stop destination for the latest cricket news, powered by NewsTally.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+          <ul class="space-y-3">
+            <li><a href="index.html" class="hover:underline text-gray-200 hover:text-white transition">Home</a></li>
+            <li><a href="#" class="hover:underline text-gray-200 hover:text-white transition">About</a></li>
+            <li><a href="#" class="hover:underline text-gray-200 hover:text-white transition">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Follow Us</h3>
+          <div class="flex space-x-4">
+            <a href="https://www.facebook.com/newstally" class="hover:text-blue-200 transition" aria-label="Follow NewsTally on Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.twitter.com/newstally" class="hover:text-blue-200 transition" aria-label="Follow NewsTally on Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.youtube.com/newstally" class="hover:text-blue-200 transition" aria-label="Follow NewsTally on YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.instagram.com/newstally" class="hover:text-blue-200 transition" aria-label="Follow NewsTally on Instagram"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-8">
+        <p class="text-gray-300">© 2025 NewsTally. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
+    const SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
+    const NEWS_SHEET_NAME = 'Sheet1';
+    const PLAYER_SHEET_NAME = 'Sheet2';
+
+    let news = [];
+    let topStories = [];
+    let topPlayers = [];
+    let featuredNews = [];
+    let currentSlide = 0;
+    let filteredNews = [];
+    let categories = [];
+    let displayedNewsCount = 0;
+    const NEWS_PER_PAGE = 15;
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch(error => {
+            console.error('Service Worker registration failed:', error);
+          });
+      });
+    }
+
+    // Preload images to improve loading performance
+    function preloadImages(imageUrls) {
+      imageUrls.forEach(url => {
+        const img = new Image();
+        img.src = url;
+      });
+    }
+
+    // Fetch news from Google Sheet (Sheet1)
+    async function fetchNews() {
+      try {
+        const response = await fetch(
+          `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${NEWS_SHEET_NAME}?key=${API_KEY}`
+        );
+        const data = await response.json();
+        const rows = data.values;
+        const headers = rows[0];
+        news = rows.slice(1).map(row => ({
+          rank: parseInt(row[0]) || 0,
+          headline: row[1],
+          source: row[2],
+          date: row[3],
+          description: row[4],
+          link: row[5],
+          category: row[6],
+          image: row[7] || 'https://via.placeholder.com/400x300'
+        }));
+
+        // Filter for Cricket news only
+        news = news.filter(item => item.category.toLowerCase().includes('cricket'));
+
+        // Filter Top Cricket Stories (e.g., tagged as "cricket top story")
+        topStories = news
+          .filter(item => item.category.toLowerCase().includes('cricket top story'))
+          .sort((a, b) => b.rank - a.rank)
+          .slice(0, 3);
+
+        // Preload Top Stories images
+        const topStoryImages = topStories.map(item => item.image);
+        preloadImages(topStoryImages);
+
+        // Filter Featured Cricket News
+        featuredNews = news
+          .filter(item => item.category.toLowerCase().includes('featured') && item.category.toLowerCase().includes('cricket'))
+          .sort((a, b) => b.rank - a.rank);
+
+        filteredNews = [...news];
+        categories = ['All Cricket', ...new Set(news.map(item => item.category))];
+        displayedNewsCount = 0;
+        renderNews();
+        setupCarousel();
+        setupFilters();
+        displayFeaturedNews();
+        highlightActiveNav();
+      } catch (error) {
+        console.error('Error fetching cricket news:', error);
+        document.getElementById('top-stories').innerHTML = '<p class="text-red-600">Failed to load cricket news. Please check API key and sheet access.</p>';
+        document.getElementById('news-feed').innerHTML = '<p class="text-red-600">Failed to load cricket news. Please check API key and sheet access.</p>';
+        document.getElementById('featured-news-scroll').innerHTML = '<p class="text-red-600 text-sm">Failed to load featured cricket news.</p>';
+      }
+    }
+
+    // Fetch top 3 players from Google Sheet (Sheet2)
+    async function fetchTopPlayers() {
+      try {
+        const response = await fetch(
+          `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${PLAYER_SHEET_NAME}?key=${API_KEY}`
+        );
+        const data = await response.json();
+        const rows = data.values;
+        const headers = rows[0];
+        const allPlayers = rows.slice(1).map(row => ({
+          rank: parseInt(row[0]) || 0,
+          playerName: row[1],
+          biography: row[2],
+          image: row[3] || 'https://via.placeholder.com/150x150',
+          category: row[4],
+          country: row[5],
+          status: row[6]
+        }));
+
+        // Filter for cricket players and sort by rank (descending), take top 3
+        topPlayers = allPlayers
+          .filter(item => item.category.toLowerCase().includes('cricket'))
+          .sort((a, b) => b.rank - a.rank)
+          .slice(0, 3);
+
+        displayTopPlayers();
+      } catch (error) {
+        console.error('Error fetching top cricket players:', error);
+        document.getElementById('top-players').innerHTML = '<p class="text-red-600 text-sm">Failed to load top cricket players. Please check API key and sheet access.</p>';
+      }
+    }
+
+    // Display top 3 players in the sidebar
+    function displayTopPlayers() {
+      const topPlayersDiv = document.getElementById('top-players');
+      const playersHTML = topPlayers.length > 0
+        ? topPlayers.map(item => `
+            <div class="player-card flex items-center space-x-3">
+              <a href="playerbio.html?player=${encodeURIComponent(item.playerName)}">
+                <img src="${item.image}" alt="${item.playerName} Profile Image" class="player-image w-12 h-12" loading="lazy">
+              </a>
+              <div class="flex-1">
+                <h4 class="text-sm font-semibold hover:text-blue-600 transition">
+                  <a href="playerbio.html?player=${encodeURIComponent(item.playerName)}">${item.playerName}</a>
+                </h4>
+                <p class="text-xs text-gray-600">Rank: ${item.rank}</p>
+              </div>
+            </div>
+          `).join('')
+        : '<p class="text-gray-600 text-sm">No top cricket players available.</p>';
+
+      topPlayersDiv.innerHTML = playersHTML;
+    }
+
+    // Display featured cricket news in the sidebar
+    function displayFeaturedNews() {
+      const featuredNewsScroll = document.getElementById('featured-news-scroll');
+      const featuredHTML = featuredNews.length > 0
+        ? featuredNews.map(item => `
+            <article class="featured-news-card">
+              <a href="opennews.html?headline=${encodeURIComponent(item.headline)}">
+                <img src="${item.image}" alt="${item.headline}" class="w-full h-24 mb-2" loading="lazy">
+                <h4 class="text-sm font-semibold text-gray-800 hover:text-blue-600 transition">${item.headline}</h4>
+                <p class="text-xs text-gray-600 mt-1">${item.source}</p>
+              </a>
+            </article>
+          `).join('')
+        : '<p class="text-gray-600 text-sm">No featured cricket news available.</p>';
+
+      featuredNewsScroll.innerHTML = featuredHTML;
+
+      // Setup scroll buttons
+      const scrollContainer = document.getElementById('featured-news-scroll');
+      const scrollLeftBtn = document.getElementById('scroll-left-btn');
+      const scrollRightBtn = document.getElementById('scroll-right-btn');
+
+      scrollLeftBtn.addEventListener('click', () => {
+        scrollContainer.scrollBy({ left: -150, behavior: 'smooth' });
+      });
+
+      scrollRightBtn.addEventListener('click', () => {
+        scrollContainer.scrollBy({ left: 150, behavior: 'smooth' });
+      });
+
+      // Show/hide buttons based on scroll position
+      scrollContainer.addEventListener('scroll', () => {
+        scrollLeftBtn.style.display = scrollContainer.scrollLeft > 0 ? 'block' : 'none';
+        scrollRightBtn.style.display =
+          scrollContainer.scrollLeft < scrollContainer.scrollWidth - scrollContainer.clientWidth ? 'block' : 'none';
+      });
+
+      // Initial button visibility
+      scrollLeftBtn.style.display = 'none';
+      scrollRightBtn.style.display = scrollContainer.scrollWidth > scrollContainer.clientWidth ? 'block' : 'none';
+    }
+
+    // Display and update date and time
+    function updateDateTime() {
+      const now = new Date();
+
+      // Format date as "Day, Month Date, Year" (e.g., "Sat, May 10, 2025")
+      const dateOptions = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+      const formattedDate = now.toLocaleDateString('en-US', dateOptions);
+      
+      // Format time as "HH:MM:SS AM/PM" (e.g., "02:30:45 PM")
+      const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+      const formattedTime = now.toLocaleTimeString('en-US', timeOptions);
+
+      // Set the datetime attribute for accessibility (ISO format)
+      const isoDateTime = now.toISOString();
+      const dateElement = document.getElementById('current-date');
+      const timeElement = document.getElementById('current-time');
+
+      dateElement.textContent = formattedDate;
+      dateElement.setAttribute('datetime', isoDateTime.split('T')[0]);
+
+      timeElement.textContent = formattedTime;
+      timeElement.setAttribute('datetime', isoDateTime);
+    }
+
+    // Update carousel slide
+    function updateCarouselSlide() {
+      const carouselImage = document.getElementById('carousel-image');
+      const carouselLink = document.getElementById('carousel-link');
+      const carouselCaption = document.getElementById('carousel-caption');
+      const dots = document.getElementsByClassName('carousel-dot');
+
+      // Fade out
+      carouselImage.classList.remove('loaded');
+      carouselImage.classList.add('loading');
+
+      // Update slide details
+      if (topStories.length > 0) {
+        carouselLink.href = `opennews.html?headline=${encodeURIComponent(topStories[currentSlide].headline)}`;
+        carouselCaption.textContent = topStories[currentSlide].headline;
+        carouselImage.alt = topStories[currentSlide].headline;
+
+        // Set onload and onerror handlers before changing src
+        carouselImage.onload = () => {
+          carouselImage.classList.remove('loading');
+          carouselImage.classList.add('loaded');
+        };
+        carouselImage.onerror = () => {
+          carouselImage.src = 'https://via.placeholder.com/600x400';
+          carouselImage.classList.remove('loading');
+          carouselImage.classList.add('loaded');
+        };
+
+        // Update the image source
+        carouselImage.src = topStories[currentSlide].image;
+
+        // Update active dot
+        for (let i = 0; i < dots.length; i++) {
+          dots[i].classList.remove('active');
+          if (i === currentSlide) {
+            dots[i].classList.add('active');
+          }
+        }
+      }
+    }
+
+    // Setup Carousel
+    function setupCarousel() {
+      const carouselImage = document.getElementById('carousel-image');
+      const carouselLink = document.getElementById('carousel-link');
+      const carouselCaption = document.getElementById('carousel-caption');
+      const carouselDots = document.getElementById('carousel-dots');
+
+      // Handle case when there are no top stories
+      if (topStories.length === 0) {
+        carouselImage.src = 'https://via.placeholder.com/600x400';
+        carouselImage.alt = 'No Top Cricket Stories Available';
+        carouselCaption.textContent = 'No Top Cricket Stories Available';
+        carouselImage.classList.add('loaded');
+        return;
+      }
+
+      // Initialize carousel with first slide
+      carouselLink.href = `opennews.html?headline=${encodeURIComponent(topStories[currentSlide].headline)}`;
+      carouselCaption.textContent = topStories[currentSlide].headline;
+      carouselImage.alt = topStories[currentSlide].headline;
+
+      // Set onload and onerror handlers before changing src
+      carouselImage.onload = () => {
+        carouselImage.classList.remove('loading');
+        carouselImage.classList.add('loaded');
+      };
+      carouselImage.onerror = () => {
+        carouselImage.src = 'https://via.placeholder.com/600x400';
+        carouselImage.classList.remove('loading');
+        carouselImage.classList.add('loaded');
+      };
+
+      // Set initial image source
+      carouselImage.src = topStories[currentSlide].image;
+
+      // Create navigation dots
+      carouselDots.innerHTML = topStories.map((_, index) => `
+        <div class="carousel-dot ${index === 0 ? 'active' : ''}" data-slide="${index}"></div>
+      `).join('');
+
+      // Add click event for dots
+      const dots = document.getElementsByClassName('carousel-dot');
+      for (let i = 0; i < dots.length; i++) {
+        dots[i].addEventListener('click', () => {
+          currentSlide = parseInt(dots[i].dataset.slide);
+          updateCarouselSlide();
+        });
+      }
+
+      // Previous and Next buttons
+      document.getElementById('prev-slide').addEventListener('click', () => {
+        currentSlide = (currentSlide - 1 + topStories.length) % topStories.length;
+        updateCarouselSlide();
+      });
+
+      document.getElementById('next-slide').addEventListener('click', () => {
+        currentSlide = (currentSlide + 1) % topStories.length;
+        updateCarouselSlide();
+      });
+    }
+
+    // Render news in Top Cricket Stories and News Feed
+    function renderNews(append = false) {
+      // Top Cricket Stories (no images, unchanged order)
+      const topStoriesDiv = document.getElementById('top-stories');
+      topStoriesDiv.innerHTML = topStories.length > 0
+        ? topStories.map(item => `
+            <article class="mb-6">
+              <span class="bg-blue-600 text-white text-xs px-3 py-1 rounded-full">Top Cricket Story</span>
+              <h3 class="text-xl font-semibold mt-3 hover:text-blue-600 transition">
+                <a href="opennews.html?headline=${encodeURIComponent(item.headline)}">${item.headline}</a>
+              </h3>
+              <p class="text-gray-600 text-sm mt-1">${item.source} • ${item.date}</p>
+            </article>
+          `).join('')
+        : '<p class="text-gray-600">No Top Cricket Stories available.</p>';
+
+      // News Feed (with images, reversed order, limited to 15 per load)
+      const newsFeed = document.getElementById('news-feed');
+      const reversedNews = [...filteredNews].reverse();
+      const startIndex = append ? displayedNewsCount : 0;
+      const endIndex = Math.min(startIndex + NEWS_PER_PAGE, reversedNews.length);
+      const newsToDisplay = reversedNews.slice(startIndex, endIndex);
+
+      const newsHTML = newsToDisplay.map(item => `
+        <article class="news-card bg-white p-4 rounded-xl shadow-md flex items-start space-x-4">
+          <img src="${item.image}" alt="${item.headline}" class="w-24 h-24 object-cover rounded-lg" loading="lazy">
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold hover:text-blue-600 transition">
+              <a href="opennews.html?headline=${encodeURIComponent(item.headline)}">${item.headline}</a>
+            </h3>
+            <p class="text-gray-600 mt-1 text-sm">${item.description.slice(0, 100)}...</p>
+            <p class="text-xs text-gray-500 mt-1">${item.source} • ${item.date}</p>
+          </div>
+        </article>
+      `).join('');
+
+      if (append) {
+        newsFeed.insertAdjacentHTML('beforeend', newsHTML);
+      } else {
+        newsFeed.innerHTML = newsHTML;
+      }
+
+      // Add loaded class for fade-in effect
+      document.querySelectorAll('.news-card').forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.add('loaded');
+        }, index * 100);
+      });
+
+      displayedNewsCount = endIndex;
+
+      // Show or hide Load More button
+      const loadMoreDiv = document.getElementById('load-more');
+      if (displayedNewsCount >= reversedNews.length) {
+        loadMoreDiv.style.display = 'none';
+      } else {
+        loadMoreDiv.style.display = 'block';
+      }
+
+      // Add Structured Data for News Articles
+      const structuredData = newsToDisplay.map(item => ({
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": item.headline,
+        "image": item.image,
+        "datePublished": item.date,
+        "description": item.description.slice(0, 100) + "...",
+        "author": {
+          "@type": "Organization",
+          "name": item.source
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "NewsTally",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://newstally.online/images/logo.png"
+          }
+        }
+      }));
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(structuredData);
+      document.head.appendChild(script);
+    }
+
+    // Setup Load More Button
+    function setupLoadMore() {
+      const loadMoreBtn = document.getElementById('load-more-btn');
+      loadMoreBtn.addEventListener('click', () => {
+        renderNews(true);
+      });
+    }
+
+    // Setup Filters and Search
+    function setupFilters() {
+      const categoryFilter = document.getElementById('category-filter');
+      categoryFilter.innerHTML = categories.map(category => `
+        <option value="${category}">${category}</option>
+      `).join('');
+      categoryFilter.addEventListener('change', (e) => {
+        const selectedCategory = e.target.value;
+        filteredNews = selectedCategory === 'All Cricket' ? news : news.filter(item => item.category === selectedCategory);
+        displayedNewsCount = 0;
+        renderNews();
+      });
+
+      const popularCategories = document.querySelector('#popular-categories ul');
+      popularCategories.innerHTML = categories.slice(1).map(category => `
+        <li><a href="#" class="text-blue-600 hover:underline font-medium transition" data-category="${category}">${category}</a></li>
+      `).join('');
+      popularCategories.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const category = e.target.dataset.category;
+          filteredNews = news.filter(item => item.category === category);
+          categoryFilter.value = category;
+          displayedNewsCount = 0;
+          renderNews();
+        });
+      });
+
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase();
+          filteredNews = news.filter(item =>
+            item.headline.toLowerCase().includes(query) ||
+            item.category.toLowerCase().includes(query)
+          );
+          if (categoryFilter.value !== 'All Cricket') {
+            filteredNews = filteredNews.filter(item => item.category === categoryFilter.value);
+          }
+          displayedNewsCount = 0;
+          renderNews();
+        });
+      }
+    }
+
+    // Highlight Active Navigation Link
+    function highlightActiveNav() {
+      const navLinks = document.querySelectorAll('#nav-menu a');
+      const bottomNavLinks = document.querySelectorAll('.bottom-nav a');
+      navLinks.forEach(link => {
+        if (link.href.includes('cricket.html')) {
+          link.classList.add('nav-active');
+        }
+      });
+      bottomNavLinks.forEach(link => {
+        if (link.href.includes('cricket.html')) {
+          link.classList.add('nav-active');
+        }
+      });
+    }
+
+    // Hamburger Menu Toggle
+    document.getElementById('menu-toggle').addEventListener('click', () => {
+      const menu = document.getElementById('nav-menu');
+      menu.classList.toggle('hidden');
+    });
+
+    // Initialize date and time and update every second
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+
+    // Fetch news and top players on load
+    fetchNews();
+    fetchTopPlayers();
+    setupLoadMore();
+  </script>
+</body>
+</html>
