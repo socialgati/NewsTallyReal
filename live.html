@@ -1,11 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NewsTally</title>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WBPCRDT2');</script>
+  <!-- End Google Tag Manager -->
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- SEO Meta Tags -->
+  <title>NewsTally - Live News Updates</title>
+  <meta name="description" content="Get real-time live news updates on NewsTally. Stay updated with the latest events in politics, sports, tech, entertainment, and more." />
+  <meta name="keywords" content="live news, real-time news, breaking news, NewsTally" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="NewsTally Team" />
+  <link rel="canonical" href="https://newstally.online/live.html" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small" />
+
+  <!-- Open Graph (OG) Tags for Social Media -->
+  <meta property="og:title" content="NewsTally - Live News Updates" />
+  <meta property="og:description" content="Get real-time live news updates on NewsTally. Stay updated with the latest events in politics, sports, tech, entertainment, and more." />
+  <meta property="og:url" content="https://newstally.online/live.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://newstally.online/images/logo.png" />
+  <meta property="og:site_name" content="NewsTally" />
+
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NewsTally - Live News Updates" />
+  <meta name="twitter:description" content="Get real-time live news updates on NewsTally. Stay updated with the latest events in politics, sports, tech, entertainment, and more." />
+  <meta name="twitter:image" content="https://newstally.online/images/logo.png" />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JYEMEVD1J4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-JYEMEVD1J4');
+  </script>
+
+  <!-- Tailwind CSS and Font Awesome -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+  <!-- External Stylesheet -->
+  <link href="style.css" rel="stylesheet" />
+
+  <!-- Structured Data (JSON-LD) for Organization and Website -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "name": "NewsTally",
+          "url": "https://newstally.online",
+          "logo": "https://newstally.online/images/logo.png",
+          "sameAs": [
+            "https://www.facebook.com/newstally",
+            "https://www.twitter.com/newstally",
+            "https://www.instagram.com/newstally",
+            "https://www.youtube.com/newstally"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "url": "https://newstally.online",
+          "name": "NewsTally",
+          "description": "Latest and trending news from around the world.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://newstally.online/index.html?search={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+  </script>
+
+  <!-- Inline Styles -->
   <style>
     @media (max-width: 768px) {
       .carousel img {
@@ -183,46 +262,52 @@
   </style>
 </head>
 <body class="bg-gray-50 font-sans">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WBPCRDT2"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
   <div id="root" class="min-h-screen">
     <!-- Top Bar (Sticky) -->
-    <div class="gradient-bg text-white py-3 sticky top-0 z-20">
+    <header class="gradient-bg text-white py-3 sticky top-0 z-20">
       <div class="container mx-auto px-4 flex justify-between items-center">
         <div class="flex space-x-4">
-          <a href="#" class="hover:text-gray-200 transition"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="hover:text-gray-200 transition"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="hover:text-gray-200 transition"><i class="fab fa-youtube"></i></a>
-          <a href="#" class="hover:text-gray-200 transition"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.facebook.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.twitter.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.youtube.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="https://www.instagram.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Instagram"><i class="fab fa-instagram"></i></a>
         </div>
         <a href="index.html"><h1 class="text-2xl font-extrabold tracking-tight">NewsTally</h1></a>
         <div class="w-6"></div>
       </div>
-    </div>
+    </header>
 
     <!-- Navigation Menu (Sticky, below Top Bar) -->
     <nav class="bg-white shadow-lg sticky top-[48px] z-10">
       <div class="container mx-auto px-4 py-4 flex justify-between items-center">
         <div class="flex items-center">
-          <button id="menu-toggle" class="md:hidden mr-4">
+          <button id="menu-toggle" class="md:hidden mr-4" aria-label="Toggle navigation menu">
             <i class="fas fa-bars text-xl text-gray-700"></i>
           </button>
           <div id="nav-menu" class="hidden md:block absolute md:static top-[112px] left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none">
             <ul class="flex flex-col md:flex-row md:space-x-6 p-4 md:p-0">
-              <li><a href="live.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Live</a></li>
-              <li><a href="latest.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Latest</a></li>
-              <li><a href="breaking.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Breaking</a></li>
+              <li><a href="live.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Live News</a></li>
+              <li><a href="latest.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Latest News</a></li>
+              <li><a href="breaking.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Breaking News</a></li>
               <li><a href="politics.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Politics</a></li>
               <li><a href="sports.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Sports</a></li>
-              <li><a href="tech.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Tech</a></li>
+              <li><a href="tech.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Technology</a></li>
               <li><a href="entertainment.html" class="block py-2 md:py-0 text-gray-700 hover:text-blue-600 transition">Entertainment</a></li>
             </ul>
           </div>
         </div>
-        <div>
+        <div class="hidden md:block">
           <input
             id="search-input"
-            type="text"
-            placeholder="Search..."
+            type="search"
+            placeholder="Search news..."
             class="px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Search news articles"
           />
         </div>
       </div>
@@ -233,7 +318,7 @@
       <!-- Date and Time (Plain Text) -->
       <div class="mb-4">
         <p class="text-sm text-gray-600">
-          <span id="current-date"></span> | <span id="current-time"></span>
+          <time id="current-date"></time> | <time id="current-time"></time>
         </p>
       </div>
 
@@ -246,14 +331,14 @@
         <div class="md:w-1/2 relative carousel">
           <div class="image-container">
             <a id="carousel-link" href="#">
-              <img id="carousel-image" src="https://via.placeholder.com/600x400" alt="Featured News" class="w-full h-96 object-cover">
+              <img id="carousel-image" src="https://via.placeholder.com/600x400" alt="Featured News Image" class="w-full h-96 object-cover">
             </a>
             <div class="caption" id="carousel-caption"></div>
           </div>
-          <button id="prev-slide" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-md">
+          <button id="prev-slide" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-md" aria-label="Previous slide">
             <i class="fas fa-chevron-left text-gray-600"></i>
           </button>
-          <button id="next-slide" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-md">
+          <button id="next-slide" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-3 shadow-md" aria-label="Next slide">
             <i class="fas fa-chevron-right text-gray-600"></i>
           </button>
           <div class="carousel-dots" id="carousel-dots"></div>
@@ -267,60 +352,61 @@
       <section class="md:w-3/4">
         <div class="flex justify-between items-center mb-8">
           <h2 class="text-3xl font-extrabold">Live News</h2>
-          <select id="category-filter" class="px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+          <select id="category-filter" class="px-4 py-2 border rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" aria-label="Filter news by category"></select>
         </div>
         <div id="news-feed" class="space-y-4"></div>
         <div id="load-more" class="text-center mt-8">
-          <button id="load-more-btn" class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700">Load More</button>
+          <button id="load-more-btn" class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700" aria-label="Load more news">Load More</button>
         </div>
       </section>
 
       <!-- Sidebar (30%) -->
       <aside class="md:w-1/4 mt-8 md:mt-0">
         <!-- Live Scores -->
-        <div class="bg-white p-6 rounded-xl shadow-lg mb-6">
+        <section class="bg-white p-6 rounded-xl shadow-lg mb-6">
           <h3 class="text-xl font-bold mb-4 text-gray-800">Live Scores</h3>
           <p class="text-sm font-semibold text-gray-700">IPL 2025 Match 59</p>
           <p class="text-gray-600">Lucknow Super Giants vs Royal Challengers Bengaluru</p>
           <p class="text-gray-600">LSG: 150/4 (18.0 ov)</p>
           <p class="text-gray-600">Target: 181</p>
-          <button id="match-reminder" class="mt-4 text-blue-600 hover:underline font-medium">Set Match Reminder</button>
-        </div>
+          <button id="match-reminder" class="mt-4 text-blue-600 hover:underline font-medium" aria-label="Set match reminder">Set Match Reminder</button>
+        </section>
 
         <!-- Featured News -->
-        <div class="bg-white p-6 rounded-xl shadow-lg mb-6">
+        <section class="bg-white p-6 rounded-xl shadow-lg mb-6">
           <h3 class="text-xl font-bold mb-4 text-gray-800">Featured News</h3>
           <div class="featured-news-container">
             <div class="featured-news-scroll" id="featured-news-scroll">
               <!-- News cards will be populated here -->
             </div>
-            <button class="scroll-btn left" id="scroll-left-btn">
+            <button class="scroll-btn left" id="scroll-left-btn" aria-label="Scroll left">
               <i class="fas fa-chevron-left text-gray-600"></i>
             </button>
-            <button class="scroll-btn right" id="scroll-right-btn">
+            <button class="scroll-btn right" id="scroll-right-btn" aria-label="Scroll right">
               <i class="fas fa-chevron-right text-gray-600"></i>
             </button>
           </div>
-        </div>
+        </section>
 
         <!-- Popular Categories -->
-        <div id="popular-categories" class="bg-white p-6 rounded-xl shadow-lg mb-6">
+        <section id="popular-categories" class="bg-white p-6 rounded-xl shadow-lg mb-6">
           <h3 class="text-xl font-bold mb-4 text-gray-800">Popular Categories</h3>
           <ul class="space-y-3"></ul>
-        </div>
+        </section>
 
         <!-- Newsletter -->
-        <div class="bg-white p-6 rounded-xl shadow-lg">
+        <section class="bg-white p-6 rounded-xl shadow-lg">
           <h3 class="text-xl font-bold mb-4 text-gray-800">Newsletter</h3>
           <div>
             <input
               type="email"
               placeholder="Enter your email"
               class="w-full px-4 py-2 border rounded-full mb-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-label="Enter your email for newsletter subscription"
             />
-            <button class="w-full bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition">Subscribe</button>
+            <button class="w-full bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition" aria-label="Subscribe to newsletter">Subscribe</button>
           </div>
-        </div>
+        </section>
       </aside>
     </main>
 
@@ -334,7 +420,7 @@
         <div>
           <h3 class="text-xl font-bold mb-4">Quick Links</h3>
           <ul class="space-y-3">
-            <li><a href="#" class="hover:underline text-gray-200 hover:text-white transition">Home</a></li>
+            <li><a href="index.html" class="hover:underline text-gray-200 hover:text-white transition">Home</a></li>
             <li><a href="#" class="hover:underline text-gray-200 hover:text-white transition">About</a></li>
             <li><a href="#" class="hover:underline text-gray-200 hover:text-white transition">Contact</a></li>
           </ul>
@@ -342,10 +428,10 @@
         <div>
           <h3 class="text-xl font-bold mb-4">Follow Us</h3>
           <div class="flex space-x-4">
-            <a href="#" class="hover:text-blue-200 transition"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="hover:text-blue-200 transition"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="hover:text-blue-200 transition"><i class="fab fa-youtube"></i></a>
-            <a href="#" class="hover:text-blue-200 transition"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/newstally" class="hover:text-blue-200 transition" aria-label="Follow NewsTally on Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.twitter.com/newstally" class="hover:text-blue-200 transition" aria-label="Follow NewsTally on Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.youtube.com/newstally" class="hover:text-blue-200 transition" aria-label="Follow NewsTally on YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.instagram.com/newstally" class="hover:text-blue-200 transition" aria-label="Follow NewsTally on Instagram"><i class="fab fa-instagram"></i></a>
           </div>
         </div>
       </div>
@@ -439,13 +525,13 @@
       const featuredNewsScroll = document.getElementById('featured-news-scroll');
       const featuredHTML = featuredNews.length > 0
         ? featuredNews.map(item => `
-            <div class="featured-news-card">
+            <article class="featured-news-card">
               <a href="opennews.html?headline=${encodeURIComponent(item.headline)}">
                 <img src="${item.image}" alt="${item.headline}" class="w-full h-24 mb-2">
                 <h4 class="text-sm font-semibold text-gray-800 hover:text-blue-600 transition">${item.headline}</h4>
                 <p class="text-xs text-gray-600 mt-1">${item.source}</p>
               </a>
-            </div>
+            </article>
           `).join('')
         : '<p class="text-gray-600 text-sm">No featured news available.</p>';
 
@@ -489,6 +575,7 @@
       setTimeout(() => {
         if (topStories.length > 0) {
           carouselImage.src = topStories[currentSlide].image;
+          carouselImage.alt = topStories[currentSlide].headline;
           carouselLink.href = `opennews.html?headline=${encodeURIComponent(topStories[currentSlide].headline)}`;
           carouselCaption.textContent = topStories[currentSlide].headline;
 
@@ -516,6 +603,7 @@
       // Initialize carousel with first slide
       if (topStories.length > 0) {
         carouselImage.src = topStories[currentSlide].image;
+        carouselImage.alt = topStories[currentSlide].headline;
         carouselLink.href = `opennews.html?headline=${encodeURIComponent(topStories[currentSlide].headline)}`;
         carouselCaption.textContent = topStories[currentSlide].headline;
       }
@@ -558,13 +646,13 @@
       const topStoriesDiv = document.getElementById('top-stories');
       topStoriesDiv.innerHTML = topStories.length > 0
         ? topStories.map(item => `
-            <div class="mb-6">
+            <article class="mb-6">
               <span class="bg-blue-600 text-white text-xs px-3 py-1 rounded-full">Top Story</span>
               <h3 class="text-xl font-semibold mt-3 hover:text-blue-600 transition">
                 <a href="opennews.html?headline=${encodeURIComponent(item.headline)}">${item.headline}</a>
               </h3>
               <p class="text-gray-600 text-sm mt-1">${item.source} • ${item.date}</p>
-            </div>
+            </article>
           `).join('')
         : '<p class="text-gray-600">No Top Stories available.</p>';
 
@@ -575,20 +663,18 @@
       const endIndex = Math.min(startIndex + NEWS_PER_PAGE, reversedNews.length);
       const newsToDisplay = reversedNews.slice(startIndex, endIndex);
 
-      const newsHTML = newsToDisplay.length > 0
-        ? newsToDisplay.map(item => `
-            <div class="news-card bg-white p-4 rounded-xl shadow-md flex items-start space-x-4">
-              <img src="${item.image}" alt="${item.headline}" class="w-24 h-24 object-cover rounded-lg">
-              <div class="flex-1">
-                <h3 class="text-lg font-semibold hover:text-blue-600 transition">
-                  <a href="opennews.html?headline=${encodeURIComponent(item.headline)}">${item.headline}</a>
-                </h3>
-                <p class="text-gray-600 mt-1 text-sm">${item.description.slice(0, 100)}...</p>
-                <p class="text-xs text-gray-500 mt-1">${item.source} • ${item.date}</p>
-              </div>
-            </div>
-          `).join('')
-        : '<p class="text-gray-600">No news available for this category.</p>';
+      const newsHTML = newsToDisplay.map(item => `
+        <article class="news-card bg-white p-4 rounded-xl shadow-md flex items-start space-x-4">
+          <img src="${item.image}" alt="${item.headline}" class="w-24 h-24 object-cover rounded-lg">
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold hover:text-blue-600 transition">
+              <a href="opennews.html?headline=${encodeURIComponent(item.headline)}">${item.headline}</a>
+            </h3>
+            <p class="text-gray-600 mt-1 text-sm">${item.description.slice(0, 100)}...</p>
+            <p class="text-xs text-gray-500 mt-1">${item.source} • ${item.date}</p>
+          </div>
+        </article>
+      `).join('');
 
       if (append) {
         newsFeed.insertAdjacentHTML('beforeend', newsHTML);
@@ -605,6 +691,33 @@
       } else {
         loadMoreDiv.style.display = 'block';
       }
+
+      // Add Structured Data for News Articles
+      const structuredData = newsToDisplay.map(item => ({
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": item.headline,
+        "image": item.image,
+        "datePublished": item.date,
+        "description": item.description.slice(0, 100) + "...",
+        "author": {
+          "@type": "Organization",
+          "name": item.source
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "NewsTally",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://newstally.online/images/logo.png"
+          }
+        }
+      }));
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(structuredData);
+      document.head.appendChild(script);
     }
 
     // Setup Load More Button
@@ -623,7 +736,9 @@
       `).join('');
       categoryFilter.addEventListener('change', (e) => {
         const selectedCategory = e.target.value;
-        filteredNews = selectedCategory === 'All' ? news : news.filter(item => item.category === selectedCategory);
+        filteredNews = selectedCategory === 'All'
+          ? news.filter(item => item.category.toLowerCase() === 'live')
+          : news.filter(item => item.category === selectedCategory);
         displayedNewsCount = 0;
         renderNews();
       });
@@ -644,18 +759,20 @@
       });
 
       const searchInput = document.getElementById('search-input');
-      searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        filteredNews = news.filter(item =>
-          item.headline.toLowerCase().includes(query) ||
-          item.category.toLowerCase().includes(query)
-        );
-        if (categoryFilter.value !== 'All') {
-          filteredNews = filteredNews.filter(item => item.category === categoryFilter.value);
-        }
-        displayedNewsCount = 0;
-        renderNews();
-      });
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase();
+          filteredNews = news.filter(item =>
+            (item.headline.toLowerCase().includes(query) || item.category.toLowerCase().includes(query)) &&
+            item.category.toLowerCase() === 'live'
+          );
+          if (categoryFilter.value !== 'All') {
+            filteredNews = filteredNews.filter(item => item.category === categoryFilter.value);
+          }
+          displayedNewsCount = 0;
+          renderNews();
+        });
+      }
     }
 
     // Highlight Active Navigation Link
@@ -674,9 +791,9 @@
       menu.classList.toggle('hidden');
     });
 
-    // Match Reminder
+    // Set Match Reminder
     document.getElementById('match-reminder').addEventListener('click', () => {
-      alert('Reminder set for upcoming match: LSG vs RCB on May 9, 2025!');
+      alert('Match reminder set! You will be notified before the match starts.');
     });
 
     // Initialize date and time and update every second
