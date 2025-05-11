@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WBPCRDT2');</script>
+  <!-- End Google Tag Manager -->
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- SEO Meta Tags -->
+  <title>NewsTally - Quick Short News for Mobile & Tablet</title>
+  <meta name="description" content="Get quick short news updates on the go with NewsTally, optimized for mobile and tablet devices." />
+  <meta name="keywords" content="short news, quick news, mobile news, tablet news, NewsTally" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="NewsTally Team" />
+  <link rel="canonical" href="https://newstally.online/quick.html" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1e3a8a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+  <!-- Open Graph (OG) Tags for Social Media -->
+  <meta property="og:title" content="NewsTally - Quick Short News for Mobile & Tablet" />
+  <meta property="og:description" content="Get quick short news updates on the go with NewsTally, optimized for mobile and tablet devices." />
+  <meta property="og:url" content="https://newstally.online/quick.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://newstally.online/images/logo.png" />
+  <meta property="og:site_name" content="NewsTally" />
+
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NewsTally - Quick Short News for Mobile & Tablet" />
+  <meta name="twitter:description" content="Get quick short news updates on the go with NewsTally, optimized for mobile and tablet devices." />
+  <meta name="twitter:image" content="https://newstally.online/images/logo.png" />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JYEMEVD1J4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-JYEMEVD1J4');
+  </script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- External Stylesheet -->
+  <link href="style.css" rel="stylesheet" />
+
+  <!-- Structured Data (JSON-LD) for Organization and Website -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "name": "NewsTally",
+          "url": "https://newstally.online",
+          "logo": "https://newstally.online/images/logo.png",
+          "sameAs": [
+            "https://www.facebook.com/newstally",
+            "https://www.twitter.com/newstally",
+            "https://www.instagram.com/newstally",
+            "https://www.youtube.com/newstally"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "url": "https://newstally.online",
+          "name": "NewsTally",
+          "description": "Quick short news updates for mobile and tablet devices.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://newstally.online/quick.html?search={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+  </script>
+
+  <!-- Inline Styles -->
+  <style>
+    /* Hide on desktop (1024px and above) */
+    @media (min-width: 1024px) {
+      #root {
+        display: none;
+      }
+      body::after {
+        content: "This page is only available on mobile and tablet devices.";
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-size: 1.5rem;
+        color: #666;
+        text-align: center;
+      }
+    }
+
+    /* Gradient background for top bar and footer */
+    .gradient-bg {
+      background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+    }
+
+    /* Active nav link underline */
+    .nav-active {
+      position: relative;
+    }
+    .nav-active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #dc2626;
+    }
+
+    /* Short News Card Styling */
+    .short-news-card {
+      display: flex;
+      flex-direction: column;
+      height: 100vh; /* Full viewport height for each card */
+      background: white;
+      overflow: hidden;
+      scroll-snap-align: start;
+      transition: opacity 0.5s ease;
+      opacity: 0;
+    }
+    .short-news-card.loaded {
+      opacity: 1;
+    }
+    .short-news-card img {
+      height: 40%; /* 40% for image */
+      width: 100%;
+      object-fit: cover;
+    }
+    .short-news-card .headline {
+      height: 12%; /* 12% for headline */
+      padding: 0.5rem 1rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .short-news-card .details {
+      height: 48%; /* Remaining 48% for description, source, etc. */
+      padding: 0.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .short-news-card .description {
+      flex-grow: 1;
+      overflow-y: auto;
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+    .short-news-card .meta {
+      font-size: 0.75rem;
+      color: #888;
+    }
+
+    /* Smooth scrolling container */
+    .news-feed-container {
+      height: calc(100vh - 48px - 64px); /* Full height minus top bar and bottom nav */
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+      scrollbar-width: none; /* Hide scrollbar in Firefox */
+    }
+    .news-feed-container::-webkit-scrollbar {
+      display: none; /* Hide scrollbar in Chrome, Safari, Edge */
+    }
+
+    /* Bottom Navigation for Mobile */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: white;
+      display: flex;
+      justify-content: space-around;
+      padding: 0.25rem 0;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 30;
+    }
+    .bottom-nav a {
+      color: black;
+      text-align: center;
+      flex: 1;
+      padding: 0.25rem;
+      transition: background-color 0.3s ease;
+    }
+    .bottom-nav a:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    .bottom-nav i {
+      font-size: 1.25rem;
+    }
+    .bottom-nav span {
+      display: block;
+      font-size: 0.65rem;
+      margin-top: 0.15rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WBPCRDT2"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <div id="root" class="min-h-screen">
+    <!-- Top Bar (Sticky) -->
+    <header class="gradient-bg text-white py-3 sticky top-0 z-20">
+      <div class="container mx-auto px-4 flex justify-between items-center">
+        <a href="index.html" class="flex items-center space-x-2">
+          <img src="https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small" alt="NewsTally Favicon" class="w-6 h-6">
+          <h1 class="text-2xl font-extrabold tracking-tight">NewsTally</h1>
+        </a>
+        <div class="flex space-x-2">
+          <a href="https://www.facebook.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Facebook"><i class="fab fa-facebook-f text-sm"></i></a>
+          <a href="https://www.twitter.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Twitter"><i class="fab fa-twitter text-sm"></i></a>
+          <a href="https://www.youtube.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on YouTube"><i class="fab fa-youtube text-sm"></i></a>
+          <a href="https://www.instagram.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Instagram"><i class="fab fa-instagram text-sm"></i></a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content: Short News Feed -->
+    <main class="news-feed-container">
+      <div id="news-feed"></div>
+    </main>
+
+    <!-- Bottom Navigation for Mobile -->
+    <nav class="bottom-nav">
+      <a href="index.html">
+        <i class="fas fa-house"></i>
+        <span>Home</span>
+      </a>
+      <a href="live.html">
+        <i class="fas fa-tower-broadcast"></i>
+        <span>Live</span>
+      </a>
+      <a href="quick.html" class="nav-active">
+        <i class="fas fa-bolt"></i>
+        <span>Quick</span>
+      </a>
+      <a href="trending.html">
+        <i class="fas fa-fire"></i>
+        <span>Trending</span>
+      </a>
+      <a href="cricket.html">
+        <i class="fas fa-baseball-ball"></i>
+        <span>Cricket</span>
+      </a>
+    </nav>
+  </div>
+
+  <script>
+    const API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
+    const SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
+    const NEWS_SHEET_NAME = 'Sheet1';
+
+    let news = [];
+    let filteredNews = [];
+    let displayedNewsCount = 0;
+    const NEWS_PER_PAGE = 10;
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(registration => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch(error => {
+            console.error('Service Worker registration failed:', error);
+          });
+      });
+    }
+
+    // Preload images to improve loading performance
+    function preloadImages(imageUrls) {
+      imageUrls.forEach(url => {
+        const img = new Image();
+        img.src = url;
+      });
+    }
+
+    // Fetch short news from Google Sheet (Sheet1)
+    async function fetchNews() {
+      try {
+        const response = await fetch(
+          `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${NEWS_SHEET_NAME}?key=${API_KEY}`
+        );
+        const data = await response.json();
+        const rows = data.values;
+        const headers = rows[0];
+        news = rows.slice(1).map(row => ({
+          rank: parseInt(row[0]) || 0,
+          headline: row[1],
+          source: row[2],
+          date: row[3],
+          description: row[4],
+          link: row[5],
+          category: row[6],
+          image: row[7] || 'https://via.placeholder.com/400x300'
+        }));
+
+        // Filter for Short News only
+        news = news.filter(item => item.category.toLowerCase().includes('short news'));
+        filteredNews = [...news];
+
+        // Preload images
+        const newsImages = news.map(item => item.image);
+        preloadImages(newsImages);
+
+        displayedNewsCount = 0;
+        renderNews();
+        setupLoadMore();
+        highlightActiveNav();
+      } catch (error) {
+        console.error('Error fetching short news:', error);
+        document.getElementById('news-feed').innerHTML = '<p class="text-red-600 text-center p-4">Failed to load short news. Please check API key and sheet access.</p>';
+      }
+    }
+
+    // Render short news in the feed
+    function renderNews(append = false) {
+      const newsFeed = document.getElementById('news-feed');
+      const reversedNews = [...filteredNews].reverse();
+      const startIndex = append ? displayedNewsCount : 0;
+      const endIndex = Math.min(startIndex + NEWS_PER_PAGE, reversedNews.length);
+      const newsToDisplay = reversedNews.slice(startIndex, endIndex);
+
+      const newsHTML = newsToDisplay.map(item => `
+        <article class="short-news-card">
+          <a href="opennews.html?headline=${encodeURIComponent(item.headline)}">
+            <img src="${item.image}" alt="${item.headline}" loading="lazy">
+            <h3 class="headline">${item.headline}</h3>
+            <div class="details">
+              <p class="description">${item.description}</p>
+              <p class="meta">${item.source} • ${item.date}</p>
+            </div>
+          </a>
+        </article>
+      `).join('');
+
+      if (append) {
+        newsFeed.insertAdjacentHTML('beforeend', newsHTML);
+      } else {
+        newsFeed.innerHTML = newsHTML;
+      }
+
+      // Add loaded class for fade-in effect
+      document.querySelectorAll('.short-news-card').forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.add('loaded');
+        }, index * 100);
+      });
+
+      displayedNewsCount = endIndex;
+
+      // Add Structured Data for News Articles
+      const structuredData = newsToDisplay.map(item => ({
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": item.headline,
+        "image": item.image,
+        "datePublished": item.date,
+        "description": item.description,
+        "author": {
+          "@type": "Organization",
+          "name": item.source
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "NewsTally",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://newstally.online/images/logo.png"
+          }
+        }
+      }));
+
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(structuredData);
+      document.head.appendChild(script);
+    }
+
+    // Setup Load More on Scroll
+    function setupLoadMore() {
+      const newsFeedContainer = document.querySelector('.news-feed-container');
+      newsFeedContainer.addEventListener('scroll', () => {
+        if (newsFeedContainer.scrollTop + newsFeedContainer.clientHeight >= newsFeedContainer.scrollHeight - 50) {
+          if (displayedNewsCount < filteredNews.length) {
+            renderNews(true);
+          }
+        }
+      });
+    }
+
+    // Highlight Active Navigation Link
+    function highlightActiveNav() {
+      const bottomNavLinks = document.querySelectorAll('.bottom-nav a');
+      bottomNavLinks.forEach(link => {
+        if (link.href.includes('quick.html')) {
+          link.classList.add('nav-active');
+        }
+      });
+    }
+
+    // Fetch news on load
+    fetchNews();
+  </script>
+</body>
+</html>
