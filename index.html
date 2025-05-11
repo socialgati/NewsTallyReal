@@ -159,16 +159,19 @@
       overflow: hidden;
     }
     .carousel img {
-      transition: transform 0.3s ease, opacity 0.5s ease;
+      transition: opacity 0.5s ease;
       border-radius: 15px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      opacity: 1;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .carousel img.loading {
       opacity: 0;
     }
     .carousel img.loaded {
       opacity: 1;
-    }
-    .carousel img:hover {
-      transform: scale(1.05);
     }
     /* Gradient overlay for carousel images */
     .carousel .image-container {
@@ -325,7 +328,7 @@
         <div class="flex space-x-2">
           <a href="https://www.facebook.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Facebook"><i class="fab fa-facebook-f text-sm"></i></a>
           <a href="https://www.twitter.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Twitter"><i class="fab fa-twitter text-sm"></i></a>
-          <a href="https://youtube.com/@newstally?si=u_Xlz2tuGOKAqRwp" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on YouTube"><i class="fab fa-youtube text-sm"></i></a>
+          <a href="https://www.youtube.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on YouTube"><i class="fab fa-youtube text-sm"></i></a>
           <a href="https://www.instagram.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Instagram"><i class="fab fa-instagram text-sm"></i></a>
         </div>
       </div>
@@ -526,8 +529,7 @@
     let displayedNewsCount = 0;
     const NEWS_PER_PAGE = 15;
 
-    // Register Service Worker for PWA (Commented out due to missing sw.js)
-    /*
+    // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
@@ -539,7 +541,14 @@
           });
       });
     }
-    */
+
+    // Preload images to improve loading performance
+    function preloadImages(imageUrls) {
+      imageUrls.forEach(url => {
+        const img = new Image();
+        img.src = url;
+      });
+    }
 
     // Fetch news from Google Sheet (Sheet1)
     async function fetchNews() {
@@ -566,6 +575,10 @@
           .filter(item => item.category.toLowerCase() === 'top story')
           .sort((a, b) => b.rank - a.rank)
           .slice(0, 3);
+
+        // Preload Top Stories images
+        const topStoryImages = topStories.map(item => item.image);
+        preloadImages(topStoryImages);
 
         // Filter Featured News
         featuredNews = news
@@ -715,27 +728,37 @@
       const dots = document.getElementsByClassName('carousel-dot');
 
       // Fade out
-      carouselImage.style.opacity = '0';
+      carouselImage.classList.remove('loaded');
+      carouselImage.classList.add('loading');
 
-      setTimeout(() => {
-        if (topStories.length > 0) {
-          carouselImage.src = topStories[currentSlide].image;
-          carouselImage.alt = topStories[currentSlide].headline;
-          carouselLink.href = `opennews.html?headline=${encodeURIComponent(topStories[currentSlide].headline)}`;
-          carouselCaption.textContent = topStories[currentSlide].headline;
+      // Update slide details
+      if (topStories.length > 0) {
+        carouselLink.href = `opennews.html?headline=${encodeURIComponent(topStories[currentSlide].headline)}`;
+        carouselCaption.textContent = topStories[currentSlide].headline;
+        carouselImage.alt = topStories[currentSlide].headline;
 
-          // Update active dot
-          for (let i = 0; i < dots.length; i++) {
-            dots[i].classList.remove('active');
-            if (i === currentSlide) {
-              dots[i].classList.add('active');
-            }
-          }
-
-          // Fade in
+        // Set onload and onerror handlers before changing src
+        carouselImage.onload = () => {
+          carouselImage.classList.remove('loading');
           carouselImage.classList.add('loaded');
+        };
+        carouselImage.onerror = () => {
+          carouselImage.src = 'https://via.placeholder.com/600x400';
+          carouselImage.classList.remove('loading');
+          carouselImage.classList.add('loaded');
+        };
+
+        // Update the image source
+        carouselImage.src = topStories[currentSlide].image;
+
+        // Update active dot
+        for (let i = 0; i < dots.length; i++) {
+          dots[i].classList.remove('active');
+          if (i === currentSlide) {
+            dots[i].classList.add('active');
+          }
         }
-      }, 500); // Match the opacity transition duration
+      }
     }
 
     // Setup Carousel
@@ -745,14 +768,33 @@
       const carouselCaption = document.getElementById('carousel-caption');
       const carouselDots = document.getElementById('carousel-dots');
 
-      // Initialize carousel with first slide
-      if (topStories.length > 0) {
-        carouselImage.src = topStories[currentSlide].image;
-        carouselImage.alt = topStories[currentSlide].headline;
-        carouselLink.href = `opennews.html?headline=${encodeURIComponent(topStories[currentSlide].headline)}`;
-        carouselCaption.textContent = topStories[currentSlide].headline;
+      // Handle case when there are no top stories
+      if (topStories.length === 0) {
+        carouselImage.src = 'https://via.placeholder.com/600x400';
+        carouselImage.alt = 'No Top Stories Available';
+        carouselCaption.textContent = 'No Top Stories Available';
         carouselImage.classList.add('loaded');
+        return;
       }
+
+      // Initialize carousel with first slide
+      carouselLink.href = `opennews.html?headline=${encodeURIComponent(topStories[currentSlide].headline)}`;
+      carouselCaption.textContent = topStories[currentSlide].headline;
+      carouselImage.alt = topStories[currentSlide].headline;
+
+      // Set onload and onerror handlers before changing src
+      carouselImage.onload = () => {
+        carouselImage.classList.remove('loading');
+        carouselImage.classList.add('loaded');
+      };
+      carouselImage.onerror = () => {
+        carouselImage.src = 'https://via.placeholder.com/600x400';
+        carouselImage.classList.remove('loading');
+        carouselImage.classList.add('loaded');
+      };
+
+      // Set initial image source
+      carouselImage.src = topStories[currentSlide].image;
 
       // Create navigation dots
       carouselDots.innerHTML = topStories.map((_, index) => `
@@ -778,12 +820,6 @@
         currentSlide = (currentSlide + 1) % topStories.length;
         updateCarouselSlide();
       });
-
-      // Auto-scroll
-      setInterval(() => {
-        currentSlide = (currentSlide + 1) % topStories.length;
-        updateCarouselSlide();
-      }, 5000);
     }
 
     // Render news in Top Stories and News Feed
