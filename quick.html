@@ -144,32 +144,60 @@
       font-size: 0.875rem;
     }
 
-    /* Loading Indicator */
-    .loading-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.9);
+    /* Skeleton Loading Styles */
+    .skeleton-card {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 50;
+      flex-direction: column;
+      height: calc(100vh - 48px - 64px); /* Full height minus top bar and bottom nav */
+      background: #fff;
+      overflow: hidden;
+      scroll-snap-align: start;
     }
 
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid #1e3a8a;
-      border-top: 4px solid transparent;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+    .skeleton-image {
+      height: 40%; /* Match the image height */
+      width: 100%;
+      background: #e2e8f0;
+      animation: shimmer 1.5s infinite linear;
     }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+    .skeleton-headline {
+      height: 12%; /* Match the headline height */
+      padding: 8px 16px;
+      background: #e2e8f0;
+      animation: shimmer 1.5s infinite linear;
+    }
+
+    .skeleton-details {
+      height: 48%; /* Match the details height */
+      padding: 8px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .skeleton-description {
+      flex-grow: 1;
+      background: #e2e8f0;
+      margin-bottom: 8px;
+      animation: shimmer 1.5s infinite linear;
+    }
+
+    .skeleton-meta {
+      height: 16px; /* Approximate height of meta text */
+      background: #e2e8f0;
+      width: 50%;
+      animation: shimmer 1.5s infinite linear;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background: linear-gradient(to right, #e2e8f0 0%, #edf2f7 50%, #e2e8f0 100%);
+        background-size: 200% 100%;
+      }
+      100% {
+        background-position: 200% 0;
+      }
     }
 
     /* News Card Styling */
@@ -323,11 +351,6 @@
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
 
-  <!-- Loading Indicator -->
-  <div id="loading" class="loading-container">
-    <div class="loading-spinner"></div>
-  </div>
-
   <div id="root">
     <!-- Top Bar (Sticky) -->
     <header class="gradient-bg">
@@ -406,6 +429,22 @@
       });
     }
 
+    // Render skeleton UI
+    function renderSkeleton() {
+      const newsFeed = document.getElementById('news-feed');
+      const skeletonHTML = Array.from({ length: 3 }).map(() => `
+        <div class="skeleton-card">
+          <div class="skeleton-image"></div>
+          <div class="skeleton-headline"></div>
+          <div class="skeleton-details">
+            <div class="skeleton-description"></div>
+            <div class="skeleton-meta"></div>
+          </div>
+        </div>
+      `).join('');
+      newsFeed.innerHTML = skeletonHTML;
+    }
+
     // Check if cached data is available and fresh
     function getCachedData() {
       const cached = localStorage.getItem(CACHE_KEY);
@@ -431,7 +470,9 @@
 
     // Fetch all news from Google Sheet (Sheet1)
     async function fetchNews() {
-      const loadingElement = document.getElementById('loading');
+      // Show skeleton UI while fetching
+      renderSkeleton();
+
       const cachedData = getCachedData();
 
       // If cached data exists and is fresh, use it
@@ -440,7 +481,6 @@
         filteredNews = [...news];
         renderNews();
         highlightActiveNav();
-        loadingElement.style.display = 'none';
         return; // Exit early since we used cached data
       }
 
@@ -491,9 +531,6 @@
       } catch (error) {
         console.error('Error fetching news:', error);
         document.getElementById('news-feed').innerHTML = `<p class="error-message">Failed to load news: ${error.message}. Please try again later.</p>`;
-      } finally {
-        // Hide the loading spinner
-        loadingElement.style.display = 'none';
       }
     }
 
