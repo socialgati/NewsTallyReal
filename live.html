@@ -14,7 +14,7 @@
   <!-- SEO Meta Tags -->
   <title>NewsTally - Live News</title>
   <meta name="description" content="Stay updated with live news updates on NewsTally, optimized for a mobile-like experience on all devices." />
-  <meta name="keywords" content="live news,Breaking News, mobile news, NewsTally" />
+  <meta name="keywords" content="live news, breaking news, mobile news, NewsTally" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="NewsTally Team" />
   <link rel="canonical" href="https://newstally.online/live.html" />
@@ -114,7 +114,7 @@
     }
 
     header .logo-container {
-      display: flex;Breaking News
+      display: flex;
       align-items: center;
       gap: 8px;
     }
@@ -438,12 +438,11 @@
 
   <script>
     const API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
-    const SHEET_ID = '16aBu6pFoQMCPI_GCvRQmS81U2CDfS_X_XaDgxrmFi5A';
-    const NEWS_SHEET_NAME = 'Sheet1';
+    const SHEET_ID = '16aBu6pFoQMCPI_GCvRQmS81U2CDfS_X_XaDgxrmFi5A'; // Same as trending.html
+    const NEWS_SHEET_NAME = 'Sheet1'; // Updated sheet name
     const CACHE_KEY = 'newsTallyLiveData';
-    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-    const ITEMS_PER_PAGE = 5;
-    const FALLBACK_IMAGE = 'https://via.placeholder.com/400x300?text=No+Image';
+    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+    const ITEMS_PER_PAGE = 5; // Number of items to load per "Load More"
 
     let news = [];
     let filteredNews = [];
@@ -465,29 +464,9 @@
     // Preload images to improve loading performance
     function preloadImages(imageUrls) {
       imageUrls.forEach(url => {
-        if (url && isValidImageUrl(url)) {
-          const img = new Image();
-          img.src = url;
-        }
+        const img = new Image();
+        img.src = url;
       });
-    }
-
-    // Validate image URL
-    function isValidImageUrl(url) {
-      if (!url || typeof url !== 'string') return false;
-      // Check if the URL matches common image extensions or is a valid URL
-      const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i;
-      try {
-        new URL(url); // Ensure it's a valid URL
-        return imageExtensions.test(url) || url.startsWith('http');
-      } catch {
-        return false;
-      }
-    }
-
-    // Get image URL with fallback
-    function getImageUrl(image) {
-      return isValidImageUrl(image) ? image : FALLBACK_IMAGE;
     }
 
     // Render skeleton UI
@@ -514,7 +493,7 @@
       const { data, timestamp } = JSON.parse(cached);
       const now = new Date().getTime();
       if (now - timestamp > CACHE_DURATION) {
-        localStorage.removeItem(CACHE_KEY);
+        localStorage.removeItem(CACHE_KEY); // Remove stale cache
         return null;
       }
       return data;
@@ -531,18 +510,22 @@
 
     // Parse date string to Date object for sorting
     function parseDate(dateStr) {
+      // Assuming date format is DD/MM/YYYY or similar
       const parts = dateStr.split('/');
       if (parts.length === 3) {
         return new Date(parts[2], parts[1] - 1, parts[0]);
       }
-      return new Date(dateStr);
+      return new Date(dateStr); // Fallback to default parsing
     }
 
-    // Fetch all news from Google Sheet
+    // Fetch all news from Google Sheet (Sindoor tab)
     async function fetchNews() {
+      // Show skeleton UI while fetching
       renderSkeleton();
+
       const cachedData = getCachedData();
 
+      // If cached data exists and is fresh, use it
       if (cachedData) {
         news = cachedData;
         filteredNews = [...news];
@@ -550,9 +533,10 @@
         highlightActiveNav();
         setupLoadMore();
         setupScrollToTop();
-        return;
+        return; // Exit early since we used cached data
       }
 
+      // Otherwise, fetch from API
       try {
         const response = await fetch(
           `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${NEWS_SHEET_NAME}?key=${API_KEY}`
@@ -562,8 +546,9 @@
         }
         const data = await response.json();
         
+        // Check if data.values exists and has content
         if (!data.values || data.values.length === 0) {
-          throw new Error('No data found in the sheet.');
+          throw new Error('No data found in the Sindoor sheet.');
         }
 
         const rows = data.values;
@@ -580,18 +565,24 @@
           civilianDeadIndia: row[8] || '0',
           armyDeadIndia: row[9] || '0',
           terroristDeadPakistan: row[10] || '0',
-          image: getImageUrl(row[11]), // Use validated image URL
+          image: row[11] || 'https://via.placeholder.com/400x300',
           verificationStatus: row[12] || 'Unverified'
         }));
 
+        // Include all news
         filteredNews = [...news];
 
         if (filteredNews.length === 0) {
-          throw new Error('No news items found in the sheet.');
+          throw new Error('No news items found in the Sindoor sheet.');
         }
 
+        // Cache the fetched data
         cacheData(news);
-        preloadImages(news.map(item => item.image));
+
+        // Preload images
+        const newsImages = news.map(item => item.image);
+        preloadImages(newsImages);
+
         renderNews();
         highlightActiveNav();
         setupLoadMore();
@@ -605,16 +596,19 @@
     // Render news items, with pagination
     function renderNews() {
       const newsFeed = document.getElementById('news-feed');
+      // Sort by date in descending order (newest first)
       const sortedNews = [...filteredNews].sort((a, b) => parseDate(b.date) - parseDate(a.date));
 
+      // Determine the range of items to display
       const startIndex = 0;
       const endIndex = Math.min(displayedNewsCount + ITEMS_PER_PAGE, sortedNews.length);
       const newsToDisplay = sortedNews.slice(startIndex, endIndex);
 
+      // Generate HTML for the news items
       const newsHTML = newsToDisplay.map(item => `
         <article class="news-card">
           <a href="opennews.html?headline=${encodeURIComponent(item.headline)}">
-            <img src="${item.image}" alt="${item.headline}" loading="lazy" onerror="this.src='${FALLBACK_IMAGE}'">
+            <img src="${item.image}" alt="${item.headline}" loading="lazy">
             <div class="content">
               <h3 class="headline">${item.headline}</h3>
               <p class="description">${item.description} (${item.location}, ${item.eventType})</p>
@@ -624,22 +618,29 @@
         </article>
       `).join('');
 
+      // Update the displayed count
       displayedNewsCount = endIndex;
 
+      // Append or replace the news items
       if (displayedNewsCount <= ITEMS_PER_PAGE) {
+        // Initial render
         newsFeed.innerHTML = newsHTML;
       } else {
+        // Append more items
         newsFeed.insertAdjacentHTML('beforeend', newsHTML);
       }
 
+      // Add loaded class for fade-in effect
       document.querySelectorAll('.news-card').forEach((card, index) => {
         setTimeout(() => {
           card.classList.add('loaded');
         }, index * 100);
       });
 
+      // Update Load More button visibility
       updateLoadMoreButton(sortedNews.length);
 
+      // Add Structured Data for News Articles
       const structuredData = newsToDisplay.map(item => ({
         "@context": "https://schema.org",
         "@type": "NewsArticle",
@@ -661,6 +662,7 @@
         }
       }));
 
+      // Remove existing structured data
       const existingScript = document.querySelector('script[type="application/ld+json"]');
       if (existingScript) existingScript.remove();
 
