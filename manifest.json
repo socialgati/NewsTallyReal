@@ -1,0 +1,40 @@
+{
+  "name": "NewsTally",
+  "short_name": "NewsTally",
+  "description": "Your one-stop destination for the latest and trending news worldwide, covering Tech, Sports, Politics, Entertainment, Cricket, and more.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#1e3a8a",
+  "background_color": "#1e3a8a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Live News",
+      "url": "/live.html",
+      "description": "Watch live news updates"
+    },
+    {
+      "name": "Latest News",
+      "url": "/latest.html",
+      "description": "Read the latest news articles"
+    },
+    {
+      "name": "Cricket News",
+      "url": "/cricket.html",
+      "description": "Get the latest cricket updates"
+    }
+  ]
+}
