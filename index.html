@@ -437,6 +437,7 @@
     }
     .scroll-btn i {
       font-size: 1rem;
+ خارجی
       color: #4b5563;
     }
     /* Skeleton Loading Styles */
@@ -456,7 +457,7 @@
       border-radius: 4px;
     }
     .skeleton-image {
-      width: 100占比
+      width: 100%;
       height: 100%;
       border-radius: 8px;
     }
@@ -821,7 +822,6 @@
     let categories = [];
     let displayedNewsCount = 0;
     const NEWS_PER_PAGE = 15;
-    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
     const PLAYER_ROTATION_INTERVAL = 30 * 1000; // 30 seconds
 
     // Category color mapping
@@ -857,26 +857,6 @@
       });
     }
 
-    // Cache data in localStorage
-    function cacheData(key, data) {
-      const cacheEntry = {
-        data: data,
-        timestamp: Date.now()
-      };
-      localStorage.setItem(key, JSON.stringify(cacheEntry));
-    }
-
-    function getCachedData(key) {
-      const cacheEntry = localStorage.getItem(key);
-      if (cacheEntry) {
-        const { data, timestamp } = JSON.parse(cacheEntry);
-        if (Date.now() - timestamp < CACHE_DURATION) {
-          return data;
-        }
-      }
-      return null;
-    }
-
     // Debounce function for search
     function debounce(func, wait) {
       let timeout;
@@ -890,15 +870,8 @@
       };
     }
 
-    // Fetch news from Google Sheet (Sheet1)
+    // Fetch news from Google Sheet (Sheet1) without caching
     async function fetchNews() {
-      const cachedNews = getCachedData('news');
-      if (cachedNews) {
-        news = cachedNews;
-        processNewsData();
-        return;
-      }
-
       try {
         const response = await fetch(
           `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${NEWS_SHEET_NAME}?key=${API_KEY}`
@@ -917,7 +890,6 @@
           image: row[7] || 'https://via.placeholder.com/400x300'
         }));
 
-        cacheData('news', news);
         processNewsData();
       } catch (error) {
         console.error('Error fetching news:', error);
@@ -950,15 +922,8 @@
       highlightActiveNav();
     }
 
-    // Fetch top 3 players from Google Sheet (Sheet2)
+    // Fetch top 3 players from Google Sheet (Sheet2) without caching
     async function fetchTopPlayers() {
-      const cachedPlayers = getCachedData('topPlayers');
-      if (cachedPlayers) {
-        topPlayers = cachedPlayers;
-        displayTopPlayers();
-        return;
-      }
-
       try {
         const response = await fetch(
           `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${PLAYER_SHEET_NAME}?key=${API_KEY}`
@@ -980,7 +945,6 @@
           .filter(player => player.image && !player.image.includes('via.placeholder.com'))
           .sort((a, b) => b.rank - a.rank);
 
-        cacheData('topPlayers', topPlayers);
         displayTopPlayers();
       } catch (error) {
         console.error('Error fetching top players:', error);
