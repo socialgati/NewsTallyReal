@@ -99,12 +99,12 @@
   <style>
     /* Responsive Image Sizing */
     @media (max-width: 640px) {
-      #news-image, .skeleton-image-main {
+      #news-image {
         height: 200px;
       }
     }
     @media (min-width: 641px) {
-      #news-image, .skeleton-image-main {
+      #news-image {
         height: 400px;
       }
     }
@@ -291,11 +291,7 @@
     }
     .skeleton-image {
       width: 100%;
-      height: 120px;
-      border-radius: 12px;
-    }
-    .skeleton-image-main {
-      width: 100%;
+      height: 100%;
       border-radius: 12px;
     }
     .skeleton-card {
@@ -543,56 +539,30 @@
         </nav>
 
         <!-- News Article -->
-        <div class="news-article p-6 skeleton-card">
-          <div class="skeleton skeleton-image-main mb-6"></div>
-          <div class="skeleton skeleton-text w-3/4 h-8 mb-4"></div>
+        <div class="news-article p-6">
+          <img id="news-image" src="https://via.placeholder.com/600x400" alt="News Image" class="w-full rounded-lg mb-6 mx-auto" loading="lazy">
+          <h1 id="news-headline" class="text-3xl md:text-4xl font-extrabold mb-4 text-gray-800"></h1>
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
             <div>
-              <div class="skeleton skeleton-text w-32 h-4 mb-2"></div>
-              <div class="skeleton skeleton-text w-24 h-4"></div>
+              <p id="news-source" class="text-sm font-semibold text-gray-700"></p>
+              <p id="news-date" class="text-sm text-gray-600"></p>
             </div>
             <div class="flex space-x-3">
-              <button class="share-button share-facebook" aria-label="Share on Facebook" title="Share on Facebook" disabled>
+              <button id="share-facebook" class="share-button share-facebook" aria-label="Share on Facebook" title="Share on Facebook">
                 <i class="fab fa-facebook-f"></i>
               </button>
-              <button class="share-button share-twitter" aria-label="Share on Twitter" title="Share on Twitter" disabled>
+              <button id="share-twitter" class="share-button share-twitter" aria-label="Share on Twitter" title="Share on Twitter">
                 <i class="fab fa-twitter"></i>
               </button>
-              <button class="share-button share-whatsapp" aria-label="Share on WhatsApp" title="Share on WhatsApp" disabled>
+              <button id="share-whatsapp" class="share-button share-whatsapp" aria-label="Share on WhatsApp" title="Share on WhatsApp">
                 <i class="fab fa-whatsapp"></i>
               </button>
             </div>
           </div>
-          <div class="skeleton skeleton-text w-full h-4 mb-2"></div>
-          <div class="skeleton skeleton-text w-full h-4 mb-2"></div>
-          <div class="skeleton skeleton-text w-3/4 h-4 mb-6"></div>
-          <div class="skeleton skeleton-text w-32 h-4 mb-6"></div>
-          <div class="skeleton skeleton-text w-40 h-10 rounded-full"></div>
-          <div id="article-content" class="hidden">
-            <img id="news-image" src="https://via.placeholder.com/600x400" alt="News Image" class="w-full rounded-lg mb-6 mx-auto" loading="lazy">
-            <h1 id="news-headline" class="text-3xl md:text-4xl font-extrabold mb-4 text-gray-800"></h1>
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
-              <div>
-                <p id="news-source" class="text-sm font-semibold text-gray-700"></p>
-                <p id="news-date" class="text-sm text-gray-600"></p>
-              </div>
-              <div class="flex space-x-3">
-                <button id="share-facebook" class="share-button share-facebook" aria-label="Share on Facebook" title="Share on Facebook">
-                  <i class="fab fa-facebook-f"></i>
-                </button>
-                <button id="share-twitter" class="share-button share-twitter" aria-label="Share on Twitter" title="Share on Twitter">
-                  <i class="fab fa-twitter"></i>
-                </button>
-                <button id="share-whatsapp" class="share-button share-whatsapp" aria-label="Share on WhatsApp" title="Share on WhatsApp">
-                  <i class="fab fa-whatsapp"></i>
-                </button>
-              </div>
-            </div>
-            <p id="news-description" class="text-gray-700 leading-relaxed text-base md:text-lg mb-6"></p>
-            <a id="news-link" href="#" class="text-blue-600 hover:underline font-medium">Read more at source</a>
-            <div class="mt-6">
-              <a href="index.html" class="back-button inline-block text-white px-6 py-3 rounded-full shadow-lg">Back to News</a>
-            </div>
+          <p id="news-description" class="text-gray-700 leading-relaxed text-base md:text-lg mb-6"></p>
+          <a id="news-link" href="#" class="text-blue-600 hover:underline font-medium">Read more at source</a>
+          <div class="mt-6">
+            <a href="index.html" class="back-button inline-block text-white px-6 py-3 rounded-full shadow-lg">Back to News</a>
           </div>
         </div>
       </section>
@@ -602,26 +572,7 @@
         <!-- Related News -->
         <div class="bg-white p-6 rounded-xl shadow-lg mb-6">
           <h3 class="text-xl font-bold mb-4 text-gray-800">Related News</h3>
-          <div id="related-news" class="space-y-4">
-            <div class="related-news-item skeleton-card">
-              <div class="skeleton skeleton-image"></div>
-              <div class="skeleton skeleton-text w-24 h-4 mt-2 mx-3"></div>
-              <div class="skeleton skeleton-text w-3/4 h-5 mt-2 mx-3"></div>
-              <div class="skeleton skeleton-text w-1/2 h-4 mt-2 mx-3"></div>
-            </div>
-            <div class="related-news-item skeleton-card">
-              <div class="skeleton skeleton-image"></div>
-              <div class="skeleton skeleton-text w-24 h-4 mt-2 mx-3"></div>
-              <div class="skeleton skeleton-text w-3/4 h-5 mt-2 mx-3"></div>
-              <div class="skeleton skeleton-text w-1/2 h-4 mt-2 mx-3"></div>
-            </div>
-            <div class="related-news-item skeleton-card">
-              <div class="skeleton skeleton-image"></div>
-              <div class="skeleton skeleton-text w-24 h-4 mt-2 mx-3"></div>
-              <div class="skeleton skeleton-text w-3/4 h-5 mt-2 mx-3"></div>
-              <div class="skeleton skeleton-text w-1/2 h-4 mt-2 mx-3"></div>
-            </div>
-          </div>
+          <div id="related-news" class="space-y-4"></div>
         </div>
 
         <!-- Newsletter -->
@@ -747,40 +698,9 @@
       };
     }
 
-    // Show skeleton loaders
-    function showSkeletons() {
-      const article = document.querySelector('.news-article');
-      const articleContent = document.getElementById('article-content');
-      const relatedNewsContainer = document.getElementById('related-news');
-
-      article.classList.add('skeleton-card');
-      articleContent.classList.add('hidden');
-      relatedNewsContainer.innerHTML = `
-        <div class="related-news-item skeleton-card">
-          <div class="skeleton skeleton-image"></div>
-          <div class="skeleton skeleton-text w-24 h-4 mt-2 mx-3"></div>
-          <div class="skeleton skeleton-text w-3/4 h-5 mt-2 mx-3"></div>
-          <div class="skeleton skeleton-text w-1/2 h-4 mt-2 mx-3"></div>
-        </div>
-        <div class="related-news-item skeleton-card">
-          <div class="skeleton skeleton-image"></div>
-          <div class="skeleton skeleton-text w-24 h-4 mt-2 mx-3"></div>
-          <div class="skeleton skeleton-text w-3/4 h-5 mt-2 mx-3"></div>
-          <div class="skeleton skeleton-text w-1/2 h-4 mt-2 mx-3"></div>
-        </div>
-        <div class="related-news-item skeleton-card">
-          <div class="skeleton skeleton-image"></div>
-          <div class="skeleton skeleton-text w-24 h-4 mt-2 mx-3"></div>
-          <div class="skeleton skeleton-text w-3/4 h-5 mt-2 mx-3"></div>
-          <div class="skeleton skeleton-text w-1/2 h-4 mt-2 mx-3"></div>
-        </div>
-      `;
-    }
-
     // Fetch news from Google Sheet
     async function fetchNews() {
       try {
-        showSkeletons();
         const response = await fetch(
           `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`
         );
@@ -806,8 +726,6 @@
       } catch (error) {
         console.error('Error fetching news:', error);
         document.getElementById('news-headline').innerText = 'Failed to load news. Please check API key and sheet access.';
-        document.querySelector('.news-article').classList.remove('skeleton-card');
-        document.getElementById('article-content').classList.remove('hidden');
       }
     }
 
@@ -816,9 +734,6 @@
       const urlParams = new URLSearchParams(window.location.search);
       const headline = urlParams.get('headline');
       const article = news.find(item => item.headline === headline);
-
-      const articleElement = document.querySelector('.news-article');
-      const articleContent = document.getElementById('article-content');
 
       if (article) {
         document.getElementById('news-headline').innerText = article.headline;
@@ -832,7 +747,6 @@
         const categoryBreadcrumb = document.getElementById('category-breadcrumb');
         categoryBreadcrumb.innerText = article.category;
         categoryBreadcrumb.href = `${article.category.toLowerCase()}.html`;
-        categoryBreadcrumb.classList.remove(...Object.values(categoryColors));
         categoryBreadcrumb.classList.add(categoryColors[article.category] || categoryColors['default']);
 
         // Add structured data for the article
@@ -861,9 +775,8 @@
         script.textContent = JSON.stringify(structuredData);
         document.head.appendChild(script);
 
-        // Show content and trigger fade-in
-        articleElement.classList.remove('skeleton-card');
-        articleContent.classList.remove('hidden');
+        // Trigger fade-in animation
+        const articleElement = document.querySelector('.news-article');
         setTimeout(() => {
           articleElement.classList.add('loaded');
         }, 100);
@@ -872,11 +785,6 @@
         displayRelatedNews(article.category, article.headline, article.description);
       } else {
         document.getElementById('news-headline').innerText = 'Article not found.';
-        articleElement.classList.remove('skeleton-card');
-        articleContent.classList.remove('hidden');
-        setTimeout(() => {
-          articleElement.classList.add('loaded');
-        }, 100);
       }
     }
 
@@ -1036,24 +944,6 @@
     document.getElementById('close-panel').addEventListener('click', () => {
       const panel = document.getElementById('nav-panel');
       panel.classList.remove('open');
-    });
-
-    // Handle related news clicks to show skeletons
-    document.addEventListener('click', (e) => {
-      const relatedLink = e.target.closest('#related-news a');
-      if (relatedLink) {
-        e.preventDefault();
-        const href = relatedLink.getAttribute('href');
-        showSkeletons();
-        window.history.pushState({}, '', href);
-        fetchNews();
-      }
-    });
-
-    // Handle back/forward navigation
-    window.addEventListener('popstate', () => {
-      showSkeletons();
-      fetchNews();
     });
 
     // Fetch news on load
