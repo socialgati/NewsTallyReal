@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Tools Collection - Calculators & Utilities</title>
+    <meta name="description" content="Free online tools: EMI, GST, BMI, Age calculators, Word Counter, Currency Converter, and more. Easy to use, mobile-friendly.">
+    <meta name="keywords" content="EMI calculator, GST calculator, BMI calculator, age calculator, word counter, currency converter, text case converter, typing speed tester, password generator, online tools">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Tech Tools">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Tech Tools Collection - Calculators & Utilities">
+    <meta property="og:description" content="Free online tools for calculations and utilities, including EMI, GST, BMI, and more. Mobile-friendly and easy to use.">
+    <meta property="og:image" content="https://example.com/tech-tools-og-image.jpg">
+    <meta property="og:url" content="https://example.com/tech-tools.html">
+    <meta property="og:type" content="website">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Tech Tools Collection - Calculators & Utilities">
+    <meta name="twitter:description" content="Free online tools for calculations and utilities, including EMI, GST, BMI, and more.">
+    <meta name="twitter:image" content="https://example.com/tech-tools-og-image.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.5;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e6f0fa, #b3cde0);
+            padding: 20px;
+            color: #1a1a1a;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Waves */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23fff' fill-opacity='0.5' d='M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            animation: wave 12s linear infinite;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-1440px); }
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            animation: fadeIn 1s ease-in;
+        }
+
+        h1 a {
+            color: #fff;
+            background: linear-gradient(45deg, #0984e3, #74b9ff);
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        h1 a:hover {
+            transform: scale(1.05);
+        }
+
+        h1 a:focus {
+            outline: 2px solid #2d3436;
+            outline-offset: 2px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .tool {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: opacity 0.5s, transform 0.5s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .tool.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tool.hidden {
+            display: none;
+        }
+
+        .tool h2 {
+            font-size: 1.8rem;
+            color: #2d3436;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tool h2::before {
+            content: attr(data-icon);
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .tool h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #0984e3;
+            animation: underline 1s forwards;
+        }
+
+        @keyframes underline {
+            to { width: 100%; }
+        }
+
+        .tool:hover h2::before {
+            transform: scale(1.2);
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 20px 0;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 1.1rem;
+            color: #1a1a1a;
+            margin: 10px 0 5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.1rem;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            background: #fff;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #0984e3;
+            box-shadow: 0 0 6px rgba(9, 132, 227, 0.3);
+        }
+
+        input:invalid:not(:placeholder-shown), select:invalid {
+            border-color: #d63031;
+        }
+
+        input:valid:not(:placeholder-shown) {
+            border-color: #00b894;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            background: linear-gradient(45deg, #0984e3, #74b9ff);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin: 10px 0;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #74b9ff, #0984e3);
+            transform: scale(1.03);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        .copy-btn, .reset-btn {
+            background: #636e72;
+            padding: 8px 12px;
+            font-size: 0.95rem;
+            width: auto;
+        }
+
+        .copy-btn:hover, .reset-btn:hover {
+            background: #2d3436;
+        }
+
+        .output {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #2d3436;
+            background: #f1f3f5;
+            padding: 10px;
+            border-radius: 6px;
+            animation: slideIn 0.5s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .typing-text {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            border-radius: 6px;
+            color: #1a1a1a;
+            border: 1px solid #dfe6e9;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            .header {
+                padding: 10px 15px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h1 a {
+                padding: 6px 12px;
+            }
+
+            .tool h2 {
+                font-size: 1.5rem;
+            }
+
+            input, select, textarea, button, label, .output {
+                font-size: 0.95rem;
+            }
+
+            .tool {
+                padding: 15px;
+            }
+
+            button {
+                padding: 10px;
+            }
+
+            .copy-btn, .reset-btn {
+                font-size: 0.85rem;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="wave"></div>
+    </div>
+    <header class="header">
+        <h1><a href="index.html" aria-label="Go to NewsTally Tech homepage">NewsTally Tech</a></h1>
+    </header>
+    <main class="container">
+        <!-- 1. EMI Calculator -->
+        <section class="tool" aria-label="EMI Calculator">
+            <h2 data-icon="🧮" aria-label="EMI Calculator icon">EMI Calculator</h2>
+            <label>Loan Amount (₹):</label>
+            <input type="number" id="emi-amount" min="0" step="1000" required aria-required="true">
+            <label>Interest Rate (% per annum):</label>
+            <input type="number" id="emi-rate" min="0" step="0.1" required aria-required="true">
+            <label>Duration (months):</label>
+            <input type="number" id="emi-duration" min="1" required aria-required="true">
+            <div class="button-group">
+                <button onclick="calculateEMI()">Calculate EMI</button>
+                <button class="reset-btn" onclick="resetEMI()">Reset</button>
+            </div>
+            <div class="output" id="emi-output" aria-live="polite"></div>
+        </section>
+        <hr>
+
+        <!-- 2. GST Calculator -->
+        <section class="tool" aria-label="GST Calculator">
+            <h2 data-icon="🧮" aria-label="GST Calculator icon">GST Calculator</h2>
+            <label>Amount (₹):</label>
+            <input type="number" id="gst-amount" min="0" step="1" required aria-required="true">
+            <label>GST Rate (%):</label>
+            <input type="number" id="gst-rate" min="0" step="0.1" required aria-required="true">
+            <div class="button-group">
+                <button onclick="calculateGST()">Calculate GST</button>
+                <button class="reset-btn" onclick="resetGST()">Reset</button>
+            </div>
+            <div class="output" id="gst-output" aria-live="polite"></div>
+        </section>
+        <hr>
+
+        <!-- 3. Age Calculator -->
+        <section class="tool" aria-label="Age Calculator">
+            <h2 data-icon="📅" aria-label="Age Calculator icon">Age Calculator</h2>
+            <label>Date of Birth:</label>
+            <input type="date" id="age-dob" required aria-required="true">
+            <div class="button-group">
+                <button onclick="calculateAge()">Calculate Age</button>
+                <button class="reset-btn" onclick="resetAge()">Reset</button>
+            </div>
+            <div class="output" id="age-output" aria-live="polite"></div>
+        </section>
+        <hr>
+
+        <!-- 4. BMI Calculator -->
+        <section class="tool" aria-label="BMI Calculator">
+            <h2 data-icon="🧮" aria-label="BMI Calculator icon">BMI Calculator</h2>
+            <label>Weight (kg):</label>
+            <input type="number" id="bmi-weight" min="0" step="0.1" required aria-required="true">
+            <label>Height (cm):</label>
+            <input type="number" id="bmi-height" min="0" step="1" required aria-required="true">
+            <div class="button-group">
+                <button onclick="calculateBMI()">Calculate BMI</button>
+                <button class="reset-btn" onclick="resetBMI()">Reset</button>
+            </div>
+            <div class="output" id="bmi-output" aria-live="polite"></div>
+        </section>
+        <hr>
+
+        <!-- 5. Word Counter / Character Counter -->
+        <section class="tool" aria-label="Word Counter">
+            <h2 data-icon="🧠" aria-label="Word Counter icon">Word & Character Counter</h2>
+            <textarea id="word-text" placeholder="Paste or type your text here..." oninput="countWords()"></textarea>
+            <div class="button-group">
+                <button class="reset-btn" onclick="resetWord()">Reset</button>
+            </div>
+            <div class="output" id="word-output" aria-live="polite">Words: 0, Characters: 0</div>
+        </section>
+        <hr>
+
+        <!-- 6. Days Between Dates -->
+        <section class="tool" aria-label="Days Between Dates">
+            <h2 data-icon="📆" aria-label="Days Between Dates icon">Days Between Dates</h2>
+            <label>Start Date:</label>
+            <input type="date" id="date-start" required aria-required="true">
+            <label>End Date:</label>
+            <input type="date" id="date-end" required aria-required="true">
+            <div class="button-group">
+                <button onclick="calculateDays()">Calculate Days</button>
+                <button class="reset-btn" onclick="resetDays()">Reset</button>
+            </div>
+            <div class="output" id="date-output" aria-live="polite"></div>
+        </section>
+        <hr>
+
+        <!-- 7. Static Currency Converter -->
+        <section class="tool" aria-label="Currency Converter">
+            <h2 data-icon="💱" aria-label="Currency Converter icon">Currency Converter</h2>
+            <label>Amount:</label>
+            <input type="number" id="currency-amount" min="0" step="0.01" required aria-required="true">
+            <label>From Currency:</label>
+            <select id="currency-from" aria-label="Select source currency">
+                <option value="USD">USD</option>
+                <option value="INR">INR</option>
+                <option value="EUR">EUR</option>
+            </select>
+            <label>To Currency:</label>
+            <select id="currency-to" aria-label="Select target currency">
+                <option value="USD">USD</option>
+                <option value="INR">INR</option>
+                <option value="EUR">EUR</option>
+            </select>
+            <div class="button-group">
+                <button onclick="convertCurrency()">Convert</button>
+                <button class="reset-btn" onclick="resetCurrency()">Reset</button>
+            </div>
+            <div class="output" id="currency-output" aria-live="polite"></div>
+        </section>
+        <hr>
+
+        <!-- 8. Text Case Converter -->
+        <section class="tool" aria-label="Text Case Converter">
+            <h2 data-icon="🔤" aria-label="Text Case Converter icon">Text Case Converter</h2>
+            <textarea id="case-text" placeholder="Enter text to convert..."></textarea>
+            <div class="button-group">
+                <button onclick="toUpperCase()">Uppercase</button>
+                <button onclick="toLowerCase()">Lowercase</button>
+                <button onclick="toSentenceCase()">Sentence Case</button>
+            </div>
+            <div class="output" id="case-output" aria-live="polite"></div>
+        </section>
+        <hr>
+
+        <!-- 9. Typing Speed Tester -->
+        <section class="tool" aria-label="Typing Speed Tester">
+            <h2 data-icon="🔠" aria-label="Typing Speed Tester icon">Typing Speed Tester</h2>
+            <div class="typing-text" id="typing-text"></div>
+            <textarea id="typing-input" placeholder="Start typing here..." oninput="checkTyping()" disabled></textarea>
+            <div class="button-group">
+                <button onclick="startTypingTest()">Start Test</button>
+                <button class="reset-btn" onclick="resetTyping()">Reset</button>
+            </div>
+            <div class="output" id="typing-output" aria-live="polite"></div>
+        </section>
+        <hr>
+
+        <!-- 10. Password Generator -->
+        <section class="tool" aria-label="Password Generator">
+            <h2 data-icon="🧩" aria-label="Password Generator icon">Password Generator</h2>
+            <label>Password Length:</label>
+            <input type="number" id="password-length" min="4" max="50" value="12" required aria-required="true">
+            <label><input type="checkbox" id="password-letters" checked> Letters</label>
+            <label><input type="checkbox" id="password-numbers" checked> Numbers</label>
+            <label><input type="checkbox" id="password-symbols" checked> Symbols</label>
+            <div class="button-group">
+                <button onclick="generatePassword()">Generate Password</button>
+                <button class="reset-btn" onclick="resetPassword()">Reset</button>
+            </div>
+            <div class="output" id="password-output" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <script>
+        // Scroll Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.tool').forEach(tool => observer.observe(tool));
+
+        // Copy to Clipboard
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            }).catch(() => {
+                button.textContent = 'Copy Failed';
+                setTimeout(() => button.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Reset Functions
+        function resetEMI() {
+            document.getElementById('emi-amount').value = '';
+            document.getElementById('emi-rate').value = '';
+            document.getElementById('emi-duration').value = '';
+            document.getElementById('emi-output').textContent = '';
+        }
+
+        function resetGST() {
+            document.getElementById('gst-amount').value = '';
+            document.getElementById('gst-rate').value = '';
+            document.getElementById('gst-output').textContent = '';
+        }
+
+        function resetAge() {
+            document.getElementById('age-dob').value = '';
+            document.getElementById('age-output').textContent = '';
+        }
+
+        function resetBMI() {
+            document.getElementById('bmi-weight').value = '';
+            document.getElementById('bmi-height').value = '';
+            document.getElementById('bmi-output').textContent = '';
+        }
+
+        function resetWord() {
+            document.getElementById('word-text').value = '';
+            document.getElementById('word-output').textContent = 'Words: 0, Characters: 0';
+        }
+
+        function resetDays() {
+            document.getElementById('date-start').value = '';
+            document.getElementById('date-end').value = '';
+            document.getElementById('date-output').textContent = '';
+        }
+
+        function resetCurrency() {
+            document.getElementById('currency-amount').value = '';
+            document.getElementById('currency-from').value = 'USD';
+            document.getElementById('currency-to').value = 'USD';
+            document.getElementById('currency-output').textContent = '';
+        }
+
+        function resetTyping() {
+            document.getElementById('typing-text').textContent = '';
+            document.getElementById('typing-input').value = '';
+            document.getElementById('typing-input').disabled = true;
+            document.getElementById('typing-output').textContent = '';
+        }
+
+        function resetPassword() {
+            document.getElementById('password-length').value = '12';
+            document.getElementById('password-letters').checked = true;
+            document.getElementById('password-numbers').checked = true;
+            document.getElementById('password-symbols').checked = true;
+            document.getElementById('password-output').textContent = '';
+        }
+
+        // 1. EMI Calculator
+        function calculateEMI() {
+            const amount = parseFloat(document.getElementById('emi-amount').value);
+            const rate = parseFloat(document.getElementById('emi-rate').value) / 1200;
+            const duration = parseInt(document.getElementById('emi-duration').value);
+            const output = document.getElementById('emi-output');
+
+            if (isNaN(amount) || isNaN(rate) || isNaN(duration) || amount <= 0 || rate < 0 || duration <= 0) {
+                output.textContent = 'Please enter valid inputs.';
+                return;
+            }
+
+            const emi = amount * rate * Math.pow(1 + rate, duration) / (Math.pow(1 + rate, duration) - 1);
+            const result = `Monthly EMI: ₹${emi.toFixed(2)}`;
+            output.innerHTML = `${result} <button class="copy-btn" onclick="copyToClipboard('${result}', this)">Copy</button>`;
+        }
+
+        // 2. GST Calculator
+        function calculateGST() {
+            const amount = parseFloat(document.getElementById('gst-amount').value);
+            const rate = parseFloat(document.getElementById('gst-rate').value) / 100;
+            const output = document.getElementById('gst-output');
+
+            if (isNaN(amount) || isNaN(rate) || amount < 0 || rate < 0) {
+                output.textContent = 'Please enter valid inputs.';
+                return;
+            }
+
+            const gst = amount * rate;
+            const total = amount + gst;
+            const result = `GST: ₹${gst.toFixed(2)}, Total: ₹${total.toFixed(2)}`;
+            output.innerHTML = `${result} <button class="copy-btn" onclick="copyToClipboard('${result}', this)">Copy</button>`;
+        }
+
+        // 3. Age Calculator
+        function calculateAge() {
+            const dob = new Date(document.getElementById('age-dob').value);
+            const today = new Date();
+            const output = document.getElementById('age-output');
+
+            if (isNaN(dob) || dob > today) {
+                output.textContent = 'Please enter a valid date of birth.';
+                return;
+            }
+
+            let years = today.getFullYear() - dob.getFullYear();
+            let months = today.getMonth() - dob.getMonth();
+            let days = today.getDate() - dob.getDate();
+
+            if (days < 0) {
+                months--;
+                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            const result = `Age: ${years} years, ${months} months, ${days} days`;
+            output.innerHTML = `${result} <button class="copy-btn" onclick="copyToClipboard('${result}', this)">Copy</button>`;
+        }
+
+        // 4. BMI Calculator
+        function calculateBMI() {
+            const weight = parseFloat(document.getElementById('bmi-weight').value);
+            const height = parseFloat(document.getElementById('bmi-height').value) / 100;
+            const output = document.getElementById('bmi-output');
+
+            if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
+                output.textContent = 'Please enter valid inputs.';
+                return;
+            }
+
+            const bmi = weight / (height * height);
+            let category = '';
+            if (bmi < 18.5) category = 'Underweight';
+            else if (bmi < 25) category = 'Fit';
+            else if (bmi < 30) category = 'Overweight';
+            else category = 'Obese';
+
+            const result = `BMI: ${bmi.toFixed(1)} (${category})`;
+            output.innerHTML = `${result} <button class="copy-btn" onclick="copyToClipboard('${result}', this)">Copy</button>`;
+        }
+
+        // 5. Word Counter
+        function countWords() {
+            const text = document.getElementById('word-text').value;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const chars = text.length;
+            const result = `Words: ${words}, Characters: ${chars}`;
+            document.getElementById('word-output').innerHTML = `${result} <button class="copy-btn" onclick="copyToClipboard('${result}', this)">Copy</button>`;
+        }
+
+        // 6. Days Between Dates
+        function calculateDays() {
+            const start = new Date(document.getElementById('date-start').value);
+            const end = new Date(document.getElementById('date-end').value);
+            const output = document.getElementById('date-output');
+
+            if (isNaN(start) || isNaN(end)) {
+                output.textContent = 'Please enter valid dates.';
+                return;
+            }
+
+            const diff = Math.abs(end - start);
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const weeks = Math.floor(days / 7);
+            const months = Math.floor(days / 30.42);
+
+            const result = `${days} days (${weeks} weeks, ~${months} months)`;
+            output.innerHTML = `${result} <button class="copy-btn" onclick="copyToClipboard('${result}', this)">Copy</button>`;
+        }
+
+        // 7. Static Currency Converter
+        const exchangeRates = {
+            USD: { USD: 1, INR: 83.5, EUR: 0.92 },
+            INR: { USD: 0.012, INR: 1, EUR: 0.011 },
+            EUR: { USD: 1.09, INR: 90.76, EUR: 1 }
+        };
+
+        function convertCurrency() {
+            const amount = parseFloat(document.getElementById('currency-amount').value);
+            const from = document.getElementById('currency-from').value;
+            const to = document.getElementById('currency-to').value;
+            const output = document.getElementById('currency-output');
+
+            if (isNaN(amount) || amount < 0) {
+                output.textContent = 'Please enter a valid amount.';
+                return;
+            }
+
+            const converted = amount * exchangeRates[from][to];
+            const result = `${amount} ${from} = ${converted.toFixed(2)} ${to}`;
+            output.innerHTML = `${result} <button class="copy-btn" onclick="copyToClipboard('${result}', this)">Copy</button>`;
+        }
+
+        // 8. Text Case Converter
+        function toUpperCase() {
+            const text = document.getElementById('case-text').value;
+            const result = text.toUpperCase();
+            document.getElementById('case-output').innerHTML = `${result} <button class="copy-btn" onclick="copyToClipboard('${result}', this)">Copy</button>`;
+        }
+
+        function toLowerCase() {
+            const text = document.getElementById('case-text').value;
+            const result = text.toLowerCase();
+            document.getElementById('case-output').innerHTML = `${result} <button class="copy-btn" onclick="copyToClipboard('${result}', this)">Copy</button>`;
+        }
+
+        function toSentenceCase() {
+            const text = document.getElementById('case-text').value;
+            const result = text.toLowerCase().replace(/(^|\.\s+)(.)/g, (match) => match.toUpperCase());
+            document.getElementById('case-output').innerHTML = `${result} <button class="copy-btn" onclick="copyToClipboard('${result}', this)">Copy</button>`;
+        }
+
+        // 9. Typing Speed Tester
+        const sampleTexts = [
+            "The quick brown fox jumps over the lazy dog.",
+            "A journey of a thousand miles begins with a single step.",
+            "To be or not to be, that is the question."
+        ];
+
+        let typingStartTime = null;
+        let typingText = '';
+
+        function startTypingTest() {
+            typingText = sampleTexts[Math.floor(Math.random() * sampleTexts.length)];
+            document.getElementById('typing-text').textContent = typingText;
+            document.getElementById('typing-input').value = '';
+            document.getElementById('typing-input').disabled = false;
+            document.getElementById('typing-input').focus();
+            document.getElementById('typing-output').textContent = '';
+            typingStartTime = new Date();
+        }
+
+        function checkTyping() {
+            const input = document.getElementById('typing-input').value;
+            const output = document.getElementById('typing-output');
+
+            if (input === typingText) {
+                const endTime = new Date();
+                const timeTaken = (endTime - typingStartTime) / 1000 / 60;
+                const words = typingText.split(' ').length;
+                const wpm = Math.round(words / timeTaken);
+                const result = `Typing Speed: ${wpm} WPM`;
+                output.innerHTML = `${result} <button class="copy-btn" onclick="copyToClipboard('${result}', this)">Copy</button>`;
+                document.getElementById('typing-input').disabled = true;
+            }
+        }
+
+        // 10. Password Generator
+        function generatePassword() {
+            const length = parseInt(document.getElementById('password-length').value);
+            const useLetters = document.getElementById('password-letters').checked;
+            const useNumbers = document.getElementById('password-numbers').checked;
+            const useSymbols = document.getElementById('password-symbols').checked;
+            const output = document.getElementById('password-output');
+
+            if (!useLetters && !useNumbers && !useSymbols) {
+                output.textContent = 'Select at least one character type.';
+                return;
+            }
+
+            const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numbers = '0123456789';
+            const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+            let chars = '';
+            if (useLetters) chars += letters;
+            if (useNumbers) chars += numbers;
+            if (useSymbols) chars += symbols;
+
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += chars[Math.floor(Math.random() * chars.length)];
+            }
+
+            const result = `Password: ${password}`;
+            output.innerHTML = `${result} <button class="copy-btn" onclick="copyToClipboard('${password}', this)">Copy</button>`;
+        }
+    </script>
+</body>
+</html>
