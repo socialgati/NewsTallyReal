@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Sign-In + Like/Comment</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    #user-info { margin-bottom: 20px; }
+    #comment-list li { margin-bottom: 5px; }
+    #post { border: 1px solid #ddd; padding: 15px; max-width: 500px; }
+  </style>
+</head>
+<body>
+
+  <h2>🔐 Google Sign-In + Like/Comment Demo</h2>
+
+  <div id="user-info">
+    <button id="sign-in-btn" onclick="signIn()">Sign In with Google</button>
+    <div id="signed-in" style="display:none;">
+      👤 <span id="user-name"></span>
+      <button onclick="signOut()">Sign Out</button>
+    </div>
+  </div>
+
+  <div id="post">
+    <p id="post-content">Loading post...</p>
+    <button onclick="likePost()">❤️ Like</button>
+    <span id="like-count">0</span> likes
+
+    <hr>
+    <input type="text" id="comment-input" placeholder="Write a comment..." />
+    <button onclick="submitComment()">Comment</button>
+
+    <ul id="comment-list"></ul>
+  </div>
+
+  <script>
+    // ✅ Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyA4zw5cZqxLwzkTy2e5NiHz-tGKqk1KGdI",
+      authDomain: "newstally-df03c.firebaseapp.com",
+      databaseURL: "https://newstally-df03c-default-rtdb.firebaseio.com",
+      projectId: "newstally-df03c",
+      storageBucket: "newstally-df03c.firebasestorage.app",
+      messagingSenderId: "506893212961",
+      appId: "1:506893212961:web:63882290195da992207260",
+      measurementId: "G-54QER193B3"
+    };
+
+    // 🔥 Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const postId = "samplePost";
+
+    // 👉 Sign in/out functions
+    function signIn() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).catch(err => alert(err.message));
+    }
+
+    function signOut() {
+      auth.signOut();
+    }
+
+    // 🧠 Auth state listener
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById("sign-in-btn").style.display = "none";
+        document.getElementById("signed-in").style.display = "block";
+        document.getElementById("user-name").textContent = user.displayName;
+      } else {
+        document.getElementById("sign-in-btn").style.display = "block";
+        document.getElementById("signed-in").style.display = "none";
+        document.getElementById("user-name").textContent = "";
+      }
+    });
+
+    // 🧡 Like post
+    function likePost() {
+      const user = auth.currentUser;
+      if (!user) return alert("Please sign in to like");
+
+      const postRef = db.collection("posts").doc(postId);
+      postRef.update({
+        likes: firebase.firestore.FieldValue.arrayUnion(user.uid)
+      });
+    }
+
+    // 💬 Submit comment
+    function submitComment() {
+      const user = auth.currentUser;
+      if (!user) return alert("Please sign in to comment");
+
+      const text = document.getElementById("comment-input").value.trim();
+      if (!text) return;
+
+      db.collection("posts").doc(postId).collection("comments").add({
+        text: text,
+        user: user.displayName,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      document.getElementById("comment-input").value = "";
+    }
+
+    // 🔄 Realtime post data
+    db.collection("posts").doc(postId).onSnapshot(doc => {
+      const data = doc.data();
+      if (data) {
+        document.getElementById("post-content").textContent = data.content;
+        document.getElementById("like-count").textContent = data.likes.length;
+      }
+    });
+
+    // 🔄 Realtime comment updates
+    db.collection("posts").doc(postId).collection("comments")
+      .orderBy("timestamp", "asc")
+      .onSnapshot(snapshot => {
+        const list = document.getElementById("comment-list");
+        list.innerHTML = "";
+        snapshot.forEach(doc => {
+          const c = doc.data();
+          const li = document.createElement("li");
+          li.textContent = `${c.user}: ${c.text}`;
+          list.appendChild(li);
+        });
+      });
+  </script>
+
+</body>
+</html>
