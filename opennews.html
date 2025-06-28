@@ -58,9 +58,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Font Awesome CSS CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-  <!-- External Stylesheet -->
+  <!-- External Stylesheet (Optional, but kept for existing external styles if any) -->
   <link href="style.css" rel="stylesheet" />
 
   <!-- Structured Data (JSON-LD) for Organization and Website -->
@@ -97,7 +97,158 @@
 
   <!-- Inline Styles -->
   <style>
+    /* Base styles */
+    body {
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      overflow-x: hidden; /* Prevent horizontal scrolling */
+    }
+
+    /* Dark Mode styles */
+    body.dark-mode {
+      background-color: #1a202c; /* Dark background */
+      color: #e2e8f0; /* Light text */
+    }
+    body.dark-mode .gradient-bg {
+      background: linear-gradient(90deg, #2d3748, #4a5568); /* Darker gradient */
+    }
+    body.dark-mode .bg-white {
+      background-color: #2d3748; /* Darker card background */
+      color: #e2e8f0;
+    }
+    body.dark-mode .text-gray-800 {
+      color: #e2e8f0;
+    }
+    body.dark-mode .text-gray-700 {
+      color: #cbd5e0;
+    }
+    body.dark-mode .text-gray-600 {
+      color: #a0aec0;
+    }
+    body.dark-mode .border {
+      border-color: #4a5568;
+    }
+    body.dark-mode .news-article {
+      background-image: linear-gradient(#2d3748, #2d3748), linear-gradient(135deg, #4a5568, #6b7280);
+      border-color: #4a5568;
+    }
+    body.dark-mode .related-news-item {
+      background-color: #2d3748;
+      border-color: #4a5568;
+    }
+    body.dark-mode #search-results {
+      background-color: #2d3748;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    body.dark-mode #search-results input {
+      background-color: #2d3748;
+      color: #e2e8f0;
+      border-bottom-color: #4a5568;
+    }
+    body.dark-mode .search-result-card:hover {
+      background-color: #4a5568;
+    }
+    body.dark-mode .bottom-nav {
+      background-color: #2d3748;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.2);
+    }
+    body.dark-mode .bottom-nav a {
+      color: #e2e8f0;
+    }
+    body.dark-mode .bottom-nav a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    body.dark-mode .bottom-nav a.nav-active {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    body.dark-mode #nav-menu a:hover {
+      background-color: #4a5568;
+      color: white;
+    }
+    body.dark-mode .action-button {
+      color: white;
+    }
+    body.dark-mode .action-button:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    body.dark-mode .article-action-button {
+        color: #e2e8f0;
+        background-color: #4a5568;
+    }
+    body.dark-mode .article-action-button:hover {
+        background-color: #6b7280;
+    }
+    body.dark-mode .article-action-button.active {
+        background-color: #3b82f6;
+        color: white;
+    }
+    body.dark-mode .article-action-button.active:hover {
+        background-color: #2563eb;
+    }
+    body.dark-mode .copy-button {
+        background-color: #60a5fa; /* A slightly different blue */
+        color: white;
+    }
+    body.dark-mode .copy-button:hover {
+        background-color: #3b82f6;
+    }
+
+
+    /* Reading Mode styles */
+    body.reading-mode-active {
+      background-color: #fcf8e3 !important; /* Sepia background */
+      color: #333 !important;
+    }
+    body.reading-mode-active #root > *:not(main):not(header):not(.bottom-nav) {
+      display: none !important; /* Hide non-essential elements */
+    }
+    body.reading-mode-active .bottom-nav {
+        display: none !important; /* Hide bottom nav in reading mode */
+    }
+    body.reading-mode-active header {
+      background: #fcf8e3 !important;
+      border-bottom: 1px solid #ccc;
+      box-shadow: none;
+    }
+    body.reading-mode-active header * {
+      color: #333 !important; /* Ensure header text/icons are readable */
+    }
+    body.reading-mode-active .news-article {
+      max-width: 800px; /* Constrain width for better reading flow */
+      margin: 0 auto; /* Center the article */
+      padding: 2rem !important;
+      font-size: 1.15rem !important; /* Larger font size */
+      line-height: 1.8 !important; /* Increased line height */
+      background: #fffdf5 !important; /* Lighter background for article */
+      border: 1px solid #e0d9c4 !important;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    body.reading-mode-active .news-article h1 {
+      font-size: 2.5rem !important; /* Adjust headline size */
+      line-height: 1.3 !important;
+    }
+    body.reading-mode-active .news-article p {
+      font-size: 1.15rem !important;
+    }
+    body.reading-mode-active .news-article img {
+      filter: grayscale(10%); /* Subtle grayscale for less distraction */
+      border-radius: 8px !important;
+    }
+    body.reading-mode-active .share-button,
+    body.reading-mode-active .back-button,
+    body.reading-mode-active .breadcrumb {
+      display: none !important; /* Hide these in reading mode */
+    }
+    body.reading-mode-active main {
+        padding-top: 2rem !important; /* Adjust padding for reading mode */
+    }
+
     /* Responsive Image Sizing */
+    #news-image {
+      width: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
     @media (max-width: 640px) {
       #news-image {
         height: 200px;
@@ -115,6 +266,7 @@
     /* Enhanced Header Styling */
     header {
       z-index: 30;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
     /* Enhanced Navigation Styling */
     nav {
@@ -154,6 +306,7 @@
       transition: transform 0.3s ease;
       z-index: 30;
       overflow-y: auto;
+      box-shadow: 4px 0 12px rgba(0, 0, 0, 0.2);
     }
     #nav-panel.open {
       transform: translateX(0);
@@ -167,9 +320,12 @@
       font-weight: 500;
       font-size: 0.875rem;
       transition: background-color 0.3s ease;
+      border-radius: 8px;
+      margin: 0.25rem;
     }
     #nav-panel a:hover {
       background-color: rgba(255, 255, 255, 0.1);
+      transform: translateX(5px);
     }
     #nav-panel a.nav-active {
       background-color: rgba(255, 255, 255, 0.2);
@@ -226,49 +382,155 @@
     .bottom-nav span {
       font-size: 0.65rem;
     }
-    /* Search Toggle Button */
-    #search-toggle {
-      padding: 0.375rem;
+    /* Action Buttons (Search, Menu, Theme, Read Aloud, Reading Mode) */
+    .action-button {
+      padding: 0.5rem;
       border-radius: 50%;
-      transition: background-color 0.3s ease, transform 0.3s ease;
+      background-color: transparent;
+      color: white; /* Default for header buttons */
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      border: none;
+      cursor: pointer;
     }
-    #search-toggle:hover {
-      background-color: #e5e7eb;
-      transform: scale(1.1);
+    .action-button:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+      transform: scale(1.08);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
-    #search-toggle i {
-      font-size: 1rem;
+    .action-button:active {
+      transform: scale(0.98);
     }
+    .article-action-button {
+        color: #3b82f6; /* Blue for article action buttons */
+        background-color: #eff6ff; /* Light blue background */
+        border-radius: 9999px; /* Pill shape */
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .article-action-button:hover {
+        background-color: #dbeafe; /* Lighter blue on hover */
+        transform: translateY(-2px);
+        box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    }
+    .article-action-button.active {
+        background-color: #3b82f6;
+        color: white;
+    }
+    .article-action-button.active:hover {
+        background-color: #2563eb;
+    }
+
+    /* Copy Button Specific Styling */
+    .copy-button {
+        background-color: #60a5fa; /* A slightly different blue */
+        color: white;
+        padding: 0.5rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.8rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    .copy-button:hover {
+        background-color: #3b82f6;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .copy-button i {
+        font-size: 0.75rem;
+    }
+    .copy-message {
+        position: fixed;
+        bottom: 70px; /* Above bottom nav */
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        z-index: 100;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        white-space: nowrap;
+    }
+    .copy-message.show {
+        opacity: 1;
+    }
+
     /* Search Results Dropdown */
     #search-results {
       position: absolute;
-      top: 104px;
-      right: 0;
-      width: 100%;
-      max-width: 384px;
+      top: 60px; /* Adjusted position to be below the enhanced header */
+      right: 1rem;
+      width: calc(100% - 2rem); /* Account for padding */
+      max-width: 400px; /* Slightly wider */
       max-height: 400px;
       overflow-y: auto;
       background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      z-index: 20;
+      border-radius: 12px; /* More rounded */
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      z-index: 40; /* Higher z-index */
       scrollbar-width: thin;
+      transform-origin: top right;
+      animation: scaleIn 0.3s ease-out forwards;
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
     }
     #search-results input {
       width: 100%;
-      padding: 0.75rem;
+      padding: 1rem; /* More padding */
       border: none;
       border-bottom: 1px solid #e5e7eb;
       outline: none;
+      font-size: 1rem;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
     }
-    .search-result-card {
-      padding: 0.75rem;
+    #search-input-wrapper {
+      display: flex;
       border-bottom: 1px solid #e5e7eb;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      overflow: hidden; /* Ensures rounded corners apply to children */
+    }
+    #search-input {
+      flex-grow: 1;
+      padding: 1rem;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+    }
+    #execute-search {
+      background-color: #3b82f6;
+      color: white;
+      padding: 0.75rem 1rem;
+      border: none;
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
+    #execute-search:hover {
+      background-color: #2563eb;
+    }
+
+    .search-result-card {
+      padding: 0.85rem;
+      border-bottom: 1px solid #e5e7eb;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
     .search-result-card:hover {
       background-color: #f3f4f6;
+      transform: translateX(5px); /* Subtle slide effect */
     }
     .search-result-card:last-child {
       border-bottom: none;
@@ -303,9 +565,9 @@
       background: white;
       border-radius: 12px;
       overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
       opacity: 0;
-      border: 2px solid transparent;
+      border: 2px solid transparent; /* Initial border */
       background-image: linear-gradient(white, white), linear-gradient(135deg, #fef3c7, #f3e8ff);
       background-origin: border-box;
       background-clip: content-box, border-box;
@@ -314,17 +576,14 @@
       opacity: 1;
       animation: fadeIn 0.5s ease-out forwards;
     }
+    /* Enhanced hover for main article */
     .news-article:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
-    #news-image {
-      width: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
+      border: 2px solid rgba(59, 130, 246, 0.5); /* Blue border on hover */
     }
     .news-article:hover #news-image {
-      transform: scale(1.05);
+      transform: scale(1.02); /* Slightly less aggressive zoom */
     }
     /* Share Buttons */
     .share-button {
@@ -334,10 +593,12 @@
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      transition: background-color 0.3s ease, transform 0.3s ease;
+      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     .share-button:hover {
-      transform: scale(1.1);
+      transform: scale(1.15);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     .share-facebook { background: #3b5998; color: white; }
     .share-twitter { background: #1da1f2; color: white; }
@@ -375,14 +636,15 @@
       overflow: hidden;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       opacity: 0;
+      border: 1px solid #e5e7eb; /* Subtle border */
     }
     .related-news-item.loaded {
       opacity: 1;
       animation: fadeIn 0.5s ease-out forwards;
     }
     .related-news-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     }
     .related-news-item img {
       width: 100%;
@@ -399,22 +661,6 @@
       left: 10px;
       z-index: 10;
     }
-    /* Newsletter */
-    .newsletter-input {
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-    .newsletter-input:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
-    }
-    .newsletter-button {
-      background: linear-gradient(90deg, #1e3a8a, #3b82f6);
-      transition: background 0.3s ease, transform 0.3s ease;
-    }
-    .newsletter-button:hover {
-      background: linear-gradient(90deg, #3b82f6, #1e3a8a);
-      transform: scale(1.05);
-    }
     /* Fade-in Animation */
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
@@ -423,11 +669,59 @@
     /* Back Button */
     .back-button {
       background: linear-gradient(90deg, #dc2626, #b91c1c);
-      transition: background 0.3s ease, transform 0.3s ease;
+      transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
     .back-button:hover {
       background: linear-gradient(90deg, #b91c1c, #dc2626);
-      transform: scale(1.05);
+      transform: scale(1.02);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.2);
+    }
+    /* Ensure content utilizes full available width and doesn't scroll horizontally */
+    .container {
+      max-width: 1200px; /* Adjust max-width for main content if needed */
+      width: 100%; /* Ensure it takes full width up to max-width */
+    }
+    main {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    @media (min-width: 768px) {
+      main {
+        padding-left: 2rem;
+        padding-right: 2rem;
+      }
+    }
+
+    /* Loading Spinner Styles */
+    #loading-spinner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999; /* Higher than any other element */
+      transition: opacity 0.3s ease-out;
+    }
+    #loading-spinner.hidden {
+      opacity: 0;
+      pointer-events: none; /* Allows clicks through once hidden */
+    }
+    .spinner {
+      border: 4px solid #f3f3f3; /* Light grey */
+      border-top: 4px solid #3b82f6; /* Blue */
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -437,46 +731,47 @@
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
 
+  <!-- Loading Spinner Overlay -->
+  <div id="loading-spinner">
+    <div class="spinner"></div>
+  </div>
+
   <div id="root" class="min-h-screen max-md:pb-14">
     <!-- Top Bar (Sticky) -->
     <header class="gradient-bg text-white py-3 sticky top-0 z-30">
       <div class="container mx-auto px-4 flex justify-between items-center">
         <a href="index.html" class="flex items-center space-x-2">
-          <img src="https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small" alt="NewsTally Favicon" class="w-6 h-6">
+          <img src="https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small" alt="NewsTally Favicon" class="w-6 h-6 rounded-full">
           <h1 class="text-2xl font-extrabold tracking-tight">NewsTally</h1>
         </a>
-        <div class="flex space-x-2">
-          <a href="https://www.facebook.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Facebook"><i class="fab fa-facebook-f text-sm"></i></a>
-          <a href="https://www.twitter.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Twitter"><i class="fab fa-twitter text-sm"></i></a>
-          <a href="https://www.youtube.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on YouTube"><i class="fab fa-youtube text-sm"></i></a>
-          <a href="https://www.instagram.com/newstally" class="hover:text-gray-200 transition" aria-label="Follow NewsTally on Instagram"><i class="fab fa-instagram text-sm"></i></a>
+        <!-- Action Buttons on the right of the header -->
+        <div class="flex items-center space-x-2">
+          <button id="theme-toggle" class="action-button" aria-label="Toggle theme (Light/Dark)">
+            <i class="fas fa-moon"></i>
+          </button>
+          <button id="search-toggle" class="action-button" aria-label="Toggle search">
+            <i class="fas fa-search"></i>
+          </button>
+          <button id="menu-toggle" class="md:hidden action-button" aria-label="Toggle navigation panel">
+            <i class="fas fa-bars"></i> <!-- Changed to bars for more conventional menu icon -->
+          </button>
         </div>
       </div>
     </header>
 
     <!-- Navigation Menu (Sticky, below Top Bar) -->
-    <nav class="bg-white shadow-lg sticky top-[48px] z-20">
-      <div class="container mx-auto px-4 py-2 flex justify-between items-center">
-        <div class="flex items-center">
-          <button id="menu-toggle" class="md:hidden mr-4" aria-label="Toggle navigation panel">
-            <i class="fas fa-ellipsis-v text-lg text-gray-700"></i>
-          </button>
-          <div id="nav-menu" class="hidden md:block absolute md:static top-[104px] left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none">
-            <ul class="flex flex-col md:flex-row md:space-x-4 p-2 md:p-0">
-              <li><a href="live.html" class="block"><i class="fas fa-tower-broadcast mr-2"></i>Live News</a></li>
-              <li><a href="latest.html" class="block"><i class="fas fa-newspaper mr-2"></i>Latest News</a></li>
-              <li><a href="breaking.html" class="block"><i class="fas fa-bolt mr-2"></i>Breaking News</a></li>
-              <li><a href="politics.html" class="block"><i class="fas fa-landmark mr-2"></i>Politics</a></li>
-              <li><a href="sports.html" class="block"><i class="fas fa-football-ball mr-2"></i>Sports</a></li>
-              <li><a href="tech.html" class="block"><i class="fas fa-microchip mr-2"></i>Technology</a></li>
-              <li><a href="entertainment.html" class="block"><i class="fas fa-film mr-2"></i>Entertainment</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="flex items-center">
-          <button id="search-toggle" class="p-1.5 rounded-full" aria-label="Toggle search">
-            <i class="fas fa-search text-gray-700 text-lg"></i>
-          </button>
+    <nav class="bg-white shadow-lg sticky top-[48px] z-20 md:block hidden">
+      <div class="container mx-auto px-4 py-2 flex justify-start items-center">
+        <div id="nav-menu">
+          <ul class="flex flex-col md:flex-row md:space-x-4 p-2 md:p-0">
+            <li><a href="live.html" class="block"><i class="fas fa-tower-broadcast mr-2"></i>Live News</a></li>
+            <li><a href="latest.html" class="block"><i class="fas fa-newspaper mr-2"></i>Latest News</a></li>
+            <li><a href="breaking.html" class="block"><i class="fas fa-bolt mr-2"></i>Breaking News</a></li>
+            <li><a href="politics.html" class="block"><i class="fas fa-landmark mr-2"></i>Politics</a></li>
+            <li><a href="sports.html" class="block"><i class="fas fa-football-ball mr-2"></i>Sports</a></li>
+            <li><a href="tech.html" class="block"><i class="fas fa-microchip mr-2"></i>Technology</a></li>
+            <li><a href="entertainment.html" class="block"><i class="fas fa-film mr-2"></i>Entertainment</a></li>
+          </ul>
         </div>
       </div>
     </nav>
@@ -485,8 +780,8 @@
     <div id="nav-panel" class="md:hidden">
       <div class="flex justify-between items-center p-4 border-b border-white/20">
         <h2 class="text-white text-lg font-bold">Menu</h2>
-        <button id="close-panel" aria-label="Close navigation panel">
-          <i class="fas fa-times text-white text-xl"></i>
+        <button id="close-panel" class="action-button" aria-label="Close navigation panel">
+          <i class="fas fa-times text-white"></i>
         </button>
       </div>
       <ul class="flex flex-col p-4 space-y-2">
@@ -502,7 +797,12 @@
 
     <!-- Search Results Dropdown -->
     <div id="search-results" class="hidden">
-      <input id="search-input" type="search" placeholder="Search news..." aria-label="Search news articles" />
+      <div id="search-input-wrapper">
+        <input id="search-input" type="search" placeholder="Search news..." aria-label="Search news articles" />
+        <button id="execute-search" aria-label="Execute search">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
       <div id="search-results-list">
         <div class="search-result-card skeleton-card">
           <div class="skeleton skeleton-text w-full h-5 mb-2"></div>
@@ -520,7 +820,7 @@
     </div>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-10 flex flex-col md:flex-row gap-8">
+    <main class="container mx-auto py-10 flex flex-col md:flex-row gap-8">
       <!-- News Content (70%) -->
       <section class="md:w-3/4">
         <!-- Breadcrumb -->
@@ -541,7 +841,25 @@
         <!-- News Article -->
         <div class="news-article p-6">
           <img id="news-image" src="https://via.placeholder.com/600x400" alt="News Image" class="w-full rounded-lg mb-6 mx-auto" loading="lazy">
-          <h1 id="news-headline" class="text-3xl md:text-4xl font-extrabold mb-4 text-gray-800"></h1>
+          <div class="flex justify-between items-center mb-4">
+            <h1 id="news-headline" class="text-3xl md:text-4xl font-extrabold text-gray-800"></h1>
+            <button id="copy-headline" class="copy-button" aria-label="Copy headline">
+                <i class="fas fa-copy"></i>
+            </button>
+          </div>
+
+          <!-- New Feature Buttons: Read Aloud, Reading Mode -->
+          <div class="flex flex-wrap gap-3 mb-6">
+            <button id="read-aloud-toggle" class="article-action-button flex items-center">
+              <i class="fas fa-play mr-2" id="read-aloud-icon"></i>
+              <span>Read Aloud</span>
+            </button>
+            <button id="reading-mode-toggle" class="article-action-button flex items-center">
+              <i class="fas fa-book-open mr-2" id="reading-mode-icon"></i>
+              <span>Reading Mode</span>
+            </button>
+          </div>
+
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
             <div>
               <p id="news-source" class="text-sm font-semibold text-gray-700"></p>
@@ -559,7 +877,12 @@
               </button>
             </div>
           </div>
-          <p id="news-description" class="text-gray-700 leading-relaxed text-base md:text-lg mb-6"></p>
+          <div class="relative mb-6">
+            <p id="news-description" class="text-gray-700 leading-relaxed text-base md:text-lg"></p>
+            <button id="copy-description" class="copy-button absolute -top-2 right-0 md:top-0" aria-label="Copy description">
+                <i class="fas fa-copy"></i>
+            </button>
+          </div>
           <a id="news-link" href="#" class="text-blue-600 hover:underline font-medium">Read more at source</a>
           <div class="mt-6">
             <a href="index.html" class="back-button inline-block text-white px-6 py-3 rounded-full shadow-lg">Back to News</a>
@@ -573,20 +896,6 @@
         <div class="bg-white p-6 rounded-xl shadow-lg mb-6">
           <h3 class="text-xl font-bold mb-4 text-gray-800">Related News</h3>
           <div id="related-news" class="space-y-4"></div>
-        </div>
-
-        <!-- Newsletter -->
-        <div class="bg-white p-6 rounded-xl shadow-lg">
-          <h3 class="text-xl font-bold mb-4 text-gray-800">Newsletter</h3>
-          <div>
-            <input
-              type="email"
-              placeholder="Enter your email"
-              class="newsletter-input w-full px-4 py-2 border rounded-full mb-4 shadow-sm focus:outline-none"
-              aria-label="Enter your email for newsletter subscription"
-            />
-            <button class="newsletter-button w-full text-white px-4 py-2 rounded-full shadow-lg">Subscribe</button>
-          </div>
         </div>
       </aside>
     </main>
@@ -614,6 +923,9 @@
         <span>Cricket</span>
       </a>
     </nav>
+
+    <!-- Copy Message Pop-up -->
+    <div id="copy-message" class="copy-message hidden">पाठ कॉपी किया गया!</div>
 
     <!-- Footer -->
     <footer class="gradient-bg text-white py-10">
@@ -653,6 +965,10 @@
     const DEFAULT_IMAGE = 'https://pbs.twimg.com/media/Gq3vCCsWsAALzuo?format=jpg&name=small';
 
     let allNews = [];
+    let utterance = null; // For text-to-speech
+    let isReading = false;
+    let isReadingMode = false;
+    let currentTheme = localStorage.getItem('theme') || 'light';
 
     // Category color mapping
     const categoryColors = {
@@ -663,6 +979,13 @@
       'Breaking': 'category-breaking',
       'default': 'category-default'
     };
+
+    // Apply saved theme on load
+    document.documentElement.classList.remove('light-mode', 'dark-mode'); // Clear previous classes
+    document.body.classList.add(currentTheme + '-mode');
+    if (currentTheme === 'dark') {
+      document.getElementById('theme-toggle').querySelector('i').classList.replace('fa-moon', 'fa-sun');
+    }
 
     // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {
@@ -698,24 +1021,71 @@
       };
     }
 
+    // Display copy message
+    function showCopyMessage(message) {
+        const copyMessageDiv = document.getElementById('copy-message');
+        copyMessageDiv.innerText = message;
+        copyMessageDiv.classList.remove('hidden');
+        copyMessageDiv.classList.add('show');
+        setTimeout(() => {
+            copyMessageDiv.classList.remove('show');
+            // Hide after transition
+            copyMessageDiv.addEventListener('transitionend', function handler() {
+                copyMessageDiv.classList.add('hidden');
+                copyMessageDiv.removeEventListener('transitionend', handler);
+            });
+        }, 2000); // Message visible for 2 seconds
+    }
+
+    // Copy to clipboard function (using document.execCommand for wider compatibility in iframes)
+    function copyTextToClipboard(text, message) {
+        let textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed"; // Ensure it's not visible
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showCopyMessage(message || 'Text copied!');
+            } else {
+                showCopyMessage('Failed to copy text.');
+            }
+        } catch (err) {
+            console.error('Failed to copy text:', err);
+            showCopyMessage('Failed to copy text.');
+        } finally {
+            document.body.removeChild(textarea);
+        }
+    }
+
+
     // Fetch news from Google Sheet
     async function fetchNews() {
+      showSpinner(); // Show spinner before fetching news
       try {
         const response = await fetch(
           `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`
         );
         const data = await response.json();
         const rows = data.values;
-        const headers = rows[0];
+        // Ensure headers exist before processing
+        if (!rows || rows.length === 0) {
+          console.error('No data found in the sheet.');
+          document.getElementById('news-headline').innerText = 'No news available. The sheet might be empty.';
+          return;
+        }
+        const headers = rows[0]; // Assuming first row is headers
         allNews = rows.slice(1).map(row => ({
           rank: parseInt(row[0]) || 0,
-          headline: row[1],
-          source: row[2],
-          date: row[3],
-          description: row[4],
-          link: row[5],
+          headline: row[1] || 'No Headline',
+          source: row[2] || 'Unknown Source',
+          date: row[3] || 'N/A',
+          description: row[4] || 'No description available.',
+          link: row[5] || '#',
           category: row[6] || 'Breaking',
-          image: row[7] && row[7] !== 'https://via.placeholder.com/150x150' ? row[7] : DEFAULT_IMAGE
+          image: (row[7] && row[7] !== 'https://via.placeholder.com/150x150') ? row[7] : DEFAULT_IMAGE
         }));
 
         const newsImages = allNews.map(item => item.image);
@@ -726,6 +1096,8 @@
       } catch (error) {
         console.error('Error fetching news:', error);
         document.getElementById('news-headline').innerText = 'Failed to load news. Please check API key and sheet access.';
+      } finally {
+        hideSpinner(); // Hide spinner after fetching, regardless of success or failure
       }
     }
 
@@ -735,28 +1107,50 @@
       const headline = urlParams.get('headline');
       const article = news.find(item => item.headline === headline);
 
+      const articleElement = document.querySelector('.news-article');
+      const newsImageElement = document.getElementById('news-image');
+      const newsHeadlineElement = document.getElementById('news-headline');
+      const newsSourceElement = document.getElementById('news-source');
+      const newsDateElement = document.getElementById('news-date');
+      const newsDescriptionElement = document.getElementById('news-description');
+      const newsLinkElement = document.getElementById('news-link');
+      const categoryBreadcrumb = document.getElementById('category-breadcrumb');
+      const copyHeadlineButton = document.getElementById('copy-headline');
+      const copyDescriptionButton = document.getElementById('copy-description');
+
+
       if (article) {
-        document.getElementById('news-headline').innerText = article.headline;
-        document.getElementById('news-source').innerText = article.source;
-        document.getElementById('news-date').innerText = article.date;
-        document.getElementById('news-description').innerText = article.description;
-        document.getElementById('news-link').href = article.link;
-        document.getElementById('news-image').src = article.image;
+        newsHeadlineElement.innerText = article.headline;
+        newsSourceElement.innerText = article.source;
+        newsDateElement.innerText = article.date;
+        newsDescriptionElement.innerText = article.description;
+        newsLinkElement.href = article.link;
+        newsImageElement.src = article.image;
+        newsImageElement.alt = article.headline; // Set alt text for accessibility
+
+        // Copy button event listeners
+        if (copyHeadlineButton) {
+            copyHeadlineButton.onclick = () => copyTextToClipboard(article.headline, 'शीर्षक कॉपी किया गया!');
+        }
+        if (copyDescriptionButton) {
+            copyDescriptionButton.onclick = () => copyTextToClipboard(article.description, 'विवरण कॉपी किया गया!');
+        }
 
         // Update breadcrumb
-        const categoryBreadcrumb = document.getElementById('category-breadcrumb');
         categoryBreadcrumb.innerText = article.category;
         categoryBreadcrumb.href = `${article.category.toLowerCase()}.html`;
+        // Remove existing category classes first
+        Object.values(categoryColors).forEach(cls => categoryBreadcrumb.classList.remove(cls));
         categoryBreadcrumb.classList.add(categoryColors[article.category] || categoryColors['default']);
 
-        // Add structured data for the article
+        // Add structured data for the article dynamically
         const structuredData = {
           "@context": "https://schema.org",
           "@type": "NewsArticle",
           "headline": article.headline,
           "image": article.image,
           "datePublished": article.date,
-          "description": article.description.slice(0, 100) + "...",
+          "description": article.description.slice(0, 150) + "...", // More descriptive snippet
           "author": {
             "@type": "Organization",
             "name": article.source
@@ -773,10 +1167,12 @@
         const script = document.createElement('script');
         script.type = 'application/ld+json';
         script.textContent = JSON.stringify(structuredData);
+        // Remove previous structured data if it exists to avoid duplicates
+        document.querySelectorAll('script[type="application/ld+json"][data-article-ld]').forEach(el => el.remove());
+        script.setAttribute('data-article-ld', 'true'); // Custom attribute to easily find and remove
         document.head.appendChild(script);
 
         // Trigger fade-in animation
-        const articleElement = document.querySelector('.news-article');
         setTimeout(() => {
           articleElement.classList.add('loaded');
         }, 100);
@@ -784,26 +1180,57 @@
         // Display related news
         displayRelatedNews(article.category, article.headline, article.description);
       } else {
-        document.getElementById('news-headline').innerText = 'Article not found.';
+        newsHeadlineElement.innerText = 'आर्टिकल नहीं मिला। कृपया URL की जाँच करें।';
+        newsSourceElement.innerText = '';
+        newsDateElement.innerText = '';
+        newsDescriptionElement.innerText = 'अनुरोधित समाचार आर्टिकल नहीं मिला। यह स्थानांतरित या हटाया गया हो सकता है।';
+        newsLinkElement.style.display = 'none'; // Hide the link if article is not found
+        newsImageElement.src = DEFAULT_IMAGE;
+        newsImageElement.alt = 'आर्टिकल नहीं मिला प्लेसहोल्डर इमेज';
+        categoryBreadcrumb.innerText = 'त्रुटि';
+        // Remove all category classes and add a default error style
+        Object.values(categoryColors).forEach(cls => categoryBreadcrumb.classList.remove(cls));
+        categoryBreadcrumb.classList.add(categoryColors['default']);
+        articleElement.classList.add('loaded'); // Still fade in the error message
+
+        // Hide copy buttons if article not found
+        if (copyHeadlineButton) copyHeadlineButton.style.display = 'none';
+        if (copyDescriptionButton) copyDescriptionButton.style.display = 'none';
       }
     }
 
     // Parse date string (e.g., "May 09, 2025") to Date object
     function parseDate(dateStr) {
-      return new Date(dateStr);
+      const parts = dateStr.split(' ');
+      if (parts.length === 3) {
+        const monthMap = {
+          'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+          'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+        };
+        const month = monthMap[parts[0].slice(0, 3)];
+        const day = parseInt(parts[1].replace(',', ''));
+        const year = parseInt(parts[2]);
+        if (!isNaN(month) && !isNaN(day) && !isNaN(year)) {
+          return new Date(year, month, day);
+        }
+      }
+      // Fallback for unexpected formats or invalid dates, just return a generic date
+      return new Date(0); // Epoch
     }
 
     // Calculate keyword overlap score between two strings
     function calculateKeywordOverlap(str1, str2) {
+      if (!str1 || !str2) return 0;
       const words1 = str1.toLowerCase().split(/\W+/).filter(word => word.length > 3);
       const words2 = str2.toLowerCase().split(/\W+/).filter(word => word.length > 3);
       const commonWords = words1.filter(word => words2.includes(word));
       return commonWords.length;
     }
 
-    // Display related news based on category, sorted by date and relevance
+    // Display related news based on category, sorted by relevance and date
     function displayRelatedNews(category, currentHeadline, currentDescription) {
       const relatedNewsContainer = document.getElementById('related-news');
+      if (!relatedNewsContainer) return; // Exit if container doesn't exist
 
       let relatedArticles = allNews
         .filter(item => item.category.toLowerCase() === category.toLowerCase() && item.headline !== currentHeadline);
@@ -813,14 +1240,15 @@
         relevanceScore: calculateKeywordOverlap(currentHeadline + ' ' + currentDescription, item.headline + ' ' + item.description)
       }));
 
+      // Sort by relevance (desc), then date (desc)
       relatedArticles.sort((a, b) => {
         if (b.relevanceScore !== a.relevanceScore) {
           return b.relevanceScore - a.relevanceScore;
         }
-        return parseDate(b.date) - parseDate(a.date);
+        return parseDate(b.date).getTime() - parseDate(a.date).getTime();
       });
 
-      relatedArticles = relatedArticles.slice(0, 3);
+      relatedArticles = relatedArticles.slice(0, 3); // Limit to 3 related articles
 
       const relatedNewsHTML = relatedArticles.length > 0
         ? relatedArticles.map((item, index) => `
@@ -828,14 +1256,16 @@
               <span class="category-badge ${
                 categoryColors[item.category] || categoryColors['default']
               }">${item.category}</span>
-              <a href="opennews.html?headline=${encodeURIComponent(item.headline)}">
-                <img src="${item.image}" alt="${item.headline}" class="w-full h-[120px]" loading="lazy">
-                <h4 class="text-sm font-semibold text-gray-800 hover:text-blue-600 transition p-3">${item.headline}</h4>
+              <a href="opennews.html?headline=${encodeURIComponent(item.headline)}" class="block">
+                <img src="${item.image}" alt="${item.headline}" class="w-full h-[120px] rounded-t-lg" loading="lazy">
+                <div class="p-3">
+                  <h4 class="text-sm font-semibold text-gray-800 hover:text-blue-600 transition">${item.headline}</h4>
+                  <p class="text-xs text-gray-600 mt-1">${item.source} • ${item.date}</p>
+                </div>
               </a>
-              <p class="text-xs text-gray-600 px-3 pb-3">${item.source} • ${item.date}</p>
             </div>
           `).join('')
-        : '<p class="text-gray-600 text-sm">No related news available.</p>';
+        : '<p class="text-gray-600 text-sm p-3">कोई संबंधित समाचार उपलब्ध नहीं है।</p>';
 
       relatedNewsContainer.innerHTML = relatedNewsHTML;
 
@@ -845,37 +1275,35 @@
           item.classList.add('loaded');
         }, (index + 1) * 100);
       });
-
-      // Lazy-load related news items
-      const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('loaded');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { rootMargin: '100px' });
-
-      document.querySelectorAll('.related-news-item:not(.loaded)').forEach(item => {
-        observer.observe(item);
-      });
     }
 
     // Share functionality
     function setupShareButtons() {
-      const headline = document.getElementById('news-headline').innerText;
-      const url = window.location.href;
+      const headlineElement = document.getElementById('news-headline');
+      const shareFacebookButton = document.getElementById('share-facebook');
+      const shareTwitterButton = document.getElementById('share-twitter');
+      const shareWhatsappButton = document.getElementById('share-whatsapp');
 
-      document.getElementById('share-facebook').addEventListener('click', () => {
-        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
-      });
+      if (!headlineElement || !shareFacebookButton || !shareTwitterButton || !shareWhatsappButton) {
+        console.warn("Share buttons or headline element not found, skipping setup.");
+        return;
+      }
 
-      document.getElementById('share-twitter').addEventListener('click', () => {
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(headline)}&url=${encodeURIComponent(url)}`, '_blank');
-      });
+      // Using an event listener on the parent container to handle dynamic headline updates
+      document.querySelector('.news-article').addEventListener('click', (event) => {
+        const target = event.target.closest('.share-button');
+        if (!target) return;
 
-      document.getElementById('share-whatsapp').addEventListener('click', () => {
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(headline + ' ' + url)}`, '_blank');
+        const headline = headlineElement.innerText;
+        const url = window.location.href;
+
+        if (target.id === 'share-facebook') {
+          window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+        } else if (target.id === 'share-twitter') {
+          window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(headline)}&url=${encodeURIComponent(url)}`, '_blank');
+        } else if (target.id === 'share-whatsapp') {
+          window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(headline + ' ' + url)}`, '_blank');
+        }
       });
     }
 
@@ -884,16 +1312,51 @@
       const searchToggle = document.getElementById('search-toggle');
       const searchResults = document.getElementById('search-results');
       const searchInput = document.getElementById('search-input');
+      const executeSearchButton = document.getElementById('execute-search'); // New search button
       const searchResultsList = document.getElementById('search-results-list');
 
-      searchToggle.addEventListener('click', () => {
+      if (!searchToggle || !searchResults || !searchInput || !executeSearchButton || !searchResultsList) {
+        console.warn("Search elements not found, skipping search setup.");
+        return;
+      }
+
+      // Initial state of search results when opened
+      searchResultsList.innerHTML = `
+        <div class="search-result-card skeleton-card">
+          <div class="skeleton skeleton-text w-full h-5 mb-2"></div>
+          <div class="skeleton skeleton-text w-3/4 h-4"></div>
+        </div>
+        <div class="search-result-card skeleton-card">
+          <div class="skeleton skeleton-text w-full h-5 mb-2"></div>
+          <div class="skeleton skeleton-text w-3/4 h-4"></div>
+        </div>
+      `;
+
+      searchToggle.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent document click from closing it immediately
         searchResults.classList.toggle('hidden');
         if (!searchResults.classList.contains('hidden')) {
           searchInput.focus();
         }
       });
 
-      const debouncedSearch = debounce((query) => {
+      const performSearch = () => {
+        const query = searchInput.value.toLowerCase().trim();
+        if (!query) {
+            // Show initial skeleton if query is empty after explicit search attempt
+            searchResultsList.innerHTML = `
+              <div class="search-result-card skeleton-card">
+                <div class="skeleton skeleton-text w-full h-5 mb-2"></div>
+                <div class="skeleton skeleton-text w-3/4 h-4"></div>
+              </div>
+              <div class="search-result-card skeleton-card">
+                <div class="skeleton skeleton-text w-full h-5 mb-2"></div>
+                <div class="skeleton skeleton-text w-3/4 h-4"></div>
+              </div>
+            `;
+            return;
+        }
+
         const results = allNews.filter(item =>
           item.headline.toLowerCase().includes(query) ||
           item.description.toLowerCase().includes(query) ||
@@ -908,7 +1371,7 @@
                 <p class="text-xs text-gray-600 mt-1">${item.source} • ${item.category}</p>
               </div>
             `).join('')
-          : '<p class="text-gray-600 text-sm p-4">No results found.</p>';
+          : '<p class="text-gray-600 text-sm p-4">कोई परिणाम नहीं मिला।</p>';
 
         searchResultsList.querySelectorAll('.search-result-card').forEach(card => {
           card.addEventListener('click', () => {
@@ -916,14 +1379,24 @@
             window.location.href = `opennews.html?headline=${headline}`;
           });
         });
-      }, 300);
+      };
 
-      searchInput.addEventListener('input', (e) => {
-        debouncedSearch(e.target.value.toLowerCase());
+      // Trigger search on button click
+      executeSearchButton.addEventListener('click', performSearch);
+
+      // Trigger search on Enter key press
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          performSearch();
+        }
       });
 
+      // Close search results when clicking outside
       document.addEventListener('click', (e) => {
-        if (!searchResults.contains(e.target) && e.target !== searchToggle && !searchToggle.contains(e.target)) {
+        if (!searchResults.classList.contains('hidden') &&
+            !searchResults.contains(e.target) &&
+            e.target !== searchToggle &&
+            !searchToggle.contains(e.target)) {
           searchResults.classList.add('hidden');
         }
       });
@@ -935,21 +1408,165 @@
       });
     }
 
+    // --- New Features Implementation ---
+
+    // Spinner functions
+    function showSpinner() {
+      const spinner = document.getElementById('loading-spinner');
+      if (spinner) {
+        spinner.classList.remove('hidden');
+        spinner.style.opacity = '1';
+      }
+    }
+
+    function hideSpinner() {
+      const spinner = document.getElementById('loading-spinner');
+      if (spinner) {
+        spinner.style.opacity = '0';
+        spinner.addEventListener('transitionend', function handler() {
+          spinner.classList.add('hidden');
+          spinner.removeEventListener('transitionend', handler);
+        }, { once: true }); // Ensure handler runs only once
+      }
+    }
+
+
+    // 1. Text-to-Speech (Read Aloud)
+    const readAloudToggle = document.getElementById('read-aloud-toggle');
+    const readAloudIcon = document.getElementById('read-aloud-icon');
+    const newsHeadlineForRead = document.getElementById('news-headline');
+    const newsDescriptionForRead = document.getElementById('news-description');
+
+    if (readAloudToggle && 'speechSynthesis' in window) {
+      readAloudToggle.addEventListener('click', () => {
+        if (!isReading) {
+          // Start reading
+          const textToSpeak = `${newsHeadlineForRead.innerText}. ${newsDescriptionForRead.innerText}`;
+          utterance = new SpeechSynthesisUtterance(textToSpeak);
+          
+          // Optional: Set voice, pitch, rate
+          const voices = window.speechSynthesis.getVoices();
+          utterance.voice = voices.find(voice => voice.lang === 'en-US' || voice.lang === 'en-GB'); // Try to find an English voice
+          utterance.pitch = 1; // 0 to 2
+          utterance.rate = 1;  // 0.1 to 10
+
+          utterance.onend = () => {
+            isReading = false;
+            readAloudIcon.classList.replace('fa-stop', 'fa-play');
+            readAloudToggle.classList.remove('active');
+          };
+          utterance.onerror = (event) => {
+            console.error('Speech synthesis error:', event.error);
+            isReading = false;
+            readAloudIcon.classList.replace('fa-stop', 'fa-play');
+            readAloudToggle.classList.remove('active');
+          };
+
+          window.speechSynthesis.cancel(); // Stop any ongoing speech
+          window.speechSynthesis.speak(utterance);
+          isReading = true;
+          readAloudIcon.classList.replace('fa-play', 'fa-stop');
+          readAloudToggle.classList.add('active');
+        } else {
+          // Stop reading
+          window.speechSynthesis.cancel();
+          isReading = false;
+          readAloudIcon.classList.replace('fa-stop', 'fa-play');
+          readAloudToggle.classList.remove('active');
+        }
+      });
+
+      // Listen for speech to be paused/resumed by external events (e.g., user switching tabs)
+      window.speechSynthesis.onpause = () => {
+        if (isReading) { // Only change icon if we were actively reading
+          readAloudIcon.classList.replace('fa-stop', 'fa-pause');
+        }
+      };
+      window.speechSynthesis.onresume = () => {
+        if (isReading) { // Only change icon if we were actively reading
+          readAloudIcon.classList.replace('fa-pause', 'fa-stop');
+        }
+      };
+    } else if (readAloudToggle) {
+      // Disable button if SpeechSynthesis is not supported
+      readAloudToggle.disabled = true;
+      readAloudToggle.title = "आपका ब्राउज़र टेक्स्ट-टू-स्पीच का समर्थन नहीं करता है।";
+      readAloudIcon.classList.add('text-gray-400');
+    }
+
+    // 2. Reading Mode
+    const readingModeToggle = document.getElementById('reading-mode-toggle');
+    const body = document.body;
+
+    if (readingModeToggle) {
+      readingModeToggle.addEventListener('click', () => {
+        isReadingMode = !isReadingMode;
+        body.classList.toggle('reading-mode-active', isReadingMode);
+        readingModeToggle.classList.toggle('active', isReadingMode);
+        document.getElementById('reading-mode-icon').classList.toggle('fa-book-open', !isReadingMode);
+        document.getElementById('reading-mode-icon').classList.toggle('fa-times-circle', isReadingMode); // Using a more intuitive close icon
+        document.getElementById('reading-mode-toggle').querySelector('span').innerText = isReadingMode ? 'रीडिंग मोड से बाहर निकलें' : 'रीडिंग मोड';
+
+        // Stop speech if reading mode is activated/deactivated while speech is ongoing
+        if (isReading && window.speechSynthesis.speaking) {
+            window.speechSynthesis.cancel();
+            isReading = false;
+            readAloudIcon.classList.replace('fa-stop', 'fa-play');
+            readAloudToggle.classList.remove('active');
+        }
+      });
+    }
+
+    // 3. Theme Toggle (Light/Dark Mode)
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = themeToggle ? themeToggle.querySelector('i') : null;
+
+    if (themeToggle && themeIcon) {
+      themeToggle.addEventListener('click', () => {
+        if (body.classList.contains('dark-mode')) {
+          body.classList.remove('dark-mode');
+          body.classList.add('light-mode');
+          themeIcon.classList.replace('fa-sun', 'fa-moon');
+          currentTheme = 'light';
+        } else {
+          body.classList.remove('light-mode');
+          body.classList.add('dark-mode');
+          themeIcon.classList.replace('fa-moon', 'fa-sun');
+          currentTheme = 'dark';
+        }
+        localStorage.setItem('theme', currentTheme);
+      });
+    }
+
+
     // Navigation Panel Toggle
     document.getElementById('menu-toggle').addEventListener('click', () => {
       const panel = document.getElementById('nav-panel');
-      panel.classList.toggle('open');
+      if (panel) {
+        panel.classList.add('open');
+      }
     });
 
     document.getElementById('close-panel').addEventListener('click', () => {
       const panel = document.getElementById('nav-panel');
-      panel.classList.remove('open');
+      if (panel) {
+        panel.classList.remove('open');
+      }
     });
 
+
     // Fetch news on load
-    fetchNews().then(() => {
-      setupShareButtons();
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchNews().then(() => {
+        setupShareButtons();
+        // Ensure theme is applied after dynamic content loads
+        document.body.classList.add(localStorage.getItem('theme') || 'light' + '-mode');
+        if (localStorage.getItem('theme') === 'dark') {
+          document.getElementById('theme-toggle').querySelector('i').classList.replace('fa-moon', 'fa-sun');
+        }
+      });
     });
   </script>
 </body>
 </html>
+
