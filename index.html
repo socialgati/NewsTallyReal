@@ -118,37 +118,6 @@
       --skeleton-end: #d1d5db;
     }
 
-    /* Fast skeleton animations */
-    .skeleton {
-      background: linear-gradient(90deg, var(--skeleton-start) 25%, var(--skeleton-end) 50%, var(--skeleton-start) 75%);
-      background-size: 200% 100%;
-      animation: loading 1.2s ease-in-out infinite;
-      border-radius: 4px;
-    }
-    
-    .skeleton-image {
-      background: var(--skeleton-start);
-      border-radius: 8px;
-    }
-    
-    .skeleton-text {
-      background: var(--skeleton-start);
-      border-radius: 4px;
-      height: 1rem;
-    }
-    
-    @keyframes loading {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-    
-    /* Hide skeletons efficiently */
-    .skeleton-card.hidden,
-    .skeleton.hidden,
-    .skeleton-text.hidden {
-      display: none !important;
-    }
-
     /* Dark mode colors */
     html.dark {
       --bg-primary: #121212; /* Darker background */
@@ -311,37 +280,21 @@
       font-size: 0.65rem; /* Reduced from 0.7rem */
     }
 
-    /* Optimized news card animations */
+    /* Hover animation for news cards */
     .news-card {
-      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease, background-color 0.3s ease, border-color 0.3s ease;
       opacity: 0;
       background-color: var(--bg-secondary);
       color: var(--text-primary);
-      box-shadow: 0 2px 4px var(--shadow-color);
+      box-shadow: 0 4px 6px var(--shadow-color);
       border: 1px solid var(--border-color);
-      will-change: transform, opacity;
-      contain: layout style paint;
     }
     .news-card.loaded {
       opacity: 1;
     }
     .news-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px var(--shadow-color);
-    }
-    
-    /* Performance optimizations */
-    img {
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-    }
-    
-    /* Hardware acceleration for smooth scrolling */
-    .featured-news-wrapper,
-    #category-scroll-nav {
-      -webkit-overflow-scrolling: touch;
-      transform: translateZ(0);
-      will-change: scroll-position;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px var(--shadow-color);
     }
     .news-card a {
       color: inherit;
@@ -1139,51 +1092,29 @@
   </div>
 
   <script>
-    // Performance optimized configuration
+    // WARNING: EXPOSING API KEYS IN CLIENT-SIDE CODE IS A SECURITY RISK.
+    // For production environments, consider using a backend proxy or serverless functions
+    // to securely handle API requests and hide your API key.
     const API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
     const SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
     const NEWS_SHEET_NAME = 'Sheet1';
     const PLAYER_SHEET_NAME = 'Sheet2';
 
-    // Performance optimized variables
     let news = [];
     let topStories = [];
     let topPlayers = [];
-    let featuredNews = [];
-    let currentSlide = 0;
-    let currentShortsIndex = 0;
+    let featuredNews = []; // These are the 'shorts'
+    let currentSlide = 0; // For Top Stories Carousel
+    let currentShortsIndex = 0; // For Featured News Shorts Modal
     let filteredNews = [];
     let categories = [];
     let displayedNewsCount = 0;
-    const NEWS_PER_PAGE = 12; // Reduced for faster initial load
-    const PLAYER_ROTATION_INTERVAL = 45 * 1000; // Increased to reduce frequent updates
-    const TOP_STORY_CAROUSEL_INTERVAL = 6 * 1000; // Slightly increased for better UX
-    let carouselAutoScrollInterval;
-    const MAX_RETRIES = 2; // Reduced retries for faster failure recovery
-    const RETRY_DELAY = 1000; // Reduced delay
-    
-    // Performance cache
-    const cache = new Map();
-    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
-    
-    // Preload manager
-    const imagePreloader = {
-      loaded: new Set(),
-      loading: new Set(),
-      preload(url) {
-        if (this.loaded.has(url) || this.loading.has(url) || !url || url.includes('placehold.co')) return;
-        this.loading.add(url);
-        const img = new Image();
-        img.onload = () => {
-          this.loaded.add(url);
-          this.loading.delete(url);
-        };
-        img.onerror = () => {
-          this.loading.delete(url);
-        };
-        img.src = url;
-      }
-    };
+    const NEWS_PER_PAGE = 15;
+    const PLAYER_ROTATION_INTERVAL = 30 * 1000; // 30 seconds
+    const TOP_STORY_CAROUSEL_INTERVAL = 5 * 1000; // 5 seconds for auto-scroll
+    let carouselAutoScrollInterval; // Variable to hold the interval ID
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 2000; // 2 seconds
 
     // Category color mapping for badges
     const categoryColors = {
@@ -1224,209 +1155,91 @@
     }
 
     /**
-     * Fast debounce function with immediate execution option
-     * @param {Function} func - Function to debounce
-     * @param {number} wait - Wait time in milliseconds
-     * @param {boolean} immediate - Execute immediately on first call
-     * @returns {Function} - Debounced function
+     * Debounce function to limit the rate at which a function can fire.
+     * Useful for search inputs or resize events.
+     * @param {Function} func - The function to debounce.
+     * @param {number} wait - The number of milliseconds to wait before invoking the function.
+     * @returns {Function} - The debounced function.
      */
-    function debounce(func, wait, immediate = false) {
+    function debounce(func, wait) {
       let timeout;
       return function executedFunction(...args) {
         const later = () => {
-          timeout = null;
-          if (!immediate) func(...args);
+          clearTimeout(timeout);
+          func(...args);
         };
-        const callNow = immediate && !timeout;
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
-        if (callNow) func(...args);
       };
     }
 
-    // Fast search with optimized results
-    const searchManager = {
-      cache: new Map(),
-      
-      search(query) {
-        if (!query || query.length < 2) return [];
-        
-        const cacheKey = query.toLowerCase();
-        if (this.cache.has(cacheKey)) {
-          return this.cache.get(cacheKey);
-        }
-        
-        const results = news.filter(item => 
-          item.headline.toLowerCase().includes(cacheKey) ||
-          item.category.toLowerCase().includes(cacheKey) ||
-          item.source.toLowerCase().includes(cacheKey)
-        ).slice(0, 8); // Limit results for performance
-        
-        this.cache.set(cacheKey, results);
-        return results;
-      },
-      
-      clearCache() {
-        this.cache.clear();
-      }
-    };
-
     /**
-     * Performance optimized fetch with caching and faster retry logic
-     * @param {string} url - The URL to fetch data from
-     * @param {number} [retries=MAX_RETRIES] - Maximum retry attempts
-     * @returns {Promise<Object>} - Promise that resolves with JSON data
+     * Fetches data from a given URL with retry logic for robustness.
+     * @param {string} url - The URL to fetch data from.
+     * @param {number} [retries=MAX_RETRIES] - The maximum number of retry attempts.
+     * @returns {Promise<Object>} - A promise that resolves with the JSON data.
+     * @throws {Error} If all retry attempts fail or data is invalid.
      */
     async function fetchWithRetry(url, retries = MAX_RETRIES) {
-      // Check cache first
-      const cacheKey = url;
-      const cached = cache.get(cacheKey);
-      if (cached && (Date.now() - cached.timestamp) < CACHE_DURATION) {
-        return cached.data;
-      }
-
-      // Create AbortController for timeout handling
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
-
       for (let i = 0; i < retries; i++) {
         try {
-          const response = await fetch(url, {
-            signal: controller.signal,
-            headers: {
-              'Accept': 'application/json',
-              'Cache-Control': 'no-cache'
-            }
-          });
-          
-          clearTimeout(timeoutId);
-          
+          const response = await fetch(url);
           if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+            throw new Error(`HTTP error! Status: ${response.status}`);
           }
-          
           const data = await response.json();
-          
-          if (!data?.values?.length) {
-            throw new Error('No data available');
+          // Validate if data has expected structure for Google Sheets API
+          if (!data || !data.values || !Array.isArray(data.values)) {
+            throw new Error('Invalid or empty data received from API');
           }
-          
-          // Cache successful response
-          cache.set(cacheKey, {
-            data,
-            timestamp: Date.now()
-          });
-          
           return data;
         } catch (error) {
-          clearTimeout(timeoutId);
-          
-          if (error.name === 'AbortError') {
-            console.warn('Request timed out');
-          }
-          
+          console.error(`Attempt ${i + 1} failed for ${url}: ${error.message}`);
           if (i === retries - 1) {
-            throw new Error(`Failed to fetch data: ${error.message}`);
+            throw error; // Last retry failed, propagate the error
           }
-          
-          // Exponential backoff for retries
-          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * Math.pow(2, i)));
+          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY)); // Wait before retrying
         }
       }
     }
 
     /**
-     * Optimized news fetching with faster data processing
+     * Fetches news data from the Google Sheet (Sheet1) and processes it.
+     * Handles errors by displaying fallback messages.
      */
     async function fetchNews() {
       try {
-        const startTime = performance.now();
-        
         const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${NEWS_SHEET_NAME}?key=${API_KEY}`;
         const data = await fetchWithRetry(url);
         const rows = data.values;
 
-        if (!rows?.length || rows.length <= 1) {
-          throw new Error('No data available');
+        if (!rows || rows.length <= 1) {
+          throw new Error('No data rows found in the news sheet or sheet is empty.');
         }
 
-        // Optimized data processing with batch operations
-        const processedNews = [];
-        const imageUrls = [];
-        
-        // Process rows in chunks to avoid blocking
-        const processChunk = (startIdx, endIdx) => {
-          for (let i = startIdx; i < endIdx && i < rows.length; i++) {
-            const row = rows[i];
-            const newsItem = {
-              rank: parseInt(row[0]) || 0,
-              headline: row[1]?.trim() || 'शीर्षक उपलब्ध नहीं',
-              source: row[2]?.trim() || 'अज्ञात स्रोत',
-              date: row[3]?.trim() || new Date().toISOString().split('T')[0],
-              description: row[4]?.trim() || 'कोई विवरण उपलब्ध नहीं है।',
-              link: row[5]?.trim() || '#',
-              category: row[6]?.trim() || 'General',
-              image: row[7]?.trim() || 'https://placehold.co/400x300/e0e0e0/ffffff?text=Image+Not+Available'
-            };
-            
-            processedNews.push(newsItem);
-            
-            // Collect valid image URLs for preloading
-            if (newsItem.image && !newsItem.image.includes('placehold.co')) {
-              imageUrls.push(newsItem.image);
-            }
-          }
-        };
+        // Map sheet rows to news objects
+        news = rows.slice(1).map(row => ({
+          rank: parseInt(row[0]) || 0,
+          headline: row[1]?.trim() || 'शीर्षक उपलब्ध नहीं',
+          source: row[2]?.trim() || 'अज्ञात स्रोत',
+          date: row[3]?.trim() || new Date().toISOString().split('T')[0],
+          description: row[4]?.trim() || 'कोई विवरण उपलब्ध नहीं है।',
+          link: row[5]?.trim() || '#',
+          category: row[6]?.trim() || 'General',
+          image: row[7]?.trim() || 'https://placehold.co/400x300/e0e0e0/ffffff?text=Image+Not+Available' // Fallback placeholder image
+        }));
 
-        // Process data in chunks
-        const chunkSize = 50;
-        for (let i = 1; i < rows.length; i += chunkSize) {
-          processChunk(i, i + chunkSize);
-          
-          // Allow browser to breathe between chunks
-          if (i + chunkSize < rows.length) {
-            await new Promise(resolve => setTimeout(resolve, 0));
-          }
-        }
-
-        news = processedNews;
-        
-        // Start preloading critical images immediately
-        const priorityImages = imageUrls.slice(0, 15);
-        priorityImages.forEach(url => imagePreloader.preload(url));
-        
-        // Preload remaining images with delay
-        setTimeout(() => {
-          imageUrls.slice(15).forEach(url => imagePreloader.preload(url));
-        }, 2000);
-
-        console.log(`News loaded in ${(performance.now() - startTime).toFixed(2)}ms`);
-        
-        // Process data immediately without delay
-        processNewsData();
-        
+        processNewsData(); // Process the fetched news data
       } catch (error) {
-        console.error('News fetch error:', error);
-        showErrorMessages();
+        console.error('Error fetching news:', error);
+        // Display error messages to the user if news loading fails
+        document.getElementById('top-stories').innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">समाचार लोड करने में विफल रहा। कृपया अपना इंटरनेट कनेक्शन जांचें या बाद में पुनः प्रयास करें।</p>';
+        document.getElementById('news-feed').innerHTML = '<p class="text-red-600 dark:text-red-400 text-center">समाचार लोड करने में विफल रहा। कृपया अपना इंटरनेट कनेक्शन जांचें या बाद में पुनः प्रयास करें।</p>';
+        document.getElementById('featured-news-wrapper').innerHTML = '<p class="text-red-600 dark:text-red-400 text-center text-sm">फीचर्ड समाचार लोड करने में विफल रहा।</p>';
+        // Hide skeleton loaders in case of error
+        document.querySelectorAll('.skeleton-card').forEach(skeleton => skeleton.style.display = 'none');
+        document.querySelectorAll('.skeleton-text').forEach(skeleton => skeleton.style.display = 'none');
       }
-    }
-    
-    /**
-     * Show error messages efficiently
-     */
-    function showErrorMessages() {
-      const errorMsg = '<p class="text-red-600 dark:text-red-400 text-center py-4">डेटा लोड नहीं हो सका। पुनः प्रयास करें।</p>';
-      
-      // Update multiple elements at once
-      ['news-feed', 'featured-news-wrapper'].forEach(id => {
-        const element = document.getElementById(id);
-        if (element) element.innerHTML = errorMsg;
-      });
-      
-      // Hide skeletons quickly
-      document.querySelectorAll('.skeleton-card, .skeleton-text').forEach(skeleton => {
-        skeleton.style.display = 'none';
-      });
     }
 
     /**
@@ -1806,133 +1619,85 @@
     }
 
     /**
-     * High-performance news rendering with virtual scrolling concepts
-     * @param {boolean} [append=false] - True to append new articles
+     * Renders news articles into the main news feed.
+     * Can append new articles or completely re-render the feed.
+     * @param {boolean} [append=false] - True to append new articles, false to overwrite existing.
      */
     function renderNews(append = false) {
-      const startTime = performance.now();
       const newsFeed = document.getElementById('news-feed');
-      
-      // Use document fragment for faster DOM manipulation
-      const fragment = document.createDocumentFragment();
-      
-      const reversedNews = filteredNews.slice().reverse();
+      const reversedNews = [...filteredNews].reverse(); // Display newest news first
       const startIndex = append ? displayedNewsCount : 0;
       const endIndex = Math.min(startIndex + NEWS_PER_PAGE, reversedNews.length);
       const newsToDisplay = reversedNews.slice(startIndex, endIndex);
 
-      if (!newsToDisplay.length && !append) {
-        newsFeed.innerHTML = '<p class="text-gray-600 dark:text-gray-400 text-center py-8">कोई समाचार उपलब्ध नहीं।</p>';
-        return;
-      }
-
-      // Create elements efficiently
-      newsToDisplay.forEach((item, index) => {
-        const article = document.createElement('article');
-        article.className = 'news-card p-4 rounded-xl shadow-md flex items-start space-x-4';
-        
-        // Preload image if not already loaded
-        imagePreloader.preload(item.image);
-        
-        article.innerHTML = `
+      const newsHTML = newsToDisplay.map(item => `
+        <article class="news-card p-4 rounded-xl shadow-md flex items-start space-x-4">
           <img src="${item.image}" alt="${item.headline}" class="w-24 h-24 object-cover rounded-lg flex-shrink-0" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/96x96/e0e0e0/ffffff?text=Image+Not+Available';">
           <div class="flex-1">
-            <span class="category-badge ${categoryColors[item.category] || categoryColors['default']}">${item.category}</span>
+            <span class="category-badge ${
+              categoryColors[item.category] || categoryColors['default']
+            }">${item.category}</span>
             <h3 class="text-lg font-semibold hover:text-blue-600 dark:hover:text-blue-400 transition">
               <a href="opennews.html?headline=${encodeURIComponent(item.headline)}">${item.headline}</a>
             </h3>
             <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">${item.source} • ${item.date}</p>
           </div>
-        `;
-        
-        fragment.appendChild(article);
-      });
+        </article>
+      `).join('');
 
-      // Single DOM update
       if (append) {
-        newsFeed.appendChild(fragment);
+        newsFeed.insertAdjacentHTML('beforeend', newsHTML);
       } else {
-        // Hide skeletons first
+        newsFeed.innerHTML = newsHTML;
+      }
+
+      // Hide skeleton loaders for news feed once content is loaded
+      if (newsToDisplay.length > 0) {
         document.querySelectorAll('#news-feed .skeleton-card').forEach(skeleton => {
-          skeleton.style.display = 'none';
+            skeleton.style.display = 'none'; // Hide all skeleton cards
         });
-        newsFeed.innerHTML = '';
-        newsFeed.appendChild(fragment);
+      } else if (!append) { // If no news to display and not appending, show a message
+        newsFeed.innerHTML = '<p class="text-gray-600 dark:text-gray-400 text-center py-8">इस श्रेणी के लिए कोई समाचार नहीं मिला।</p>';
       }
 
-      displayedNewsCount = endIndex;
+      // Add 'loaded' class with a slight delay for a staggered fade-in effect
+      document.querySelectorAll('.news-card').forEach((card, index) => {
+        setTimeout(() => {
+          card.classList.add('loaded');
+        }, index * 100);
+      });
 
-      // Update load more button
+      displayedNewsCount = endIndex; // Update the count of displayed news
+
+      // Control visibility of the "Load More" button
       const loadMoreDiv = document.getElementById('load-more');
-      loadMoreDiv.style.display = displayedNewsCount >= reversedNews.length ? 'none' : 'block';
-
-      // Batch animate cards
-      requestAnimationFrame(() => {
-        const newCards = newsFeed.querySelectorAll('.news-card:not(.loaded)');
-        newCards.forEach((card, index) => {
-          setTimeout(() => card.classList.add('loaded'), index * 25); // Faster stagger
-        });
-      });
-
-      // Setup intersection observer for new cards only
-      setupNewsObserver();
-      
-      // Lazy load structured data to avoid blocking
-      if (!append) {
-        setTimeout(() => addStructuredData(newsToDisplay), 100);
+      if (displayedNewsCount >= reversedNews.length) {
+        loadMoreDiv.style.display = 'none';
+      } else {
+        loadMoreDiv.style.display = 'block';
       }
 
-      console.log(`News rendered in ${(performance.now() - startTime).toFixed(2)}ms`);
-    }
+      // Structured Data (JSON-LD) for SEO: Dynamically add NewsArticle schema
+      // Remove previous structured data scripts to avoid duplicates
+      document.querySelectorAll('script[type="application/ld+json"][data-dynamic="true"]').forEach(el => el.remove());
 
-    /**
-     * Setup intersection observer for news cards
-     */
-    function setupNewsObserver() {
-      if (window.newsObserver) {
-        window.newsObserver.disconnect();
-      }
-      
-      window.newsObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('loaded');
-            window.newsObserver.unobserve(entry.target);
-          }
-        });
-      }, { 
-        rootMargin: '50px',
-        threshold: 0.1
-      });
-
-      document.querySelectorAll('.news-card:not(.loaded)').forEach(card => {
-        window.newsObserver.observe(card);
-      });
-    }
-
-    /**
-     * Add structured data efficiently
-     */
-    function addStructuredData(newsItems) {
-      // Remove existing
-      document.querySelectorAll('script[data-dynamic="true"]').forEach(el => el.remove());
-      
-      if (!newsItems.length) return;
-      
-      const structuredData = newsItems.slice(0, 5).map(item => ({
+      const structuredData = newsToDisplay.map(item => ({
         "@context": "https://schema.org",
         "@type": "NewsArticle",
         "headline": item.headline,
         "image": item.image,
         "datePublished": item.date,
-        "description": item.description.substring(0, 100) + "...",
-        "author": { "@type": "Organization", "name": item.source },
+        "description": item.description.slice(0, 100) + "...", // Truncate description
+        "author": {
+          "@type": "Organization",
+          "name": item.source
+        },
         "publisher": {
           "@type": "Organization",
           "name": "NewsTally",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small"
+            "url": "https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small" // Use favicon as logo
           }
         }
       }));
@@ -1940,8 +1705,22 @@
       const script = document.createElement('script');
       script.type = 'application/ld+json';
       script.textContent = JSON.stringify(structuredData);
-      script.setAttribute('data-dynamic', 'true');
+      script.setAttribute('data-dynamic', 'true'); // Mark as dynamically added
       document.head.appendChild(script);
+
+      // Lazy-load news cards using IntersectionObserver for performance
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('loaded'); // Add 'loaded' class when in view
+            observer.unobserve(entry.target); // Stop observing once loaded
+          }
+        });
+      }, { rootMargin: '100px' }); // Load when 100px from viewport
+
+      document.querySelectorAll('.news-card:not(.loaded)').forEach(card => {
+        observer.observe(card);
+      });
     }
 
     /**
@@ -1955,74 +1734,17 @@
       loadMoreBtn.addEventListener('click', async () => {
         loadMoreText.textContent = 'लोड हो रहा है...';
         loadMoreSpinner.classList.remove('hidden');
-        loadMoreBtn.disabled = true;
+        loadMoreBtn.disabled = true; // Disable button during loading
 
-        // Faster loading simulation
-        await new Promise(resolve => setTimeout(resolve, 300));
+        // Simulate an asynchronous operation (e.g., actual data fetching)
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-        renderNews(true);
+        renderNews(true); // Append more news
 
         loadMoreText.textContent = 'और लोड करें';
         loadMoreSpinner.classList.add('hidden');
-        loadMoreBtn.disabled = false;
+        loadMoreBtn.disabled = false; // Re-enable button
       });
-    }
-
-    /**
-     * Setup optimized search functionality
-     */
-    function setupSearch() {
-      const searchToggle = document.getElementById('search-toggle');
-      const searchResults = document.getElementById('search-results');
-      const searchInput = document.getElementById('search-input');
-      const searchResultsList = document.getElementById('search-results-list');
-
-      // Debounced search function
-      const performSearch = debounce((query) => {
-        const results = searchManager.search(query);
-        displaySearchResults(results);
-      }, 200);
-
-      // Toggle search visibility
-      searchToggle.addEventListener('click', () => {
-        searchResults.classList.toggle('hidden');
-        if (!searchResults.classList.contains('hidden')) {
-          searchInput.focus();
-        }
-      });
-
-      // Search input handler
-      searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.trim();
-        if (query.length >= 2) {
-          performSearch(query);
-        } else {
-          searchResultsList.innerHTML = '<p class="p-4 text-gray-500">कम से कम 2 अक्षर टाइप करें</p>';
-        }
-      });
-
-      // Close search on outside click
-      document.addEventListener('click', (e) => {
-        if (!searchResults.contains(e.target) && !searchToggle.contains(e.target)) {
-          searchResults.classList.add('hidden');
-        }
-      });
-
-      function displaySearchResults(results) {
-        if (!results.length) {
-          searchResultsList.innerHTML = '<p class="p-4 text-gray-500">कोई परिणाम नहीं मिला</p>';
-          return;
-        }
-
-        const resultsHTML = results.map(item => `
-          <div class="search-result-card" onclick="window.open('opennews.html?headline=${encodeURIComponent(item.headline)}', '_blank')">
-            <h4 class="font-semibold text-sm">${item.headline}</h4>
-            <p class="text-xs text-gray-500">${item.source} • ${item.category}</p>
-          </div>
-        `).join('');
-
-        searchResultsList.innerHTML = resultsHTML;
-      }
     }
 
     /**
@@ -2140,56 +1862,16 @@
       panel.classList.remove('open');
     });
 
-    // Performance optimized initialization
-    let initStartTime;
-    
-    // Fast initial setup
-    function fastInit() {
-      initStartTime = performance.now();
-      
-      // Critical features first
+    // Initialize date and time on page load and update every second
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+
+    // Initial setup when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
       setupDarkModeToggle();
-      updateDateTime();
-      
-      // Start data fetching immediately
-      Promise.all([
-        fetchNews(),
-        fetchTopPlayers()
-      ]).then(() => {
-        console.log(`Total init time: ${(performance.now() - initStartTime).toFixed(2)}ms`);
-      }).catch(error => {
-        console.error('Init error:', error);
-        showErrorMessages();
-      });
-      
-      // Setup non-critical features
-      setupLoadMore();
-      setupSearch();
-      
-      // Update time efficiently
-      setInterval(updateDateTime, 10000); // Update every 10 seconds instead of 1
-    }
-
-    // Load when DOM is ready or immediately if already ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', fastInit);
-    } else {
-      fastInit();
-    }
-
-    // Cleanup on page unload
-    window.addEventListener('beforeunload', () => {
-      if (window.newsObserver) window.newsObserver.disconnect();
-      if (carouselAutoScrollInterval) clearInterval(carouselAutoScrollInterval);
-      cache.clear();
-    });
-
-    // Performance monitoring
-    window.addEventListener('load', () => {
-      if (window.performance) {
-        const perfData = performance.getEntriesByType('navigation')[0];
-        console.log(`Page loaded in ${perfData.loadEventEnd - perfData.fetchStart}ms`);
-      }
+      fetchNews(); // This will trigger fetching news, processing, and rendering related components
+      fetchTopPlayers(); // Fetch and display top players
+      setupLoadMore(); // Setup the "Load More" button
     });
   </script>
 </body>
