@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duuuit: The Creative Search Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fc;
+            background-image: url('https://images.unsplash.com/photo-1620641788484-991f72535916?q=80&w=2940&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #1a202c;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto; /* Enable scrolling for the whole page */
+        }
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2.5rem 1rem;
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            max-width: none;
+        }
+        .search-bar-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 700px;
+            background-color: #f1f5f9;
+            border-radius: 9999px;
+            padding: 0.5rem 1.5rem;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease-in-out;
+        }
+        .search-bar:focus-within {
+            box-shadow: 0 0 0 3px #6366f1, 0 0 0 6px rgba(99, 102, 241, 0.3);
+        }
+        input:focus {
+            outline: none;
+        }
+        .search-button {
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.85rem 2.25rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .search-button:hover {
+            background-color: #4338ca;
+            transform: translateY(-2px);
+        }
+        .search-results {
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 700px;
+            display: none;
+            text-align: left;
+        }
+        .result-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.25rem;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .spinner {
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        .suggestion-item {
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+            border: 1px solid #d1d5db;
+        }
+        .suggestion-item:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 200;
+            text-align: center;
+        }
+        .meaning-card {
+            background-color: rgba(238, 242, 255, 0.9); /* Lighter blue */
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.25rem;
+            border: 1px solid #c7d2fe;
+            text-align: left;
+        }
+        .meaning-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4338ca;
+            margin-bottom: 0.5rem;
+        }
+        .meaning-card p {
+            font-size: 1rem;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-content">
+    <div class="flex justify-end w-full max-w-7xl mb-4 p-2">
+        <select id="languageSelector" class="p-2 rounded-lg border border-gray-300 bg-white shadow-sm">
+            <option value="en-IN">English (India)</option>
+            <option value="hi-IN">हिन्दी</option>
+            <option value="bn-IN">বাংলা</option>
+            <option value="te-IN">తెలుగు</option>
+            <option value="mr-IN">मराठी</option>
+            <option value="ta-IN">தமிழ்</option>
+            <option value="gu-IN">ગુજરાતી</option>
+            <option value="kn-IN">ಕನ್ನಡ</option>
+        </select>
+    </div>
+
+    <div class="mb-10 pt-24">
+        <h1 class="text-6xl md:text-7xl font-bold text-gray-800 mb-2 duuuit-name">Duuuit</h1>
+        <p id="tagline" class="text-xl text-gray-500">हर सवाल का रचनात्मक जवाब पाएं।</p>
+    </div>
+
+    <div class="search-bar-sticky flex flex-col items-center">
+        <div class="flex flex-col md:flex-row items-center gap-4 w-full max-w-lg md:max-w-xl">
+            <div class="search-bar flex-grow">
+                <!-- Search icon SVG -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input id="searchInput" type="text" placeholder="कुछ भी खोजें..." class="flex-grow bg-transparent text-gray-700 placeholder-gray-400">
+            </div>
+            <button id="searchButton" class="search-button w-full md:w-auto">खोजें</button>
+        </div>
+    </div>
+    
+    <div id="loadingIndicator" class="text-center mt-6 hidden">
+        <div class="spinner"></div>
+        <p id="loadingText" class="mt-2 text-gray-500">खोज हो रही है...</p>
+    </div>
+
+    <div id="searchResults" class="search-results mt-6 hidden">
+        <!-- AI Insight and search results will be dynamically inserted here -->
+    </div>
+    
+    <div id="suggestions" class="suggestions mt-6">
+        <!-- Suggestions will be added here dynamically -->
+    </div>
+
+</div>
+
+<script>
+    const GOOGLE_SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
+    const GOOGLE_SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`;
+    const DICTIONARY_API_URL = "https://api.dictionaryapi.dev/api/v2/entries/en/";
+    const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=";
+    const API_KEY = ""; // Canvas will provide this securely
+
+    let appData = [];
+
+    const translations = {
+        'en-IN': {
+            tagline: "Get creative answers to all your questions.",
+            placeholder: "Search for anything...",
+            searchButton: "Search",
+            loadingText: "Searching...",
+            aiInsightTitle: "AI Insight",
+            noResults: "No results found for your query. Showing top headlines instead.",
+            wordMeaningTitle: "Word Meaning"
+        },
+        'hi-IN': {
+            tagline: "हर सवाल का रचनात्मक जवाब पाएं।",
+            placeholder: "कुछ भी खोजें...",
+            searchButton: "खोजें",
+            loadingText: "खोज हो रही है...",
+            aiInsightTitle: "AI जानकारी",
+            noResults: "आपकी खोज के लिए कोई परिणाम नहीं मिला। यहाँ कुछ ताज़ा सुर्खियाँ हैं:",
+            wordMeaningTitle: "शब्द का मतलब"
+        },
+        'bn-IN': {
+            tagline: "আপনার প্রতিটি প্রশ্নের সৃজনশীল উত্তর পান।",
+            placeholder: "কিছু একটা খুঁজুন...",
+            searchButton: "অনুসন্ধান",
+            loadingText: "অনুসন্ধান চলছে...",
+            aiInsightTitle: "AI অন্তর্দৃষ্টি",
+            noResults: "আপনার অনুসন্ধানের জন্য কোনো ফলাফল পাওয়া যায়নি। এখানে কিছু সাম্প্রতিক শিরোনাম রয়েছে:",
+            wordMeaningTitle: "শব্দের অর্থ"
+        },
+        'te-IN': {
+            tagline: "మీ అన్ని ప్రశ్నలకు సృజనాత్మక సమాధానాలను పొందండి.",
+            placeholder: "ఏదైనా వెతకండి...",
+            searchButton: "వెతకండి",
+            loadingText: "వెతుకుతున్నాము...",
+            aiInsightTitle: "AI అంతర్దృష్టి",
+            noResults: "మీరు వెతుకుతున్న దానికి ఫలితాలు లభించలేదు. ఇక్కడ కొన్ని తాజా ముఖ్యాంశాలు ఉన్నాయి:",
+            wordMeaningTitle: "పదం అర్థం"
+        },
+        'mr-IN': {
+            tagline: "तुमच्या प्रत्येक प्रश्नाचे सर्जनशील उत्तर मिळवा.",
+            placeholder: "काहीही शोधा...",
+            searchButton: "शोधा",
+            loadingText: "शोध सुरू आहे...",
+            aiInsightTitle: "एआय अंतर्दृष्टी",
+            noResults: "आपल्या शोधासाठी कोणतेही परिणाम आढळले नाहीत. येथे काही ताज्या बातम्या आहेत:",
+            wordMeaningTitle: "शब्दाचा अर्थ"
+        },
+        'ta-IN': {
+            tagline: "உங்கள் ஒவ்வொரு கேள்விக்கும் ஆக்கப்பூர்வமான பதில்களைப் பெறுங்கள்.",
+            placeholder: "எதையும் தேடலாம்...",
+            searchButton: "தேடவும்",
+            loadingText: "தேடிக் கொண்டிருக்கிறது...",
+            aiInsightTitle: "AI நுண்ணறிவு",
+            noResults: "உங்கள் தேடலுக்கான முடிவுகள் எதுவும் இல்லை. இங்கே சில சமீபத்திய தலைப்புகள் உள்ளன:",
+            wordMeaningTitle: "சொல் பொருள்"
+        },
+        'gu-IN': {
+            tagline: "તમારા દરેક પ્રશ્નોના સર્જનાત્મક જવાબો મેળવો.",
+            placeholder: "કંઈપણ શોધો...",
+            searchButton: "શોધો",
+            loadingText: "શોધ ચાલી રહી છે...",
+            aiInsightTitle: "AI સમજ",
+            noResults: "તમારી શોધ માટે કોઈ પરિણામો મળ્યા નથી. અહીં કેટલાક નવીનતમ શીર્ષકો છે:",
+            wordMeaningTitle: "શબ્દનો અર્થ"
+        },
+        'kn-IN': {
+            tagline: "ನಿಮ್ಮ ಎಲ್ಲಾ ಪ್ರಶ್ನೆಗಳಿಗೆ ಸೃಜನಾತ್ಮಕ ಉತ್ತರಗಳನ್ನು ಪಡೆಯಿರಿ.",
+            placeholder: "ಏನನ್ನಾದರೂ ಹುಡುಕಿ...",
+            searchButton: "ಹುಡುಕಿ",
+            loadingText: "ಹುಡುಕಲಾಗುತ್ತಿದೆ...",
+            aiInsightTitle: "AI ಒಳನೋಟ",
+            noResults: "ನಿಮ್ಮ ಹುಡುಕಾಟಕ್ಕೆ ಯಾವುದೇ ಫಲಿತಾಂಶಗಳು ಕಂಡುಬಂದಿಲ್ಲ. ಇಲ್ಲಿ ಕೆಲವು ಇತ್ತೀಚಿನ ಮುಖ್ಯಾಂಶಗಳು ಇವೆ:",
+            wordMeaningTitle: "ಪದದ ಅರ್ಥ"
+        }
+    };
+
+    // DOM elements
+    const languageSelector = document.getElementById('languageSelector');
+    const taglineElement = document.getElementById('tagline');
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const loadingTextElement = document.getElementById('loadingText');
+    const searchResults = document.getElementById('searchResults');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const suggestionsContainer = document.getElementById('suggestions');
+
+    // Function to parse Google Sheets JSON data
+    function parseGoogleSheetData(jsonString) {
+        try {
+            const json = JSON.parse(jsonString.substring(jsonString.indexOf('{'), jsonString.lastIndexOf('}') + 1));
+            const rows = json.table.rows;
+            const headers = json.table.cols.map(col => col.label);
+            
+            return rows.map(row => {
+                let obj = {};
+                row.c.forEach((cell, i) => {
+                    const header = headers[i];
+                    const value = cell ? cell.v : null;
+                    if (value !== null && value !== '') {
+                        obj[header] = value;
+                    }
+                });
+                return obj;
+            }).filter(item => Object.keys(item).length > 0);
+        } catch (e) {
+            console.error('Error parsing Google Sheet data:', e);
+            return [];
+        }
+    }
+
+    // Function to fetch data from the Google Sheet
+    async function fetchData() {
+        try {
+            const response = await fetch(GOOGLE_SHEET_URL);
+            const text = await response.text();
+            appData = parseGoogleSheetData(text);
+            console.log("Data fetched successfully:", appData);
+            updateUI(languageSelector.value);
+        } catch (error) {
+            console.error('Error fetching data from Google Sheet:', error);
+            appData = [];
+            updateUI(languageSelector.value);
+        }
+    }
+
+    // Function to update the UI based on selected language
+    function updateUI(language) {
+        const langData = translations[language];
+        taglineElement.textContent = langData.tagline;
+        searchInput.placeholder = langData.placeholder;
+        searchButton.textContent = langData.searchButton;
+        loadingTextElement.textContent = langData.loadingText;
+        
+        // Sort data by date for latest suggestions
+        const sortedData = [...appData].sort((a, b) => {
+            const dateA = a.Date ? new Date(a.Date) : new Date(0);
+            const dateB = b.Date ? new Date(b.Date) : new Date(0);
+            return dateB - dateA;
+        });
+        
+        const headlines = sortedData.map(item => item.Headline || '').filter(h => h.length > 0);
+        populateSuggestions(headlines);
+    }
+
+    // Function to populate suggestions based on search query
+    function populateSuggestions(suggestions) {
+        suggestionsContainer.innerHTML = '';
+        const uniqueSuggestions = [...new Set(suggestions)];
+        uniqueSuggestions.slice(0, 10).forEach(suggestion => {
+            const suggestionItem = document.createElement('div');
+            suggestionItem.className = 'suggestion-item';
+            suggestionItem.textContent = suggestion;
+            suggestionItem.addEventListener('click', () => {
+                searchInput.value = suggestion;
+                performSearch();
+            });
+            suggestionsContainer.appendChild(suggestionItem);
+        });
+    }
+
+    // Function to generate a simulated AI response
+    async function getAIResponse(query, results) {
+        const langData = translations[languageSelector.value];
+        if (!query || results.length === 0) {
+            return langData.noResults;
+        }
+        
+        const dataString = JSON.stringify(results.slice(0, 5), null, 2);
+        const prompt = `Based on the search query "${query}" and the following data, provide a short, single-paragraph summary in natural-sounding Indian English. Use a helpful and conversational tone.
+
+        Data:
+        ${dataString}`;
+
+        try {
+            const response = await fetch(API_URL + API_KEY, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    systemInstruction: { parts: [{ text: "You are an expert AI assistant that provides concise and helpful summaries based on provided data." }] }
+                })
+            });
+            const result = await response.json();
+            return result.candidates[0].content.parts[0].text;
+        } catch (error) {
+            console.error('API Error:', error);
+            return `AI-powered summary is currently unavailable. Displaying raw search results.`;
+        }
+    }
+
+    // Function to fetch and display word meaning
+    async function fetchWordMeaning(word) {
+        const langData = translations[languageSelector.value];
+        const meaningUrl = DICTIONARY_API_URL + word.toLowerCase();
+
+        try {
+            const response = await fetch(meaningUrl);
+            const data = await response.json();
+
+            if (data.title === "No Definitions Found") {
+                return null;
+            }
+
+            const definition = data[0].meanings[0].definitions[0].definition;
+            const partOfSpeech = data[0].meanings[0].partOfSpeech;
+            
+            return {
+                word: data[0].word,
+                partOfSpeech: partOfSpeech,
+                definition: definition
+            };
+
+        } catch (error) {
+            console.error("Dictionary API Error:", error);
+            return null;
+        }
+    }
+
+    // Function to perform search and display results
+    async function performSearch() {
+        const query = searchInput.value.toLowerCase().trim();
+        const langData = translations[languageSelector.value];
+
+        searchResults.style.display = 'none';
+        loadingIndicator.classList.remove('hidden');
+        suggestionsContainer.classList.add('hidden');
+        searchResults.innerHTML = '';
+        
+        const isMeaningSearch = query.includes(' meaning') || query.includes(' matlab');
+        let wordMeaning = null;
+
+        if (isMeaningSearch) {
+            const word = query.replace(' meaning', '').replace(' matlab', '').trim();
+            wordMeaning = await fetchWordMeaning(word);
+        }
+
+        const filteredResults = appData.filter(item => 
+            Object.values(item).some(value => 
+                String(value).toLowerCase().includes(query)
+            )
+        );
+
+        setTimeout(async () => {
+            loadingIndicator.classList.add('hidden');
+            searchResults.style.display = 'block';
+
+            if (wordMeaning) {
+                const meaningCard = document.createElement('div');
+                meaningCard.className = 'meaning-card';
+                meaningCard.innerHTML = `
+                    <h3>${wordMeaning.word}</h3>
+                    <p class="text-sm italic text-gray-500">${wordMeaning.partOfSpeech}</p>
+                    <p class="mt-2">${wordMeaning.definition}</p>
+                `;
+                searchResults.appendChild(meaningCard);
+            }
+
+            const aiInsight = await getAIResponse(query, filteredResults);
+            const aiInsightCard = document.createElement('div');
+            aiInsightCard.className = 'result-card bg-indigo-50 border-indigo-200 border-2';
+            aiInsightCard.innerHTML = `
+                <h3 class="text-xl font-bold text-indigo-700 mb-2">${langData.aiInsightTitle}</h3>
+                <p class="text-gray-800">${aiInsight}</p>
+            `;
+            searchResults.appendChild(aiInsightCard);
+
+            if (filteredResults.length > 0) {
+                filteredResults.forEach(result => {
+                    const resultCard = document.createElement('div');
+                    resultCard.className = 'result-card';
+                    resultCard.innerHTML = `
+                        <a href="${result.Link || '#'}" class="text-indigo-600 hover:underline text-xl font-medium block">${result.Headline || 'No Headline'}</a>
+                        <p class="text-gray-500 text-sm mt-1">Source: ${result.Source || 'N/A'} | Date: ${result.Date || 'N/A'}</p>
+                        <p class="text-gray-700 mt-2">${result.Description || 'No description available.'}</p>
+                    `;
+                    searchResults.appendChild(resultCard);
+                });
+            } else if (!wordMeaning) {
+                const noResultsCard = document.createElement('div');
+                noResultsCard.className = 'result-card';
+                noResultsCard.innerHTML = `<p class="text-gray-700">${langData.noResults}</p>`;
+                searchResults.appendChild(noResultsCard);
+            }
+            
+            suggestionsContainer.classList.remove('hidden');
+        }, 1500); // 1.5 second delay to simulate network latency
+    }
+
+    // Event listener for real-time suggestions
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        if (query.length > 0) {
+            const filteredHeadlines = appData.filter(item => 
+                String(item.Headline || '').toLowerCase().includes(query)
+            ).map(item => item.Headline);
+            populateSuggestions(filteredHeadlines);
+            suggestionsContainer.classList.remove('hidden');
+        } else {
+            suggestionsContainer.classList.add('hidden');
+        }
+    });
+
+    // Event listeners
+    languageSelector.addEventListener('change', (event) => {
+        updateUI(event.target.value);
+    });
+    searchButton.addEventListener('click', performSearch);
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
+
+    // Fetch data and initialize UI on page load
+    fetchData();
+</script>
+
+</body>
+</html>
+
