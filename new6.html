@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Sign-In Private Chat App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDKs (compat version) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .main-container {
+            display: flex;
+            width: 100%;
+            max-width: 900px;
+            height: 90vh;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+        .auth-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            width: 100%;
+        }
+        .sidebar {
+            width: 300px;
+            background-color: #f7fafc;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-header {
+            background-color: #4a5568;
+            color: #ffffff;
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .user-info img {
+            border-radius: 9999px;
+            width: 2rem;
+            height: 2rem;
+        }
+        .users-list {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .user-item:hover {
+            background-color: #ebf8ff;
+        }
+        .user-item img {
+            border-radius: 9999px;
+            width: 3rem;
+            height: 3rem;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        .chat-header {
+            background-color: #4a5568;
+            color: #ffffff;
+            padding: 1rem;
+            font-size: 1.25rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        .messages-container {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 0.5rem;
+        }
+        .message {
+            max-width: 80%;
+            border-radius: 1rem;
+            padding: 0.5rem 1rem;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        .message-sent {
+            background-color: #3b82f6;
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-right-radius: 0.25rem;
+        }
+        .message-received {
+            background-color: #e5e7eb;
+            color: #1f2937;
+            align-self: flex-start;
+            border-bottom-left-radius: 0.25rem;
+        }
+        .message-author {
+            font-weight: bold;
+            font-size: 0.8rem;
+            color: #4b5563;
+        }
+        .message-sent .message-author {
+            color: #d1d5db;
+        }
+        .input-container {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .message-input {
+            flex-grow: 1;
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .message-input:focus {
+            border-color: #2563eb;
+        }
+        .send-button {
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            margin-left: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .send-button:hover {
+            background-color: #1d4ed8;
+        }
+        .google-btn {
+            background-color: #4285f4;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        .hidden {
+            display: none;
+        }
+        .sign-out-button {
+            background-color: #ef4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            margin-left: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+        .chat-placeholder {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            font-size: 1.2rem;
+            color: #9ca3af;
+        }
+        .search-box {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .search-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .search-input-group input {
+            flex-grow: 1;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            padding: 0.5rem;
+        }
+        .found-user-info {
+            padding: 1rem;
+            margin-top: 0.5rem;
+            background-color: #ebf8ff;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: background-color 0.2s;
+        }
+        .found-user-info:hover {
+            background-color: #bee3f8;
+        }
+        .user-id-box {
+            background-color: #e5e7eb;
+            color: #4b5563;
+            padding: 0.75rem;
+            margin: 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            word-break: break-all;
+        }
+        .copy-button {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .copy-button:hover {
+            background-color: #1d4ed8;
+        }
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                height: 100vh;
+            }
+            .sidebar {
+                width: 100%;
+                height: 40vh;
+            }
+            .chat-container {
+                flex-grow: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <div id="auth-section" class="auth-container">
+        <h2>Google Sign-In Private Chat App</h2>
+        <button id="google-signin-button" class="google-btn">Google से साइन इन करें</button>
+    </div>
+
+    <div id="app-section" class="main-container hidden">
+        <!-- Sidebar for users list -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-info">
+                    <img id="my-photo" src="" alt="My Photo">
+                    <span id="my-name"></span>
+                </div>
+                <button id="sign-out-button" class="sign-out-button">साइन आउट करें</button>
+            </div>
+            
+            <div class="search-box">
+                <div class="font-bold text-sm mb-1">आपकी यूनिक ID</div>
+                <div class="user-id-box">
+                    <span id="user-id-display"></span>
+                    <button id="copy-button" class="copy-button">कॉपी करें</button>
+                </div>
+                <div class="font-bold text-sm mb-1 mt-4">किसी दोस्त की ID से ढूंढें</div>
+                <div class="search-input-group">
+                    <input type="text" id="friend-id-search-input" placeholder="मित्र की ID दर्ज करें...">
+                    <button id="find-friend-button" class="bg-indigo-500 text-white px-3 rounded-lg text-sm">ढूंढें</button>
+                </div>
+                <div id="found-friend-info"></div>
+            </div>
+
+            <div class="users-list">
+                <!-- Users will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Chat container -->
+        <div class="chat-container">
+            <div id="chat-header" class="chat-header">
+                एक दोस्त का चयन करें
+            </div>
+            
+            <div id="messages" class="messages-container">
+                <div class="chat-placeholder">
+                    चैट शुरू करने के लिए किसी दोस्त पर क्लिक करें
+                </div>
+            </div>
+            
+            <div id="input-container" class="input-container hidden">
+                <input type="text" id="message-input" class="message-input" placeholder="एक संदेश लिखें...">
+                <button id="send-button" class="send-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 00.149.337l.426.853a1 1 0 00.916.557h13a1 1 0 00.916-.557l.426-.853a1 1 0 00.149-.337l-7-14z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Firebase config (जो आपने दिया था)
+    const firebaseConfig = {
+      apiKey: "AIzaSyA4zw5cZqxLwzkTy2e5NiHz-tGKqk1KGdI",
+      authDomain: "newstally-df03c.firebaseapp.com",
+      databaseURL: "https://newstally-df03c-default-rtdb.firebaseio.com",
+      projectId: "newstally-df03c",
+      storageBucket: "newstally-df03c.firebasestorage.app",
+      messagingSenderId: "506893212961",
+      appId: "1:506893212961:web:63882290195da992207260",
+      measurementId: "G-54QER193B3"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    let currentUser = null;
+    let currentFriend = null;
+    let unsubscribeChat = null;
+
+    // UI elements
+    const authSection = document.getElementById('auth-section');
+    const appSection = document.getElementById('app-section');
+    const googleSignInButton = document.getElementById('google-signin-button');
+    const signOutButton = document.getElementById('sign-out-button');
+    const usersList = document.getElementById('users-list');
+    const messagesContainer = document.getElementById('messages');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const chatHeader = document.getElementById('chat-header');
+    const inputContainer = document.getElementById('input-container');
+    const myNameSpan = document.getElementById('my-name');
+    const myPhotoImg = document.getElementById('my-photo');
+    const friendIdSearchInput = document.getElementById('friend-id-search-input');
+    const findFriendButton = document.getElementById('find-friend-button');
+    const foundFriendInfo = document.getElementById('found-friend-info');
+    const userIdDisplay = document.getElementById('user-id-display');
+    const copyButton = document.getElementById('copy-button');
+
+    // Firebase Authentication State Change
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            currentUser = user;
+            authSection.classList.add('hidden');
+            appSection.classList.remove('hidden');
+            myNameSpan.textContent = user.displayName;
+            myPhotoImg.src = user.photoURL || 'https://placehold.co/40x40/E2E8F0/1A202C?text=U';
+            userIdDisplay.textContent = user.uid; // आपकी यूनिक ID दिखाएं
+            
+            // Save user data and start listening for other users
+            saveUserData(user);
+            listenForUsers();
+        } else {
+            currentUser = null;
+            authSection.classList.remove('hidden');
+            appSection.classList.add('hidden');
+            if (unsubscribeChat) {
+                unsubscribeChat();
+            }
+        }
+    });
+    
+    // Copy to clipboard function
+    copyButton.addEventListener('click', () => {
+        const userId = userIdDisplay.textContent;
+        // Use a temporary textarea for copying to clipboard
+        const tempTextarea = document.createElement('textarea');
+        tempTextarea.value = userId;
+        document.body.appendChild(tempTextarea);
+        tempTextarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempTextarea);
+        alert('ID कॉपी हो गई!'); // You can replace this with a better UI message
+    });
+
+    // Google Sign-In function
+    googleSignInButton.addEventListener('click', () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(() => {
+          // Handled by onAuthStateChanged
+        })
+        .catch((error) => {
+          console.error('Sign-in error:', error);
+        });
+    });
+
+    // Sign out function
+    signOutButton.addEventListener('click', () => {
+      auth.signOut().then(() => {
+        console.log('User signed out successfully');
+      }).catch((error) => {
+        console.error('Sign-out error:', error);
+      });
+    });
+
+    // Find friend by ID function
+    findFriendButton.addEventListener('click', () => {
+        const friendId = friendIdSearchInput.value.trim();
+        if (friendId === "") {
+            foundFriendInfo.innerHTML = '<div class="text-sm text-red-500 mt-2">कृपया एक ID दर्ज करें।</div>';
+            return;
+        }
+
+        db.collection('users').doc(friendId).get().then(doc => {
+            if (doc.exists && doc.id !== currentUser.uid) {
+                const user = doc.data();
+                foundFriendInfo.innerHTML = `
+                    <div class="found-user-info cursor-pointer" id="found-friend-item">
+                        <img src="${user.photoURL || 'https://placehold.co/48x48/E2E8F0/1A202C?text=U'}" alt="${user.name}" class="rounded-full w-12 h-12">
+                        <div>
+                            <div class="font-bold">${user.name}</div>
+                            <div class="text-sm text-gray-600">${user.email}</div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('found-friend-item').addEventListener('click', () => {
+                    currentFriend = { id: doc.id, name: user.name };
+                    chatHeader.textContent = `चैट ${user.name} के साथ`;
+                    inputContainer.classList.remove('hidden');
+                    listenForPrivateMessages();
+                });
+            } else {
+                foundFriendInfo.innerHTML = '<div class="text-sm text-red-500 mt-2">यूज़र नहीं मिला।</div>';
+            }
+        }).catch(error => {
+            console.error("Error finding user:", error);
+            foundFriendInfo.innerHTML = '<div class="text-sm text-red-500 mt-2">यूज़र ढूंढने में त्रुटि।</div>';
+        });
+    });
+
+    // Save user data to Firestore
+    function saveUserData(user) {
+        db.collection('users').doc(user.uid).set({
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            lastLogin: new Date()
+        }, { merge: true }).then(() => {
+            console.log('User data saved successfully.');
+        }).catch((error) => {
+            console.error('Error saving user data:', error);
+        });
+    }
+
+    // Listen for other users
+    function listenForUsers() {
+        db.collection('users').onSnapshot(snapshot => {
+            usersList.innerHTML = '';
+            snapshot.forEach(doc => {
+                const user = doc.data();
+                if (doc.id !== currentUser.uid) { // Don't show current user in list
+                    displayUser(doc.id, user);
+                }
+            });
+        }, error => {
+            console.error("Error getting users: ", error);
+        });
+    }
+
+    // Display user in the sidebar
+    function displayUser(userId, user) {
+        const userItem = document.createElement('div');
+        userItem.classList.add('user-item');
+        userItem.innerHTML = `
+            <img src="${user.photoURL || 'https://placehold.co/48x48/E2E8F0/1A202C?text=U'}" alt="${user.name}">
+            <div>
+                <div class="font-bold text-gray-800">${user.name}</div>
+                <div class="text-xs text-gray-500">${user.email}</div>
+            </div>
+        `;
+        userItem.addEventListener('click', () => {
+            currentFriend = { id: userId, name: user.name };
+            chatHeader.textContent = `चैट ${user.name} के साथ`;
+            inputContainer.classList.remove('hidden');
+            listenForPrivateMessages();
+        });
+        usersList.appendChild(userItem);
+    }
+
+    // Function to listen for private messages
+    function listenForPrivateMessages() {
+        if (unsubscribeChat) {
+            unsubscribeChat();
+        }
+        if (!currentUser || !currentFriend) return;
+
+        const chatRoomId = [currentUser.uid, currentFriend.id].sort().join('-');
+        const chatRef = db.collection('private-chats').doc(chatRoomId).collection('messages');
+
+        unsubscribeChat = chatRef.orderBy('timestamp').onSnapshot(snapshot => {
+            messagesContainer.innerHTML = '';
+            snapshot.forEach(doc => {
+                const message = doc.data();
+                displayMessage(message);
+            });
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, error => {
+            console.error("Error getting messages: ", error);
+        });
+    }
+
+    // UI पर मैसेजेस दिखाएँ
+    function displayMessage(message) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message');
+        
+        const isMyMessage = currentUser && message.userId === currentUser.uid;
+        if (isMyMessage) {
+            messageDiv.classList.add('message-sent');
+        } else {
+            messageDiv.classList.add('message-received');
+        }
+
+        const authorSpan = document.createElement('span');
+        authorSpan.classList.add('message-author');
+        authorSpan.textContent = isMyMessage ? 'आप' : `${message.userName || 'Guest'}`;
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.textContent = message.text;
+
+        messageDiv.appendChild(authorSpan);
+        messageDiv.appendChild(contentDiv);
+        
+        messagesContainer.appendChild(messageDiv);
+    }
+
+    // मैसेज भेजें
+    function sendMessage() {
+        const text = messageInput.value.trim();
+        if (text === "" || !currentUser || !currentFriend) {
+            return;
+        }
+
+        const chatRoomId = [currentUser.uid, currentFriend.id].sort().join('-');
+        const chatRef = db.collection('private-chats').doc(chatRoomId).collection('messages');
+
+        chatRef.add({
+            text: text,
+            userId: currentUser.uid,
+            userName: currentUser.displayName,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then(() => {
+            messageInput.value = '';
+        })
+        .catch(error => {
+            console.error("Error writing document: ", error);
+        });
+    }
+
+    // Enter key से मैसेज भेजें
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    sendButton.addEventListener('click', sendMessage);
+
+</script>
+</body>
+</html>
+
