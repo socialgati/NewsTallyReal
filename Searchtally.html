@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SearchTally - Google-Style Minimalist Search</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for Inter font and Google Blue colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'google-blue': '#1A73E8', /* Primary Google Blue */
+                        'light-bg': '#F8F9FA', /* Very light gray */
+                        'text-dark': '#202124', /* Dark Google Text */
+                        'url-green': '#006621', /* URL green color */
+                        'link-hover': '#1D4ED8', 
+                        'card-bg': '#FFFFFF',
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Styles for Google-like Polish */
+        body {
+            background-color: #F8F9FA;
+        }
+        .search-button {
+            transition: all 0.3s ease;
+            background-color: #1A73E8;
+        }
+        .search-button:hover {
+            box-shadow: 0 1px 1px rgba(0,0,0,.15);
+            background-color: #1D4ED8;
+            transform: translateY(0);
+        }
+        
+        /* Search Input Styling (Pill-shaped, subtle shadow) */
+        .search-input-wrapper {
+            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+            transition: box-shadow 0.3s;
+        }
+        .search-input-wrapper:focus-within {
+             box-shadow: 0 2px 8px rgba(32, 33, 36, 0.4);
+        }
+        
+        /* Custom loading animation */
+        .loading-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #1A73E8;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 6px;
+            animation: bounce 1s infinite cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        .loading-dot:nth-child(2) { animation-delay: 0.1s; }
+        .loading-dot:nth-child(3) { animation-delay: 0.2s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); opacity: 0.8; }
+            50% { transform: translateY(-20px); opacity: 1; }
+        }
+        .ai-overview-card {
+            /* Styling like Google's AI Overview Box */
+            border: 1px solid #E0E0E0;
+            background-color: #E8F0FE; /* Very light blue background */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8 font-sans">
+
+    <!-- Header & Search Card (Minimalist Centered Look) -->
+    <header class="w-full max-w-2xl py-12 mb-12">
+        <h1 class="text-6xl font-extrabold text-google-blue text-center mb-6">SearchTally</h1>
+        
+        <!-- Search Input Field - Centered and Clean -->
+        <div class="search-input-wrapper flex items-center bg-white rounded-full p-1 border border-transparent hover:border-gray-200">
+            <input
+                type="text"
+                id="search-input"
+                placeholder="खोज के लिए अपनी क्वेरी यहाँ लिखें..."
+                class="flex-grow p-3 text-lg rounded-l-full outline-none focus:ring-0 focus:border-transparent text-text-dark"
+                onkeypress="if(event.key === 'Enter') document.getElementById('search-button').click()"
+            />
+            <button
+                id="search-button"
+                onclick="handleSearch()"
+                class="search-button text-white font-semibold py-3 px-6 mr-1 rounded-full flex items-center justify-center whitespace-nowrap text-md disabled:bg-gray-400 disabled:shadow-none"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <span class="hidden sm:inline ml-2">खोजें</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Loading Indicator -->
+    <div id="loading-indicator" class="hidden text-center mt-8 mb-12">
+        <div class="flex justify-center items-center mb-3">
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+        </div>
+        <p class="text-xl text-google-blue font-medium">AI सारांश उत्पन्न हो रहा है...</p>
+    </div>
+
+    <!-- Results Area -->
+    <main class="w-full max-w-4xl px-2">
+        
+        <!-- AI Overview Card (Summary - Styled like Featured Snippet) -->
+        <div id="overview-card" class="hidden ai-overview-card rounded-xl p-5 md:p-6 mb-8">
+            <h2 class="text-2xl font-bold text-google-blue mb-3 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 mr-2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 10V6"/><path d="M12 14v4"/></svg>
+                AI सारांश (AI Overview)
+            </h2>
+            <div id="answer-text" class="text-text-dark leading-relaxed text-base"></div>
+        </div>
+
+        <!-- Sources Card (Formatted as Stacked Search Results) -->
+        <div id="sources-card" class="hidden">
+            <h2 class="text-xl font-semibold text-text-dark mb-6 ml-2 border-b pb-2">शीर्ष वेब परिणाम</h2>
+            <div id="sources-list" class="space-y-8">
+                <!-- Stacked Search Result snippets will be injected here -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Constants
+        const API_KEY = "AIzaSyDStpVJpqJjfi8kdsGcYlBMfOD4ByKcagY"; // User provided API key
+        const MODEL = 'gemini-2.5-flash-preview-09-2025';
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
+        const MAX_RETRIES = 5;
+
+        // UI Elements
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const overviewCard = document.getElementById('overview-card');
+        const sourcesCard = document.getElementById('sources-card');
+        const answerText = document.getElementById('answer-text');
+        const sourcesList = document.getElementById('sources-list');
+
+        /**
+         * Enhanced Markdown to HTML conversion to handle paragraphs and lists better.
+         */
+        function simpleMarkdownToHtml(markdownText) {
+            let html = markdownText
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // Handle H2/H3 for sub-sections within the AI overview
+            html = html.replace(/^(#+)\s*(.*)$/gm, (match, hashes, content) => {
+                const level = hashes.length > 3 ? 3 : hashes.length;
+                return `<h${level} class="text-lg font-bold mt-4 mb-2 text-google-blue">${content}</h${level}>`;
+            });
+
+            // Lists
+            html = html.replace(/^[*-]\s*(.*)$/gm, '<li>$1</li>');
+            html = html.replace(/((?:<li>.*?<\/li>\s*)+)/gs, '<ul class="list-disc list-outside pl-5 mt-2 mb-4 space-y-1 text-text-dark">$1</ul>');
+
+            // Paragraphs
+            html = html.split('\n\n').map(block => {
+                if (block.trim().startsWith('<h') || block.trim().startsWith('<ul')) {
+                    return block; 
+                }
+                if (block.trim()) {
+                    return `<p class="mb-3 text-text-dark">${block.trim()}</p>`;
+                }
+                return '';
+            }).join('\n');
+
+            return html.trim();
+        }
+
+        /**
+         * Handles the click event for the search button.
+         */
+        function handleSearch() {
+            const query = searchInput.value.trim();
+            if (query === "") {
+                overviewCard.classList.remove('hidden');
+                answerText.innerHTML = '<p class="text-red-500">कृपया एक खोज क्वेरी दर्ज करें!</p>';
+                sourcesCard.classList.add('hidden');
+                return;
+            }
+
+            // Clear previous results and show loading state
+            answerText.innerHTML = '';
+            sourcesList.innerHTML = '';
+            overviewCard.classList.add('hidden');
+            sourcesCard.classList.add('hidden');
+            loadingIndicator.classList.remove('hidden');
+            searchButton.disabled = true;
+            searchInput.disabled = true;
+
+            performSearch(query);
+        }
+
+        /**
+         * Extracts and formats grounding sources from the API response.
+         */
+        function extractSources(candidate) {
+            const sources = [];
+            const groundingMetadata = candidate.groundingMetadata;
+
+            if (groundingMetadata && groundingMetadata.groundingAttributions) {
+                // Ensure unique sources by URI
+                const uniqueUris = new Set();
+                groundingMetadata.groundingAttributions.forEach(attribution => {
+                    if (attribution.web && attribution.web.uri && attribution.web.title) {
+                        if (!uniqueUris.has(attribution.web.uri)) {
+                            sources.push({
+                                uri: attribution.web.uri,
+                                title: attribution.web.title,
+                            });
+                            uniqueUris.add(attribution.web.uri);
+                        }
+                    }
+                });
+            }
+            return sources;
+        }
+
+        /**
+         * Performs the API call to the Gemini API with Google Search grounding.
+         */
+        async function performSearch(query) {
+            const payload = {
+                contents: [{ parts: [{ text: `Search for the latest information on: ${query}` }] }], 
+                tools: [{ google_search: {} }], // Enable Google Search grounding
+                systemInstruction: {
+                    parts: [{ text: "You are a professional search summarizer. Provide a concise, highly relevant AI Overview based on the search results. Use clear headings and lists where appropriate to present key facts and figures efficiently. Respond in the same language as the user's query (Hindi/Hinglish)." }]
+                }
+            };
+
+            for (let i = 0; i < MAX_RETRIES; i++) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 429 && i < MAX_RETRIES - 1) {
+                        const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue;
+                    }
+
+                    if (!response.ok) {
+                        const errorBody = await response.json();
+                        throw new Error(`API call failed with status ${response.status}: ${errorBody.error.message}`);
+                    }
+
+                    const result = await response.json();
+                    const candidate = result.candidates?.[0];
+
+                    if (candidate && candidate.content?.parts?.[0]?.text) {
+                        const generatedText = candidate.content.parts[0].text;
+                        const sources = extractSources(candidate);
+
+                        // 1. Update AI Overview (Summary)
+                        answerText.innerHTML = simpleMarkdownToHtml(generatedText);
+                        overviewCard.classList.remove('hidden');
+
+                        // 2. Update Search Results in Stacked Snippet Style
+                        if (sources.length > 0) {
+                            sources.forEach((source) => {
+                                const resultCard = document.createElement('div');
+                                // Styling like a clean, stacked search result snippet
+                                resultCard.className = 'w-full max-w-2xl mx-auto'; 
+                                
+                                resultCard.innerHTML = `
+                                    <div class="mb-1">
+                                        <!-- URL Line -->
+                                        <p class="text-sm text-url-green">${source.uri}</p>
+                                        <!-- Title -->
+                                        <a href="${source.uri}" target="_blank" rel="noopener noreferrer" class="text-xl font-medium text-google-blue hover:underline leading-snug block mt-0.5">
+                                            ${source.title}
+                                        </a>
+                                    </div>
+                                    <!-- Simulated Snippet -->
+                                    <p class="text-gray-700 text-sm leading-relaxed">
+                                        इस स्रोत में शीर्षक से संबंधित विस्तृत जानकारी, डेटा और लेख उपलब्ध है। पूरी जानकारी के लिए लिंक पर क्लिक करें। (This source provides detailed information, data, and articles related to the title. Click the link for full information.)
+                                    </p>
+                                `;
+                                sourcesList.appendChild(resultCard);
+                            });
+                            sourcesCard.classList.remove('hidden');
+                        }
+
+                    } else {
+                        answerText.innerHTML = "<p class='text-red-500'>AI इस क्वेरी के लिए कोई सारांश उत्पन्न नहीं कर सका। कृपया कोई भिन्न खोज शब्द आज़माएं।</p>";
+                        overviewCard.classList.remove('hidden');
+                    }
+                    break; // Exit loop on success or final failure
+                } catch (error) {
+                    // Critical error handling
+                    console.error("Error during API call:", error);
+                    answerText.innerHTML = `<p class='text-red-500'>एक गंभीर त्रुटि हुई: ${error.message}। कृपया जांचें कि आपकी API कुंजी मान्य है या नहीं, और फिर से प्रयास करें।</p>`;
+                    overviewCard.classList.remove('hidden');
+                    if (i === MAX_RETRIES - 1) {
+                        break;
+                    }
+                    const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+
+            // Always hide loading and re-enable controls regardless of success/failure
+            loadingIndicator.classList.add('hidden');
+            searchButton.disabled = false;
+            searchInput.disabled = false;
+        }
+
+    </script>
+</body>
+</html>
+
