@@ -412,7 +412,8 @@
         // --- Core Application Logic (English) ---
 
         // Global Constants
-        const API_KEY = ""; 
+        // API KEY PROVIDED BY USER: AIzaSyDStpVJpqJjfi8kdsGcYlBMfOD4ByKcagY
+        const API_KEY = "AIzaSyDStpVJpqJjfi8kdsGcYlBMfOD4ByKcagY"; 
         const MODEL_NAME = "gemini-2.5-flash-preview-09-2025";
         const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
         const TYPING_DELAY = 15;
@@ -447,7 +448,7 @@
         let currentUser = null; 
         let currentChatId = null;
 
-        // --- Sidebar Functions (FIXED: Moved to top for assured global availability) ---
+        // --- Sidebar Functions ---
 
         function openSidebar() {
             if (sidebarDrawer && drawerBackdrop) {
@@ -502,7 +503,6 @@
         const firebaseConfig = {
             apiKey: "AIzaSyA4zw5cZqxLwzkTy2e5NiHz-tGKqk1KGdI",
             authDomain: "newstally-df03c.firebaseapp.com",
-            databaseURL: "https://newstally-df03c-default-rtdb.firebaseio.com",
             projectId: "newstally-df03c",
             storageBucket: "newstally-df03c.firebasestorage.app",
             messagingSenderId: "506893212961",
@@ -1136,13 +1136,16 @@
                     } else if (response.status === 429 || response.status >= 500) {
                         await exponentialBackoff(attempt);
                     } else {
-                        console.error(`API Error (${response.status}):`, await response.text());
-                        responseText = `Server Error (${response.status}). Gemini API call failed.`;
+                        // Log 4xx errors clearly
+                        const errorBody = await response.json().catch(() => ({}));
+                        console.error(`API Error (${response.status}):`, errorBody);
+                        responseText = `Server Error (${response.status}). The API call failed. Please check the console for details.`;
                         break;
                     }
                 }
             } catch (error) {
                 console.error(`AI call failed after ${finalAttempt} attempts:`, error);
+                responseText = `Network or fetch error. Please check console for details.`;
             } finally {
                 simulateTyping(responseText, contentElement);
                 if (success) {
