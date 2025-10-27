@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indr.ai - Expressive AI Assistant</title>
+    <title>Indr.ai - Expressive Multi-Mode AI Assistant</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter Font -->
@@ -69,7 +69,18 @@
             color: #e3e3e3;
         }
         .dark #prompt-input::placeholder {
-            color: #94a3b8; /* Lighter gray for dark mode */
+            color: #94a3b8; 
+        }
+        .dark .sidebar-drawer {
+            background-color: #1a1c1e;
+            border-right-color: #374151;
+        }
+        .dark .menu-item:hover {
+            background-color: #2c3e50;
+        }
+        .dark .menu-item-active {
+            background-color: #1e3a8a;
+            color: #93c5fd;
         }
         /* --- End Dark Mode Styles --- */
 
@@ -167,39 +178,153 @@
         .dark #prompt-input::placeholder {
             color: #94a3b8; 
         }
+        
+        /* --- Sidebar / Drawer Styles (M3) --- */
+        .sidebar-drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 80%; /* Mobile optimized width */
+            max-width: 280px;
+            height: 100vh;
+            z-index: 40;
+            background-color: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-drawer.open {
+            transform: translateX(0);
+        }
+        
+        .menu-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 39;
+            background-color: rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s;
+        }
+        .menu-item {
+            padding: 0.75rem 1.25rem;
+            cursor: pointer;
+            transition: background-color 0.15s, color 0.15s;
+        }
+        .menu-item:hover {
+            background-color: #f3f4f6;
+        }
+        .menu-item-active {
+            color: #2563eb;
+            background-color: #e0f2fe;
+            font-weight: 600;
+        }
+        .dark .menu-item-active {
+            background-color: #1e3a8a;
+            color: #93c5fd;
+        }
 
     </style>
 </head>
 <body class="flex flex-col h-screen antialiased">
 
+    <!-- Sidebar Drawer -->
+    <div id="sidebar-drawer" class="sidebar-drawer flex flex-col">
+        <!-- Profile/Header Section -->
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex flex-col">
+            <h2 class="text-xl font-bold mb-2 text-gray-900 dark:text-gray-100">Menu</h2>
+            
+            <div id="profile-section" class="flex items-center space-x-3 hidden">
+                <img id="menu-user-avatar" class="w-10 h-10 rounded-full border-2 border-blue-500" src="" alt="Profile Avatar">
+                <div class="flex flex-col">
+                    <span id="menu-user-name" class="font-semibold text-gray-900 dark:text-gray-100 truncate"></span>
+                    <span class="text-xs text-gray-500">Logged in via Google</span>
+                </div>
+            </div>
+            
+            <!-- Sign In Button -->
+            <button id="menu-sign-in-button" onclick="signInWithGoogle(); closeSidebar()" class="px-3 py-1.5 bg-blue-600 text-white font-medium text-sm rounded-lg shadow-md hover:bg-blue-700 transition duration-300 transform active:scale-95">
+                Sign In with Google
+            </button>
+
+        </div>
+
+        <!-- Main Navigation/Actions -->
+        <nav class="flex-grow overflow-y-auto">
+            
+            <!-- New Chat / Clear History -->
+            <div onclick="newChat(); closeSidebar()" class="menu-item flex items-center space-x-3 text-red-600 font-semibold border-b dark:border-gray-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                <span>New Chat (Save & Clear)</span>
+            </div>
+
+            <!-- AI Modes -->
+            <h3 class="text-xs font-semibold uppercase text-gray-500 px-4 pt-4 pb-2">AI Modes</h3>
+            <div id="ai-modes-section">
+                <!-- Research/Search Mode (Default) -->
+                <div class="menu-item mode-selector" data-mode="search" onclick="setMode('search'); closeSidebar()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <span>Research/Search Mode</span>
+                </div>
+                <!-- Creative Mode -->
+                <div class="menu-item mode-selector" data-mode="creative" onclick="setMode('creative'); closeSidebar()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 01-1.03-.984l-4.253-8.507a.75.75 0 00-1.352 0l-4.253 8.507a2 2 0 01-1.03.984l-.843.422a.75.75 0 00-.376 1.35l4.636 2.529a2.25 2.25 0 002.396 0l4.636-2.529a.75.75 0 00-.376-1.35l-.843-.422z"></path></svg>
+                    <span>Creative Mode (Text)</span>
+                </div>
+                 <!-- Code Mode -->
+                <div class="menu-item mode-selector" data-mode="code" onclick="setMode('code'); closeSidebar()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                    <span>Code/Dev Mode</span>
+                </div>
+                 <!-- Image Prompter Mode -->
+                <div class="menu-item mode-selector" data-mode="image_prompter" onclick="setMode('image_prompter'); closeSidebar()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-2-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-3"></path></svg>
+                    <span>Image Prompter</span>
+                </div>
+                 <!-- Video Idea Mode -->
+                <div class="menu-item mode-selector" data-mode="video_idea" onclick="setMode('video_idea'); closeSidebar()">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M12 21V3"></path></svg>
+                    <span>Video Idea Generator</span>
+                </div>
+            </div>
+
+            <!-- Recent Chats -->
+            <h3 class="text-xs font-semibold uppercase text-gray-500 px-4 pt-4 pb-2">Recent Chats</h3>
+            <div id="recent-chats-list">
+                <p class="px-4 text-sm text-gray-400">Sign in to view recent chats.</p>
+            </div>
+            
+            <!-- Settings -->
+            <h3 class="text-xs font-semibold uppercase text-gray-500 px-4 pt-4 pb-2 border-t dark:border-gray-700 mt-4">Settings</h3>
+            <div class="menu-item flex items-center justify-between">
+                <span>Dark Mode</span>
+                <!-- Dark Mode Toggle within Menu -->
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="menu-dark-mode-toggle-checkbox" value="" class="sr-only peer" onclick="toggleDarkMode(true)">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                </label>
+            </div>
+
+        </nav>
+        
+        <!-- Footer / Sign Out Section (Visible when logged in) -->
+        <div id="sign-out-section" class="p-4 border-t dark:border-gray-700 hidden">
+             <button onclick="signOutUser(); closeSidebar()" class="w-full text-left px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition duration-150 rounded-lg">
+                <svg class="w-4 h-4 inline mr-2 align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Sign Out
+            </button>
+        </div>
+    </div>
+    
+    <!-- Menu Backdrop -->
+    <div id="drawer-backdrop" class="menu-backdrop hidden" onclick="closeSidebar()"></div>
+
     <!-- Header (Elevated Surface) -->
     <header class="p-4 bg-white border-b border-gray-100 shadow-xl sticky top-0 z-20 flex items-center justify-between transition-all duration-400">
         
-        <!-- Auth Status and Clear Chat Buttons -->
-        <div id="auth-container" class="flex items-center space-x-2">
-            <!-- Sign In Button (Visible when logged out) -->
-            <button id="sign-in-button" onclick="signInWithGoogle()" class="px-3 py-1.5 bg-blue-600 text-white font-medium text-sm rounded-full shadow-lg hover:bg-blue-700 transition duration-300 transform active:scale-95" title="Google से साइन इन करें">
-                Sign In
-            </button>
-            
-            <!-- User Avatar and Menu (Visible when logged in) -->
-            <div id="user-avatar-container" class="hidden relative">
-                <img id="user-avatar" src="https://placehold.co/40x40/93c5fd/ffffff?text=U" alt="User Avatar" class="w-10 h-10 rounded-full cursor-pointer border-2 border-blue-600 shadow-lg ring-2 ring-blue-200 hover:ring-blue-400 transition-all duration-300" onclick="showAuthMenu()">
-                
-                <!-- Auth Menu Overlay -->
-                <div id="auth-menu" class="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 hidden z-50 transition-all duration-300 transform origin-top-right">
-                    <p id="user-name-display" class="p-3 text-sm font-semibold text-gray-900 dark:text-gray-100 border-b dark:border-gray-700 truncate"></p>
-                    <button onclick="clearChat(); hideAuthMenu();" class="w-full text-left px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition duration-150">
-                        <svg class="w-4 h-4 inline mr-2 align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        चैट साफ करें
-                    </button>
-                    <button onclick="signOut(); hideAuthMenu();" class="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-150 rounded-b-xl">
-                        <svg class="w-4 h-4 inline mr-2 align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                        साइन आउट
-                    </button>
-                </div>
-            </div>
-        </div>
+        <!-- Menu Toggle Button -->
+        <button onclick="openSidebar()" class="btn-icon p-2 text-gray-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-300 transform active:scale-95" title="Open Menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
 
         <div class="flex items-center space-x-2">
             <!-- Indr.ai Icon/Logo in Header -->
@@ -211,10 +336,15 @@
             <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 transition-colors duration-400">Indr.<span class="text-blue-600">ai</span></h1>
         </div>
 
-        <!-- Dark Mode Toggle Button -->
-        <button id="dark-mode-toggle" onclick="toggleDarkMode()" class="btn-icon p-2 text-gray-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-300" title="डार्क मोड टॉगल करें (Toggle Dark Mode)">
-             <svg id="dark-mode-icon" class="w-6 h-6 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-        </button>
+        <!-- Auth Status Placeholder/Sign In Button -->
+        <div class="w-10 h-10 flex items-center justify-center">
+            <!-- Sign In Button (Small, visible when logged out) -->
+            <button id="header-sign-in-button" onclick="signInWithGoogle()" class="px-3 py-1.5 bg-blue-600 text-white font-medium text-sm rounded-full shadow-lg hover:bg-blue-700 transition duration-300 transform active:scale-95 hidden" title="Sign in with Google">
+                Sign In
+            </button>
+            <!-- User Avatar (Small, visible when logged in) -->
+            <img id="header-user-avatar" class="w-10 h-10 rounded-full cursor-pointer border-2 border-blue-600 shadow-lg ring-2 ring-blue-200 hover:ring-blue-400 transition-all duration-300 hidden" onclick="openSidebar()" src="https://placehold.co/40x40/93c5fd/ffffff?text=U" alt="User Avatar">
+        </div>
     </header>
 
     <!-- Main Chat Area -->
@@ -229,9 +359,10 @@
                     </svg>
                 </div>
                 <div class="ai-response-content-wrapper">
-                    <p id="initial-message-header" class="font-bold text-blue-700 mb-2 transition-colors duration-400">Indr.ai (Search Mode)</p>
+                    <p class="font-bold text-blue-700 mb-2 transition-colors duration-400" id="current-mode-display">Indr.ai (Research Mode)</p>
                     <div id="initial-message-content" class="ai-content-text text-gray-700 dark:text-gray-300 transition-colors duration-400">
-                        <p>नमस्ते! मैं जेमिनी द्वारा संचालित **Indr.ai** हूँ। मैं वर्तमान में **Search Mode** में हूँ। **जारी रखने के लिए कृपया साइन इन करें।**</p>
+                        <p>Hello! I am **Indr.ai**, powered by Gemini. I am currently in **Research Mode**, which uses Google to provide up-to-date, grounded information. Feel free to ask me anything!</p>
+                        <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Sign in is optional. Click the **Menu** button in the top left corner for settings and sign-in options.</p>
                     </div>
                 </div>
             </div>
@@ -246,7 +377,7 @@
             <!-- Image Preview Area (Subtle Elevation) -->
             <div id="image-preview-container" class="hidden relative p-3 border border-blue-300 rounded-xl bg-blue-50 shadow-md dark:bg-gray-700 dark:border-blue-700 transition-colors duration-400">
                 <img id="image-preview" class="max-h-32 rounded-lg object-contain w-full" src="" alt="Uploaded image preview">
-                <button onclick="removeImage()" class="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition duration-300 shadow-lg" title="इमेज हटाएँ (Remove image)">
+                <button onclick="removeImage()" class="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition duration-300 shadow-lg" title="Remove Image">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
                 <span id="image-filename" class="text-xs text-blue-700 font-medium mt-2 block truncate w-40 dark:text-blue-300 transition-colors duration-400"></span>
@@ -259,12 +390,12 @@
                 <input type="file" id="file-upload" class="file-input-hidden" accept="image/jpeg, image/png" onchange="handleFileSelect(event)">
                 <button id="upload-button" onclick="document.getElementById('file-upload').click()" 
                         class="btn-icon p-2 w-10 h-10 flex-shrink-0 flex items-center justify-center text-gray-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
-                        title="इमेज अपलोड करें (Upload Image)" disabled>
+                        title="Upload Image">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-2-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-3"></path></svg>
                 </button>
                 
                 <!-- 2. Textarea (Now looks like a single line) -->
-                <textarea id="prompt-input" rows="1" class="flex-grow p-1 text-gray-800 border-none focus:ring-0 resize-none outline-none overflow-hidden dark:bg-gray-700 dark:text-gray-100 transition-colors duration-300" placeholder="Sign in to chat..." disabled></textarea>
+                <textarea id="prompt-input" rows="1" class="flex-grow p-1 text-gray-800 border-none focus:ring-0 resize-none outline-none overflow-hidden dark:bg-gray-700 dark:text-gray-100 transition-colors duration-300" placeholder="Type your prompt here..." ></textarea>
                 
                 <!-- 3. Send Button (Vibrant, Prominent) -->
                 <button id="send-button" onclick="sendMessage()" class="btn-icon p-2 w-10 h-10 flex-shrink-0 flex items-center justify-center text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 disabled:opacity-40 disabled:cursor-not-allowed ml-2" disabled>
@@ -278,6 +409,8 @@
     <div id="modal-backdrop" class="fixed inset-0 z-20 hidden"></div>
 
     <script>
+        // --- Core Application Logic (English) ---
+
         // Global Constants
         const API_KEY = ""; 
         const MODEL_NAME = "gemini-2.5-flash-preview-09-2025";
@@ -290,25 +423,82 @@
         const sendButton = document.getElementById('send-button');
         const uploadButton = document.getElementById('upload-button');
         const imagePreviewContainer = document.getElementById('image-preview-container');
-        const imagePreview = document.getElementById('image-preview');
-        const imageFilename = document.getElementById('image-filename');
-        const darkModeIcon = document.getElementById('dark-mode-icon');
         const bodyElement = document.body;
-        const signInButton = document.getElementById('sign-in-button');
-        const userAvatarContainer = document.getElementById('user-avatar-container');
-        const userAvatar = document.getElementById('user-avatar');
-        const authMenu = document.getElementById('auth-menu');
-        const userNameDisplay = document.getElementById('user-name-display');
+        const currentModeDisplay = document.getElementById('current-mode-display');
+
+        // Sidebar/Auth Elements
+        const sidebarDrawer = document.getElementById('sidebar-drawer');
+        const drawerBackdrop = document.getElementById('drawer-backdrop');
+        const profileSection = document.getElementById('profile-section');
+        const menuSignInButton = document.getElementById('menu-sign-in-button');
+        const menuUserAvatar = document.getElementById('menu-user-avatar');
+        const menuUserName = document.getElementById('menu-user-name');
+        const signOutSection = document.getElementById('sign-out-section');
+        const darkModeCheckbox = document.getElementById('menu-dark-mode-toggle-checkbox');
+        const headerSignInButton = document.getElementById('header-sign-in-button');
+        const headerUserAvatar = document.getElementById('header-user-avatar');
+        const recentChatsList = document.getElementById('recent-chats-list');
 
         // State Variables
         let chatHistory = [];
         let isTyping = false;
-        let currentMode = 'search';
+        let currentMode = 'search'; // Default mode
         let uploadedFile = null;
-        let userLoggedIn = false; // New state variable
+        let currentUser = null; 
+        let currentChatId = null;
 
-        // --- Firebase Initialization (V8 Compat) ---
-        
+        // --- Sidebar Functions (FIXED: Moved to top for assured global availability) ---
+
+        function openSidebar() {
+            if (sidebarDrawer && drawerBackdrop) {
+                sidebarDrawer.classList.add('open');
+                drawerBackdrop.classList.remove('hidden');
+            }
+        }
+
+        function closeSidebar() {
+            if (sidebarDrawer && drawerBackdrop) {
+                sidebarDrawer.classList.remove('open');
+                drawerBackdrop.classList.add('hidden');
+            }
+        }
+
+        // --- Mode Configuration ---
+        const MODE_CONFIGS = {
+            search: {
+                label: "Research",
+                instruction: "You are a world-class research assistant. Provide concise, accurate, and up-to-date answers. Use Google Search grounding. Ensure all your output is grammatically flawless and coherent.",
+                tools: [{ "google_search": {} }],
+                placeholder: "Ask factual or research questions (Google Grounded)..."
+            },
+            creative: {
+                label: "Creative",
+                instruction: "You are a professional author and storyteller. Respond with imagination and flair, focusing on engaging and well-structured narratives (poetry, stories, scripts). Ensure all your output is grammatically flawless and coherent.",
+                tools: null,
+                placeholder: "Write a poem, story, or narrative prompt..."
+            },
+            code: {
+                label: "Code",
+                instruction: "You are an expert software developer. Provide clear, well-commented, and efficient code snippets, technical explanations, or debugging advice. Output code in proper markdown format.",
+                tools: null,
+                placeholder: "Ask for a code snippet, explain a concept, or debug a function..."
+            },
+            image_prompter: {
+                label: "Image Prompter",
+                instruction: "You are an expert AI image prompt engineer. Based on the user's idea, generate a single, highly descriptive, detailed prompt for a text-to-image model like Imagen or Midjourney. Focus on style, lighting, color, mood, and composition.",
+                tools: null,
+                placeholder: "Describe the image you want to generate..."
+            },
+            video_idea: {
+                label: "Video Idea",
+                instruction: "You are a creative video content strategist. Generate compelling and viral-worthy video ideas, including title, hook, key scenes, and target audience, based on the user's request.",
+                tools: null,
+                placeholder: "Ask for a video idea or script concept..."
+            }
+        };
+
+
+        // --- Firebase Configuration (V8 Compat) ---
         const firebaseConfig = {
             apiKey: "AIzaSyA4zw5cZqxLwzkTy2e5NiHz-tGKqk1KGdI",
             authDomain: "newstally-df03c.firebaseapp.com",
@@ -320,35 +510,59 @@
             measurementId: "G-54QER193B3"
         };
         
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const db = firebase.firestore(); // Initialized as requested, though not used for chat history here.
+        const db = firebase.firestore();
 
-        const MODE_CONFIGS = {
-            search: {
-                label: "Search",
-                placeholder: "Type your prompt here...",
-                instruction: "You are a world-class research assistant. Provide concise, accurate, and up-to-date answers. Use Google Search grounding. Ensure all your output is grammatically flawless and coherent.",
-                tools: [{ "google_search": {} }],
+        // --- Auth & Persistence Functions ---
+
+        /** Updates the UI based on the current user state. */
+        function updateAuthUI(user) {
+            currentUser = user;
+            if (user) {
+                // Logged In - Sidebar
+                menuSignInButton.classList.add('hidden');
+                profileSection.classList.remove('hidden');
+                signOutSection.classList.remove('hidden');
+                
+                // Logged In - Header
+                headerSignInButton.classList.add('hidden');
+                headerUserAvatar.classList.remove('hidden');
+
+                const displayName = user.displayName || "User";
+                const avatarUrl = user.photoURL || "https://placehold.co/40x40/3b82f6/ffffff?text=U";
+                
+                menuUserAvatar.src = avatarUrl;
+                headerUserAvatar.src = avatarUrl;
+                menuUserName.textContent = displayName;
+                
+                // Load recent chats on login
+                loadRecentChats();
+
+            } else {
+                // Logged Out - Sidebar
+                menuSignInButton.classList.remove('hidden');
+                profileSection.classList.add('hidden');
+                signOutSection.classList.add('hidden');
+
+                // Logged Out - Header
+                headerSignInButton.classList.remove('hidden');
+                headerUserAvatar.classList.add('hidden');
+
+                // Clear recent chats on logout
+                recentChatsList.innerHTML = '<p class="px-4 text-sm text-gray-400">Sign in to view recent chats.</p>';
             }
-        };
-
-        // --- Auth Functions ---
-
-        /** Toggles the auth menu visibility. */
-        function showAuthMenu() {
-            authMenu.classList.toggle('hidden');
-        }
-
-        function hideAuthMenu() {
-            authMenu.classList.add('hidden');
         }
 
         /** Google Sign-In function */
         function signInWithGoogle() {
-            hideAuthMenu();
+            closeSidebar();
             const provider = new firebase.auth.GoogleAuthProvider();
             auth.signInWithPopup(provider)
+                .then((result) => {
+                    showCustomMessage(`Welcome, ${result.user.displayName || 'User'}!`, 'success');
+                })
                 .catch((error) => {
                     console.error('Sign-in error:', error);
                     showCustomMessage(`Sign-in failed: ${error.message}`, 'error');
@@ -356,86 +570,304 @@
         }
 
         /** Sign out function */
-        function signOut() {
-            hideAuthMenu();
+        function signOutUser() {
+            closeSidebar();
             auth.signOut().then(() => {
-                showCustomMessage('You have been signed out successfully.', 'info');
+                showCustomMessage('You have successfully signed out.', 'info');
+                // Force a new chat to clear session context, but don't save.
+                newChat(true); 
             }).catch((error) => {
                 console.error('Sign-out error:', error);
                 showCustomMessage(`Sign-out failed: ${error.message}`, 'error');
             });
         }
         
-        /** Listens for authentication state changes to update the UI. */
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in
-                userLoggedIn = true;
-                signInButton.classList.add('hidden');
-                userAvatarContainer.classList.remove('hidden');
-                userAvatar.src = user.photoURL || "https://placehold.co/40x40/93c5fd/ffffff?text=U";
-                userNameDisplay.textContent = user.displayName || user.email;
+        /** Saves the current chat history to Firestore */
+        async function saveChat() {
+            // Check if there are messages beyond the initial welcome message
+            const actualMessages = chatHistory.slice(1); 
+            if (!currentUser || actualMessages.length === 0) return;
 
-                promptInput.placeholder = MODE_CONFIGS[currentMode].placeholder;
-                promptInput.disabled = false;
-                
-                // Clear chat history on login to avoid mixing sessions
-                clearChat(true); 
+            // Generate title from the user's first query
+            const firstUserMessage = actualMessages.find(msg => msg.role === 'user');
+            const firstUserPart = firstUserMessage?.parts.find(p => p.text)?.text || 'Untitled Chat';
+            const title = `${MODE_CONFIGS[currentMode].label}: ${firstUserPart.substring(0, 25)}${firstUserPart.length > 25 ? '...' : ''}`;
 
-            } else {
-                // User is signed out
-                userLoggedIn = false;
-                signInButton.classList.remove('hidden');
-                userAvatarContainer.classList.add('hidden');
-                hideAuthMenu();
+            const chatData = {
+                title: title,
+                mode: currentMode,
+                messages: JSON.stringify(chatHistory), 
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
 
-                promptInput.placeholder = "Sign in to chat...";
-                promptInput.disabled = true;
+            try {
+                // If it's an existing chat, update it. Otherwise, add a new one.
+                if (currentChatId) {
+                    await db.collection('users').doc(currentUser.uid).collection('recent_chats').doc(currentChatId).update(chatData);
+                } else {
+                    const newDoc = await db.collection('users').doc(currentUser.uid).collection('recent_chats').add(chatData);
+                    currentChatId = newDoc.id; // Set new chat ID for future updates
+                }
+                loadRecentChats(); // Reload sidebar list
+            } catch (error) {
+                console.error("Error saving chat:", error);
+                showCustomMessage("Error saving chat history. Please try again.", 'error');
             }
-            // Update all button states based on new login status
-            updateSendButtonState();
-        });
+        }
 
+        /** Renders the list of recent chats in the sidebar */
+        function renderRecentChats(chats) {
+            recentChatsList.innerHTML = ''; 
 
-        // --- UI & Logic Functions ---
+            if (chats.length === 0) {
+                recentChatsList.innerHTML = '<p class="px-4 text-sm text-gray-400">No recent chats</p>';
+                return;
+            }
 
-        /** Updates the disabled state of the send and upload buttons based on all relevant inputs and login status. */
+            chats.forEach(chat => {
+                const chatElement = document.createElement('div');
+                chatElement.className = 'menu-item flex items-center space-x-3 truncate';
+                chatElement.title = chat.title;
+                chatElement.innerHTML = `
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    <span class="truncate">${chat.title}</span>
+                `;
+                // Attach click handler to load the chat
+                chatElement.onclick = () => loadChat(chat.id, chat.mode); 
+                recentChatsList.appendChild(chatElement);
+            });
+        }
+
+        /** Fetches recent chat titles from Firestore */
+        async function loadRecentChats() {
+            if (!currentUser) return;
+
+            try {
+                const snapshot = await db.collection('users').doc(currentUser.uid).collection('recent_chats')
+                    .orderBy('timestamp', 'desc')
+                    .limit(10)
+                    .get();
+
+                const chats = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    mode: doc.data().mode || 'search',
+                    ...doc.data()
+                }));
+                renderRecentChats(chats);
+            } catch (error) {
+                console.error("Error loading recent chats:", error);
+                recentChatsList.innerHTML = '<p class="px-4 text-sm text-red-400">Error loading chats.</p>';
+            }
+        }
+
+        /** Loads a specific chat history from Firestore */
+        async function loadChat(chatId, mode = 'search') {
+            if (!currentUser) return;
+            closeSidebar();
+            
+            // 1. Save current chat before loading new one
+            if (chatHistory.length > 1) {
+                await saveChat(); 
+            }
+            
+            try {
+                const docRef = db.collection('users').doc(currentUser.uid).collection('recent_chats').doc(chatId);
+                const docSnap = await docRef.get();
+
+                if (docSnap.exists) {
+                    const data = docSnap.data();
+                    
+                    // Set current chat ID and mode
+                    currentChatId = chatId;
+                    setMode(data.mode || mode, true); // Set the mode without showing welcome message
+
+                    // Deserialize the full history
+                    chatHistory = JSON.parse(data.messages);
+                    
+                    // 2. Render the loaded history
+                    renderChatHistory(); 
+                    showCustomMessage(`Loaded chat: ${data.title}`, 'success');
+
+                } else {
+                    showCustomMessage("Chat not found.", 'error');
+                }
+            } catch (error) {
+                console.error("Error loading chat:", error);
+                showCustomMessage("Error loading chat.", 'error');
+            }
+        }
+
+        /** Renders the full chat history from the chatHistory array */
+        function renderChatHistory() {
+            // Clear all messages from the DOM
+            const messages = chatContainer.querySelectorAll('.ai-message-wrapper, .user-message-wrapper');
+            messages.forEach(msg => msg.remove());
+            
+            // Render stored messages
+            chatHistory.forEach((message, index) => {
+                if (index === 0) {
+                    // This is the welcome message. We ensure it's hidden during history rendering.
+                    const initialMessage = document.createElement('div');
+                    initialMessage.className = 'ai-message-wrapper';
+                    initialMessage.style.display = 'none';
+                    chatContainer.appendChild(initialMessage);
+                    return; 
+                }
+
+                const isUser = message.role === 'user';
+                const textPart = message.parts.find(p => p.text);
+                const filePart = message.parts.find(p => p.inlineData);
+
+                let fileData = null;
+                if (filePart) {
+                    fileData = {
+                        base64: filePart.inlineData.data,
+                        mimeType: filePart.inlineData.mimeType
+                    };
+                }
+
+                if (isUser) {
+                    addMessageToChat(textPart?.text || '', 'user', fileData);
+                } else {
+                    addModelMessageFromHistory(textPart?.text || '');
+                }
+            });
+            scrollToBottom();
+        }
+
+        /** Adds a model message directly to the DOM for history rendering */
+        function addModelMessageFromHistory(text) {
+            const modeLabel = MODE_CONFIGS[currentMode].label;
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = 'ai-message-wrapper'; 
+
+            const symbolDiv = document.createElement('div');
+            symbolDiv.className = 'indrai-symbol';
+            symbolDiv.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm-1-12h2v6h-2zm0 7h2v2h-2z"/></svg>`;
+            messageWrapper.appendChild(symbolDiv);
+            
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'ai-response-content-wrapper';
+            
+            const header = document.createElement('p');
+            header.className = 'font-bold text-blue-700 mb-2 transition-colors duration-300'; 
+            header.textContent = `Indr.ai (${modeLabel} Mode)`;
+            contentWrapper.appendChild(header);
+
+            const contentElement = document.createElement('div');
+            contentElement.className = 'ai-content-text text-gray-800 dark:text-gray-100 transition-colors duration-300';
+            contentElement.innerHTML = renderMarkdown(text);
+            
+            contentWrapper.appendChild(contentElement);
+            messageWrapper.appendChild(contentWrapper);
+            chatContainer.appendChild(messageWrapper);
+        }
+
+        /** Sets the current AI mode and updates the UI */
+        function setMode(modeKey, skipWelcomeMessage = false) {
+            if (isTyping) {
+                 showCustomMessage("Please wait for the current response to finish.", 'error');
+                 return;
+            }
+            if (modeKey === currentMode && !skipWelcomeMessage) return;
+
+            // 1. Save current chat before switching context
+            if (chatHistory.length > 1 && currentUser) {
+                saveChat();
+            }
+            
+            currentMode = modeKey;
+            currentChatId = null; // New mode means new chat context
+            
+            const config = MODE_CONFIGS[modeKey];
+            
+            // 2. Update Header/Input
+            currentModeDisplay.textContent = `Indr.ai (${config.label} Mode)`;
+            promptInput.placeholder = config.placeholder;
+
+            // 3. Update Sidebar Active State
+            document.querySelectorAll('.mode-selector').forEach(item => {
+                if (item.dataset.mode === modeKey) {
+                    item.classList.add('menu-item-active');
+                } else {
+                    item.classList.remove('menu-item-active');
+                }
+            });
+
+            // 4. Start New Chat (Clear UI)
+            if (!skipWelcomeMessage) {
+                 newChat(true); // Clear chat history state
+            }
+        }
+
+        /** Firebase Auth State Listener */
+        auth.onAuthStateChanged(updateAuthUI);
+        
+        // --- UI & Utility Functions ---
+
+        /** Updates the disabled state of the send and upload buttons. */
         function updateSendButtonState() {
             const isInputEmpty = promptInput.value.trim() === '';
             const isFileEmpty = uploadedFile === null;
             
-            const isSendDisabled = isTyping || !userLoggedIn || (isInputEmpty && isFileEmpty);
+            const isSendDisabled = isTyping || (isInputEmpty && isFileEmpty);
 
             sendButton.disabled = isSendDisabled;
-            uploadButton.disabled = !userLoggedIn || isTyping; 
+            uploadButton.disabled = isTyping; 
         }
 
-        function clearChat(suppressMessage = false) {
-            chatHistory = [];
+        async function newChat(suppressMessage = false) {
+            // 1. Save current chat if it has messages
+            if (chatHistory.length > 1 && currentUser) {
+                await saveChat(); 
+            }
             
+            // 2. Reset Chat History State
+            const config = MODE_CONFIGS[currentMode];
+            chatHistory = [{
+                role: 'model',
+                parts: [{ text: `Hello! I am **Indr.ai**, powered by Gemini. I am currently in **${config.label} Mode**. Feel free to ask me anything!\n\nSign in is optional. Click the **Menu** button in the top left corner for settings and sign-in options.` }]
+            }];
+            currentChatId = null;
+
+            // 3. Clear DOM messages
             const messages = chatContainer.querySelectorAll('.ai-message-wrapper, .user-message-wrapper');
-            for(let i = 1; i < messages.length; i++) {
-                messages[i].remove();
-            }
+            messages.forEach(msg => msg.remove());
             
-            const initialMessage = document.querySelector('.ai-message-wrapper:first-child');
-            if (initialMessage) {
-                initialMessage.style.display = 'flex'; 
-            }
+            // 4. Re-add the initial message structure dynamically
+            const initialMessage = document.createElement('div');
+            initialMessage.className = 'ai-message-wrapper';
+            initialMessage.innerHTML = `
+                <div class="indrai-symbol">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8zm-1-12h2v6h-2zm0 7h2v2h-2z"/></svg>
+                </div>
+                <div class="ai-response-content-wrapper">
+                    <p class="font-bold text-blue-700 mb-2 transition-colors duration-400">${currentModeDisplay.textContent}</p>
+                    <div class="ai-content-text text-gray-700 dark:text-gray-300 transition-colors duration-400">
+                        ${renderMarkdown(chatHistory[0].parts[0].text)}
+                    </div>
+                </div>
+            `;
+            chatContainer.appendChild(initialMessage);
+
 
             if (!suppressMessage) {
-                 showCustomMessage("चैट इतिहास साफ हो गया है। आप एक नई बातचीत शुरू कर सकते हैं।", 'success');
+                 showCustomMessage("New chat started.", 'success');
             }
+            
+            updateSendButtonState();
+            scrollToBottom();
         }
 
-        function toggleDarkMode() {
+        function toggleDarkMode(fromMenu = false) {
             bodyElement.classList.toggle('dark');
             const isDark = bodyElement.classList.contains('dark');
             
-            if (isDark) {
-                darkModeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>';
+            if (fromMenu) {
+                // Toggled from checkbox, its state is already set.
             } else {
-                darkModeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>';
+                // Toggled by system preference, sync the checkbox.
+                darkModeCheckbox.checked = isDark;
             }
         }
 
@@ -494,8 +926,8 @@
 
         function setUILoading(isLoading) {
             isTyping = isLoading;
-            promptInput.disabled = isLoading || !userLoggedIn;
-            document.getElementById('file-upload').disabled = isLoading || !userLoggedIn;
+            promptInput.disabled = isLoading;
+            document.getElementById('file-upload').disabled = isLoading;
             
             updateSendButtonState();
         }
@@ -589,8 +1021,8 @@
                     mimeType: file.type
                 };
                 
-                imagePreview.src = e.target.result;
-                imageFilename.textContent = file.name;
+                document.getElementById('image-preview').src = e.target.result;
+                document.getElementById('image-filename').textContent = file.name;
                 imagePreviewContainer.classList.remove('hidden');
                 updateSendButtonState();
                 resizeTextarea(); 
@@ -630,26 +1062,22 @@
 
         function removeImage() {
             uploadedFile = null;
-            imagePreview.src = '';
-            imageFilename.textContent = '';
+            document.getElementById('image-preview').src = '';
+            document.getElementById('image-filename').textContent = '';
             imagePreviewContainer.classList.add('hidden');
             document.getElementById('file-upload').value = null;
             updateSendButtonState();
         }
 
         async function sendMessage() {
-            if (!userLoggedIn) {
-                showCustomMessage("कृपया चैट करने के लिए पहले साइन इन करें।", 'info');
-                return;
-            }
-            
             const userQuery = promptInput.value.trim();
             if (!userQuery && !uploadedFile) return; 
             if (isTyping) return;
 
-            const initialMessage = document.querySelector('.ai-message-wrapper:first-child');
-            if (initialMessage) {
-                initialMessage.style.display = 'none';
+            // Hide initial message only on first send
+            const messagesOnScreen = chatContainer.querySelectorAll('.ai-message-wrapper, .user-message-wrapper').length;
+            if (messagesOnScreen === 1) { 
+                chatContainer.querySelector('.ai-message-wrapper:first-child').style.display = 'none';
             }
             
             let currentContentParts = [];
@@ -680,7 +1108,7 @@
 
             const { contentElement } = addModelMessageStructure();
             
-            let responseText = "क्षमा करें, मुझे एक समस्या का सामना करना पड़ा और मैं आपके अनुरोध को संसाधित नहीं कर सका। कृपया अपना नेटवर्क कनेक्शन जांचें और पुनः प्रयास करें।";
+            let responseText = "Sorry, I encountered an issue and couldn't process your request. Please check your network connection and try again.";
             let success = false;
             let finalAttempt = 0;
 
@@ -702,14 +1130,14 @@
                             success = true;
                             break; 
                         } else {
-                            responseText = "मुझे AI मॉडल से एक खाली या अपठनीय प्रतिक्रिया मिली।";
+                            responseText = "I received an empty or unreadable response from the AI model.";
                             throw new Error('Invalid AI response structure');
                         }
                     } else if (response.status === 429 || response.status >= 500) {
                         await exponentialBackoff(attempt);
                     } else {
-                        const errorBody = await response.json();
-                        responseText = `Server Error (${response.status}): ${errorBody.error.message || response.statusText}`;
+                        console.error(`API Error (${response.status}):`, await response.text());
+                        responseText = `Server Error (${response.status}). Gemini API call failed.`;
                         break;
                     }
                 }
@@ -771,10 +1199,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Check system preference for dark mode and apply if needed
             if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                 toggleDarkMode();
-            } else {
-                 darkModeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>';
+                 toggleDarkMode(false);
             }
+            
+            // Initialize chat history with the current mode's welcome message
+            setMode(currentMode, true); 
             updateSendButtonState(); 
         });
 
