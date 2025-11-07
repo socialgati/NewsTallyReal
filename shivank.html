@@ -29,7 +29,7 @@
             background-color: #1a1c1e; /* Deepest dark mode background */
             color: #e3e3e3;
         }
-        .dark header, .dark .input-footer, .dark #bottom-navigation, .dark #browse-nav-bar {
+        .dark header, .dark .input-footer {
             background-color: #1a1c1e;
             border-color: #374151;
         }
@@ -82,51 +82,21 @@
             background-color: #1e3a8a;
             color: #93c5fd;
         }
-        .dark .browse-nav-button {
-            color: #9ca3af; /* text-gray-400 */
-        }
-        .dark .browse-nav-button:hover {
-            background-color: #374151; /* bg-gray-700 */
-        }
-        .dark #browse-url-input {
-            background-color: #2c3e50; /* bg-gray-700 */
-            border-color: #4b5563; /* border-gray-600 */
-            color: #f3f4f6; /* text-gray-100 */
-        }
         /* --- End Dark Mode Styles --- */
 
-        /* --- New Layout Styles --- */
+        /* --- New Layout Styles (Simplified) --- */
         main {
-            /* 100vh - header (4.5rem) - bottom_nav (4rem) */
-            height: calc(100vh - 4.5rem - 4rem); 
-            position: relative;
-            overflow: hidden;
+            /* 100vh - header (4.5rem) */
+            height: calc(100vh - 4.5rem); 
+            /* Removed position: relative and overflow: hidden */
         }
 
-        #home-panel, #browse-panel {
-            position: absolute;
-            top: 0;
-            left: 0;
+        #home-panel {
+            position: relative; /* For input-footer positioning */
             width: 100%;
             height: 100%;
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
             display: flex;
             flex-direction: column;
-        }
-        
-        #home-panel.hidden, #browse-panel.hidden {
-            transform: translateX(100%);
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        #home-panel {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        #browse-panel {
-            transform: translateX(100%);
-            opacity: 0;
         }
         
         /* Expressive Chat Layout (Adjusted) */
@@ -145,26 +115,9 @@
             left: 0;
             right: 0;
             z-index: 30;
-            /* Reset sticky positioning as it's now absolute */
-            position: absolute;
             background-color: #ffffff; /* Explicit bg for stacking context */
         }
         
-        /* Bottom Navigation Styles */
-        #bottom-navigation { 
-            z-index: 40; 
-            height: 4rem;
-        }
-        .nav-item { color: #6b7280; } /* text-gray-500 */
-        .dark .nav-item { color: #9ca3af; } /* dark:text-gray-400 */
-        .nav-item.nav-active {
-            color: #2563eb; /* text-blue-600 */
-            font-weight: 600;
-        }
-        .dark .nav-item.nav-active {
-            color: #60a5fa; /* dark:text-blue-400 */
-        }
-
         /* Microphone Button Active State */
         #mic-button.is-listening {
             background-color: #ef4444; /* bg-red-500 */
@@ -179,31 +132,6 @@
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-        
-        /* --- Browse Panel Styles --- */
-        #browse-nav-bar {
-            background-color: #f9fafb; /* bg-gray-50 */
-        }
-        .browse-nav-button {
-            flex-shrink: 0;
-            width: 2.5rem; /* w-10 */
-            height: 2.5rem; /* h-10 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 9999px; /* rounded-full */
-            color: #6b7280; /* text-gray-500 */
-            transition: background-color 0.2s;
-        }
-        .browse-nav-button:hover {
-            background-color: #f3f4f6; /* bg-gray-100 */
-        }
-        .browse-nav-button:active {
-            transform: scale(0.9);
-        }
-        #browse-url-input {
-            height: 2.5rem; /* h-10 */
         }
         /* --- End New Layout Styles --- */
 
@@ -376,27 +304,27 @@
             <h3 class="text-xs font-semibold uppercase text-gray-500 px-4 pt-4 pb-2">AI Modes</h3>
             <div id="ai-modes-section">
                 <!-- Research/Search Mode (Default) -->
-                <div class="menu-item mode-selector" data-mode="search" onclick="setMode('search'); closeSidebar()">
+                <div class="menu-item mode-selector flex items-center space-x-3" data-mode="search" onclick="setMode('search'); closeSidebar()">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     <span>Research/Search Mode</span>
                 </div>
                 <!-- Creative Mode -->
-                <div class="menu-item mode-selector" data-mode="creative" onclick="setMode('creative'); closeSidebar()">
+                <div class="menu-item mode-selector flex items-center space-x-3" data-mode="creative" onclick="setMode('creative'); closeSidebar()">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 01-1.03-.984l-4.253-8.507a.75.75 0 00-1.352 0l-4.253 8.507a2 2 0 01-1.03.984l-.843.422a.75.75 0 00-.376 1.35l4.636 2.529a2.25 2.25 0 002.396 0l4.636-2.529a.75.75 0 00-.376-1.35l-.843-.422z"></path></svg>
                     <span>Creative Mode (Text)</span>
                 </div>
                  <!-- Code Mode -->
-                <div class="menu-item mode-selector" data-mode="code" onclick="setMode('code'); closeSidebar()">
+                <div class="menu-item mode-selector flex items-center space-x-3" data-mode="code" onclick="setMode('code'); closeSidebar()">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                     <span>Code/Dev Mode</span>
                 </div>
                  <!-- Image Prompter Mode -->
-                <div class="menu-item mode-selector" data-mode="image_prompter" onclick="setMode('image_prompter'); closeSidebar()">
+                <div class="menu-item mode-selector flex items-center space-x-3" data-mode="image_prompter" onclick="setMode('image_prompter'); closeSidebar()">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-2-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-3"></path></svg>
                     <span>Image Prompter</span>
                 </div>
                  <!-- Video Idea Mode -->
-                <div class="menu-item mode-selector" data-mode="video_idea" onclick="setMode('video_idea'); closeSidebar()">
+                <div class="menu-item mode-selector flex items-center space-x-3" data-mode="video_idea" onclick="setMode('video_idea'); closeSidebar()">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M12 21V3"></path></svg>
                     <span>Video Idea Generator</span>
                 </div>
@@ -462,7 +390,7 @@
         </div>
     </header>
 
-    <!-- Main Content Area (Tabs) -->
+    <!-- Main Content Area (Chat Only) -->
     <main class="flex-grow dark:bg-gray-800">
         
         <!-- Home Panel (Chat) -->
@@ -529,46 +457,11 @@
                 </div>
             </div>
         </div>
-
-        <!-- Browse Panel -->
-        <div id="browse-panel" class="w-full h-full flex flex-col hidden">
-            <!-- URL Input Bar -->
-            <div id="browse-nav-bar" class="p-2 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-2 shadow-md">
-                <!-- Home Button -->
-                <button id="browse-home-button" class="browse-nav-button" title="Go Home">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6-4h.01M12 12h.01M15 12h.01M12 15h.01M15 15h.01M9 15h.01"></path></svg>
-                </button>
-                <!-- Refresh Button -->
-                <button id="browse-refresh-button" class="browse-nav-button" title="Refresh Page">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m-15.357-2A8.001 8.001 0 0019.418 15m0 0H15"></path></svg>
-                </button>
-                <!-- URL Input -->
-                <input id="browse-url-input" type="text" class="flex-grow p-2 border border-gray-300 rounded-full focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-500 dark:text-white" placeholder="https://example.com">
-                <!-- Go Button -->
-                <button id="browse-go-button" class="browse-nav-button bg-blue-600 text-white hover:bg-blue-700" title="Go">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </button>
-            </div>
-            <!-- Iframe for browsing -->
-            <div class="flex-grow bg-gray-200 dark:bg-gray-800">
-                <iframe id="browse-iframe" class="flex-grow w-full h-full border-0" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
-            </div>
-        </div>
         
     </main>
     
-    <!-- Bottom Navigation -->
-    <nav id="bottom-navigation" class="w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-xl sticky bottom-0 z-40 flex justify-around">
-        <button id="nav-home" onclick="showTab('home')" class="nav-item flex-1 p-3 text-center transition-all duration-300">
-            <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6-4h.01M12 12h.01M15 12h.01M12 15h.01M15 15h.01M9 15h.01"></path></svg>
-            <span class="text-xs font-medium">Home</span>
-        </button>
-        <button id="nav-browse" onclick="showTab('browse')" class="nav-item flex-1 p-3 text-center transition-all duration-300">
-            <svg class="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21h4m-2 0V3M4 11h16M4 7h16M4 15h16M4 19h16M4 3h16"></path></svg>
-            <span class="text-xs font-medium">Browse</span>
-        </button>
-    </nav>
-
+    <!-- Bottom Navigation (REMOVED) -->
+    
     <!-- Modal for custom messages (No changes) -->
     <div id="modal-backdrop" class="fixed inset-0 z-20 hidden"></div>
 
@@ -597,7 +490,7 @@
             getDoc, 
             getDocs, 
             query, 
-            orderBy, 
+            // orderBy, // Removed to avoid index errors
             limit, 
             serverTimestamp 
         } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
@@ -652,18 +545,9 @@
         const headerUserAvatar = document.getElementById('header-user-avatar');
         const recentChatsList = document.getElementById('recent-chats-list');
         
-        // --- New DOM Elements ---
+        // --- Simplified DOM Elements (Browse Removed) ---
         const micButton = document.getElementById('mic-button');
-        const homePanel = document.getElementById('home-panel');
-        const browsePanel = document.getElementById('browse-panel');
-        const navHome = document.getElementById('nav-home');
-        const navBrowse = document.getElementById('nav-browse');
-        const browseUrlInput = document.getElementById('browse-url-input');
-        const browseGoButton = document.getElementById('browse-go-button');
-        const browseIframe = document.getElementById('browse-iframe');
-        // Browser control buttons
-        const browseHomeButton = document.getElementById('browse-home-button');
-        const browseRefreshButton = document.getElementById('browse-refresh-button');
+        // const homePanel = document.getElementById('home-panel'); // Already defined
 
         // --- State Variables ---
         let chatHistory = [];
@@ -695,63 +579,13 @@
             }
         }
 
-        // --- Tab Switching ---
-        window.showTab = function(tabName) {
-            if (tabName === 'home') {
-                homePanel.classList.remove('hidden');
-                browsePanel.classList.add('hidden');
-                
-                navHome.classList.add('nav-active');
-                navBrowse.classList.remove('nav-active');
+        // --- Tab Switching (REMOVED) ---
+        // window.showTab = function(tabName) { ... } // Removed
 
-                // Reset browse panel to save resources (but not on initial load)
-                if (browseIframe.src !== 'about:blank' && browseIframe.src !== '') {
-                    goBrowseHome();
-                }
-
-            } else if (tabName === 'browse') {
-                homePanel.classList.add('hidden');
-                browsePanel.classList.remove('hidden');
-                
-                navHome.classList.remove('nav-active');
-                navBrowse.classList.add('nav-active');
-            }
-        }
-
-        // --- Browse Panel Logic ---
-        function loadWebsite() {
-            let url = browseUrlInput.value.trim();
-            if (!url) return;
-            
-            // Basic URL validation/correction
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
-                browseUrlInput.value = url;
-            }
-
-            // NOTE: Many sites will block being loaded in an iframe via X-Frame-Options.
-            // This is a browser security feature.
-            try {
-                browseIframe.src = url;
-            } catch (e) {
-                console.error("Error loading URL in iframe:", e);
-                showCustomMessage("Could not load website. It may be blocking requests from other pages.", "error");
-            }
-        }
-        
-        /** Reloads the current page in the iframe */
-        function refreshWebsite() {
-            if (browseIframe.src && browseIframe.src !== 'about:blank') {
-                // Easiest way to force a reload
-                browseIframe.src = browseIframe.src;
-            }
-        }
-
-        /** Goes "home" in the browser tab (a blank page) */
-        function goBrowseHome() {
-            browseIframe.src = 'about:blank';
-            browseUrlInput.value = '';
-        }
+        // --- Browse Panel Logic (REMOVED) ---
+        // function loadWebsite() { ... } // Removed
+        // function refreshWebsite() { ... } // Removed
+        // function goBrowseHome() { ... } // Removed
 
         // --- Speech Recognition Logic ---
         function setupSpeechRecognition() {
@@ -933,10 +767,10 @@
             // Generate title from the user's first query
             const firstUserMessage = actualMessages.find(msg => msg.role === 'user');
             const firstUserPart = firstUserMessage?.parts.find(p => p.text)?.text || 'Untitled Chat';
-            const title = `${MODE_CONFIGS[currentMode].label}: ${firstUserPart.substring(0, 25)}${firstUserPart.length > 25 ? '...' : ''}`;
+            let title = `${MODE_CONFIGS[currentMode].label}: ${firstUserPart.substring(0, 25)}${firstUserPart.length > 25 ? '...' : ''}`;
 
             const chatData = {
-                title: title,
+                // title will be set below
                 mode: currentMode,
                 messages: JSON.stringify(chatHistory), 
                 timestamp: serverTimestamp() // v9
@@ -946,10 +780,18 @@
                 // If it's an existing chat, update it. Otherwise, add a new one.
                 if (currentChatId) {
                     const chatRef = doc(db, 'users', currentUser.uid, 'recent_chats', currentChatId); // v9
-                    await updateDoc(chatRef, chatData); // v9
+                    // When updating, don't overwrite a custom title
+                    const existingDoc = await getDoc(chatRef);
+                    const existingData = existingDoc.data();
+                    
+                    await updateDoc(chatRef, {
+                        ...chatData,
+                        title: existingData.title || title // Preserve existing title
+                    });
                 } else {
                     const collectionRef = collection(db, 'users', currentUser.uid, 'recent_chats'); // v9
-                    const newDoc = await addDoc(collectionRef, chatData); // v9
+                    // When adding, set the generated title
+                    const newDoc = await addDoc(collectionRef, { ...chatData, title: title }); // v9
                     currentChatId = newDoc.id; // Set new chat ID for future updates
                 }
                 loadRecentChats(); // Reload sidebar list
@@ -970,17 +812,111 @@
 
             chats.forEach(chat => {
                 const chatElement = document.createElement('div');
-                chatElement.className = 'menu-item flex items-center space-x-3 truncate';
+                chatElement.className = 'menu-item flex items-center justify-between space-x-2 truncate';
                 chatElement.title = chat.title;
-                chatElement.innerHTML = `
+                
+                // Click handler to load the chat
+                chatElement.onclick = () => loadChat(chat.id, chat.mode); 
+
+                const titleWrapper = document.createElement('div');
+                titleWrapper.className = 'flex items-center space-x-3 truncate flex-grow min-w-0'; // Added min-w-0 for truncation
+                titleWrapper.innerHTML = `
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                     <span class="truncate">${chat.title}</span>
                 `;
-                // Attach click handler to load the chat
-                chatElement.onclick = () => loadChat(chat.id, chat.mode); 
+                
+                const renameButton = document.createElement('button');
+                renameButton.className = 'p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 flex-shrink-0 z-10'; // z-10 to be clickable
+                renameButton.title = "Rename chat";
+                renameButton.innerHTML = `
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536l12.232-12.232z"></path></svg>
+                `;
+                
+                // Attach click handler to rename
+                renameButton.onclick = (event) => window.renameChat(event, chat.id, chat.title);
+
+                chatElement.appendChild(titleWrapper);
+                chatElement.appendChild(renameButton);
                 recentChatsList.appendChild(chatElement);
             });
         }
+        
+        /** Shows a modal for text input */
+        function showInputModal(title, prefillValue, saveCallback) {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('input-modal');
+            if (existingModal) existingModal.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'input-modal';
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 transition-opacity duration-300';
+            
+            // Sanitize prefillValue for the HTML attribute
+            const sanitizedValue = prefillValue.replace(/"/g, '&quot;');
+
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-gray-700 p-6 rounded-3xl shadow-2xl max-w-sm w-full transition-all duration-300 transform scale-100">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">${title}</h3>
+                    <input id="input-modal-field" type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:text-white" value="${sanitizedValue}">
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button id="input-modal-cancel" class="px-5 py-2 bg-gray-200 text-gray-800 font-semibold rounded-xl hover:bg-gray-300 transition duration-300">
+                            Cancel
+                        </button>
+                        <button id="input-modal-save" class="px-5 py-2 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition duration-300">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            `;
+            bodyElement.appendChild(modal);
+
+            const inputField = document.getElementById('input-modal-field');
+            const saveButton = document.getElementById('input-modal-save');
+            const cancelButton = document.getElementById('input-modal-cancel');
+            
+            const closeModal = () => modal.remove();
+
+            saveButton.onclick = () => {
+                const newValue = inputField.value.trim();
+                if (newValue) {
+                    saveCallback(newValue);
+                    closeModal();
+                } else {
+                    inputField.focus();
+                }
+            };
+            cancelButton.onclick = closeModal;
+            
+            // Allow Enter key to save
+            inputField.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    saveButton.click();
+                }
+            });
+
+            inputField.focus();
+            inputField.select();
+        }
+        
+        /** Renames a chat in Firestore */
+        window.renameChat = async function(event, chatId, oldTitle) {
+            event.stopPropagation(); // Stop the click from loading the chat
+            
+            showInputModal("Rename Chat", oldTitle, async (newName) => {
+                if (!newName || newName === oldTitle || !currentUser) return;
+                
+                const chatRef = doc(db, 'users', currentUser.uid, 'recent_chats', chatId);
+                try {
+                    await updateDoc(chatRef, { title: newName });
+                    showCustomMessage("Chat renamed successfully!", 'success');
+                    loadRecentChats(); // Refresh the sidebar
+                } catch (error) {
+                    console.error("Error renaming chat:", error);
+                    showCustomMessage("Error renaming chat.", 'error');
+                }
+            });
+        }
+
 
         /** Fetches recent chat titles from Firestore (v9+) - **FIXED** */
         async function loadRecentChats() {
@@ -1569,15 +1505,11 @@
             }
         });
         
-        // New Listeners
-        browseGoButton.addEventListener('click', loadWebsite);
-        browseUrlInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                loadWebsite();
-            }
-        });
-        browseHomeButton.addEventListener('click', goBrowseHome);
-        browseRefreshButton.addEventListener('click', refreshWebsite);
+        // --- Browse Event Listeners (REMOVED) ---
+        // browseGoButton.addEventListener('click', loadWebsite); // Removed
+        // browseUrlInput.addEventListener('keydown', ...); // Removed
+        // browseHomeButton.addEventListener('click', goBrowseHome); // Removed
+        // browseRefreshButton.addEventListener('click', refreshWebsite); // Removed
 
         // --- Initial DOMContentLoaded ---
         // (No listener needed, module script runs after DOM is parsed)
@@ -1593,7 +1525,7 @@
         
         // New Init
         setupSpeechRecognition();
-        showTab('home'); // Set initial tab
+        // showTab('home'); // Removed
 
     </script>
 </body>
