@@ -982,22 +982,38 @@
             });
         }
 
-        /** Fetches recent chat titles from Firestore (v9+) */
+        /** Fetches recent chat titles from Firestore (v9+) - **FIXED** */
         async function loadRecentChats() {
             if (!currentUser) return;
 
             try {
                 const collectionRef = collection(db, 'users', currentUser.uid, 'recent_chats'); // v9
-                const q = query(collectionRef, orderBy('timestamp', 'desc'), limit(10)); // v9
                 
-                const snapshot = await getDocs(q); // v9
+                // **FIX**: Remove the orderBy and limit from the query
+                // const q = query(collectionRef, orderBy('timestamp', 'desc'), limit(10)); 
+                // **REPLACEMENT**: Fetch all docs from the collection
+                const snapshot = await getDocs(collectionRef); // v9
 
-                const chats = snapshot.docs.map(doc => ({
+                let chats = snapshot.docs.map(doc => ({
                     id: doc.id,
                     mode: doc.data().mode || 'search',
                     ...doc.data()
                 }));
-                renderRecentChats(chats);
+
+                // **FIX**: Sort in JavaScript (client-side) to avoid index error
+                // We check for 'timestamp' in case some docs are old/missing it
+                chats.sort((a, b) => {
+                    // Use toMillis() to get a comparable number from the Firestore timestamp
+                    const timeA = a.timestamp?.toMillis() || 0;
+                    const timeB = b.timestamp?.toMillis() || 0;
+                    return timeB - timeA; // Descending order (newest first)
+                });
+
+                // **FIX**: Apply the limit *after* sorting
+                const limitedChats = chats.slice(0, 10);
+
+                renderRecentChats(limitedChats); // Render the sorted and limited chats
+            
             } catch (error) {
                 console.error("Error loading recent chats:", error);
                 recentChatsList.innerHTML = '<p class="px-4 text-sm text-red-400">Error loading chats.</p>';
