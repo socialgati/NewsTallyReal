@@ -4,28 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Indr.ai - Expressive Multi-Mode AI Assistant</title>
+    
+    <!-- === NEW: PWA META TAGS === -->
+    <meta name="theme-color" content="#ffffff"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Indr.ai">
+    <!-- Inline Manifest -->
+    <link rel="manifest" href="data:application/json,{
+        &quot;name&quot;: &quot;Indr.ai&quot;,
+        &quot;short_name&quot;: &quot;Indr.ai&quot;,
+        &quot;start_url&quot;: &quot;/&quot;,
+        &quot;display&quot;: &quot;standalone&quot;,
+        &quot;background_color&quot;: &quot;#f5f7fa&quot;,
+        &quot;theme_color&quot;: &quot;#ffffff&quot;,
+        &quot;description&quot;: &quot;Expressive Multi-Mode AI Assistant&quot;,
+        &quot;icons&quot;: [
+            { &quot;src&quot;: &quot;data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;rect width='100' height='100' rx='20' fill='%2360a5fa' /&gt;&lt;text x='50' y='65' font-size='50' font-family='Arial, sans-serif' fill='white' text-anchor='middle'&gt;🌅&lt;/text&gt;&lt;/svg&gt;&quot;, &quot;sizes&quot;: &quot;192x192&quot;, &quot;type&quot;: &quot;image/svg+xml&quot; },
+            { &quot;src&quot;: &quot;data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;rect width='100' height='100' rx='20' fill='%2360a5fa' /&gt;&lt;text x='50' y='65' font-size='50' font-family='Arial, sans-serif' fill='white' text-anchor='middle'&gt;🌅&lt;/text&gt;&lt;/svg&gt;&quot;, &quot;sizes&quot;: &quot;512x512&quot;, &quot;type&quot;: &quot;image/svg+xml&quot; }
+        ]
+    }">
+    <!-- Apple Touch Icon (using the same SVG trick) -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;rect width='100' height='100' rx='20' fill='%2360a5fa' /&gt;&lt;text x='50' y='65' font-size='50' font-family='Arial, sans-serif' fill='white' text-anchor='middle'&gt;🌅&lt;/text&gt;&lt;/svg&gt;">
+    <!-- === END: PWA META TAGS === -->
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     
     <style>
-        /* Base Body and Transitions for Smooth M3 Feel */
+        /* Base Body */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f5f7fa; /* Light mode base surface color */
-            color: #1a1c1e; /* Darkest gray */
+            background-color: #f5f7fa;
+            color: #1a1c1e;
             overflow-x: hidden; 
-            transition: background-color 0.4s, color 0.4s; /* Expressive transition */
-            /* --- NEW: Prevent text selection during long press --- */
-            user-select: none;
-            -webkit-user-select: none;
-            -ms-user-select: none;
+            transition: background-color 0.4s, color 0.4s;
         }
 
         /* --- Dark Mode Styles --- */
         .dark {
-            background-color: #1a1c1e; /* Deepest dark mode background */
+            background-color: #1a1c1e;
             color: #e3e3e3;
         }
         .dark header {
@@ -45,15 +65,15 @@
             color: #f3f4f6;
         }
         .dark .user-message {
-            background-color: #60a5fa; /* Vibrant blue container */
-            color: #1a1c1e; /* Dark text on vibrant container */
+            background-color: #60a5fa;
+            color: #1a1c1e;
             box-shadow: 0 4px 10px rgba(96, 165, 250, 0.4);
         }
         .dark .input-bar-container {
-            background-color: rgba(26, 28, 30, 0.7); /* dark:bg-gray-900/70 */
+            background-color: rgba(26, 28, 30, 0.7);
             -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
-            border-color: rgba(75, 85, 99, 0.5); /* dark:border-gray-700/50 */
+            border-color: rgba(75, 85, 99, 0.5);
             color: #f3f4f6;
         }
         .dark #prompt-input {
@@ -61,7 +81,7 @@
             color: #f3f4f6;
         }
         .dark .text-blue-700 {
-            color: #93c5fd; /* Lighter blue in dark mode */
+            color: #93c5fd;
         }
         .dark .text-gray-900 {
              color: #f3f4f6; 
@@ -87,37 +107,34 @@
             color: #93c5fd;
         }
         .dark #chat-search-input, .dark #model-select-dropdown {
-            background-color: #2c3e50; /* dark:bg-gray-700 */
-            border-color: #4b5563; /* dark:border-gray-600 */
+            background-color: #2c3e50;
+            border-color: #4b5563;
         }
         .dark .ai-btn.speaking svg {
-            color: #60a5fa; /* dark:text-blue-400 */
+            color: #60a5fa;
         }
         /* --- End Dark Mode Styles --- */
 
-        /* --- New Layout Styles (Simplified) --- */
+        /* Main Layout */
         main {
             height: calc(100dvh - 3.5rem); 
         }
-
         #home-panel {
-            position: relative; /* For input-footer positioning */
+            position: relative;
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
         }
-        
-        /* Expressive Chat Layout (Adjusted) */
         .chat-container {
-            flex-grow: 1; /* Takes up remaining space */
+            flex-grow: 1;
             overflow-y: auto;
             scroll-behavior: smooth;
             padding-top: 1.5rem; 
-            padding-bottom: 7rem; /* Space for input footer */
+            padding-bottom: 7rem;
         }
         
-        /* --- Custom Scrollbar --- */
+        /* Custom Scrollbar (Main Chat) */
         .chat-container::-webkit-scrollbar {
             width: 6px;
         }
@@ -132,10 +149,10 @@
             background-color: rgba(255, 255, 255, 0.2);
         }
         
-        /* --- Floating Input Footer --- */
+        /* Input Footer */
         .input-footer {
             position: absolute;
-            bottom: 0.5rem; /* 8px buffer */ 
+            bottom: 0.5rem;
             left: 0;
             right: 0;
             z-index: 30;
@@ -143,18 +160,14 @@
             border-top: none;
             box-shadow: none;
         }
-        
-        /* --- Frosted Glass Input Bar --- */
         .input-bar-container {
-            background-color: rgba(255, 255, 255, 0.7); /* bg-white/70 */
+            background-color: rgba(255, 255, 255, 0.7);
             -webkit-backdrop-filter: blur(12px);
-            backdrop-filter: blur(12px); /* Frosted glass effect */
-            border: 1px solid rgba(255, 255, 255, 0.3); /* border-white/30 */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* shadow-lg */
-            min-height: 4.25rem; /* Fixed height */
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            min-height: 4.25rem;
         }
-        
-        /* --- Single Line Textarea --- */
         #prompt-input {
             background-color: transparent;
             overflow: hidden;
@@ -166,23 +179,20 @@
 
         /* Microphone Button Active State */
         #mic-button.is-listening {
-            background-color: #ef4444; /* bg-red-500 */
+            background-color: #ef4444;
             color: white;
             animation: pulse 1.5s infinite;
         }
         .dark #mic-button.is-listening {
-            background-color: #f87171; /* dark:bg-red-400 */
+            background-color: #f87171;
         }
-
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
-        /* --- End New Layout Styles --- */
 
-        
-        /* AI message styling (Minimal, left-aligned) */
+        /* Message Styling */
         .ai-message-wrapper { 
             max-width: 48rem;
             margin-left: auto;
@@ -193,8 +203,6 @@
             align-items: flex-start;
             transition: all 0.3s;
         }
-        
-        /* User message styling (Expressive Rounding) */
         .user-message {
             background-color: #e0f7fa; 
             color: #1f2937;
@@ -205,8 +213,6 @@
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08); 
             transition: background-color 0.3s;
         }
-
-        /* Wrapper for user messages */
         .user-message-wrapper {
             max-width: 48rem; 
             margin-left: auto;
@@ -215,22 +221,21 @@
             display: flex;
             justify-content: flex-end; 
             transition: all 0.3s;
-            position: relative; /* For edit button */
+            position: relative;
         }
-        
         .ai-response-content-wrapper {
             padding-left: 0.75rem; 
             line-height: 1.7; 
             width: 100%;
-            position: relative; /* Needed for copy button positioning */
+            position: relative;
         }
         
-        /* --- NEW: Add cursor to streaming text --- */
+        /* Streaming Cursor */
         .ai-content-text .streaming-cursor {
             display: inline-block;
             width: 8px;
             height: 1.2em;
-            background-color: #2563eb; /* text-blue-600 */
+            background-color: #2563eb;
             animation: blink 1s step-end infinite;
             margin-left: 2px;
             vertical-align: text-bottom;
@@ -240,33 +245,35 @@
             50% { opacity: 0; }
         }
         .dark .ai-content-text .streaming-cursor {
-             background-color: #93c5fd; /* dark:text-blue-400 */
+             background-color: #93c5fd;
         }
 
-        /* --- Indr.ai Symbol --- */
+        /* --- MODIFIED: Indr.ai Symbol (Emoji) --- */
         .indrai-symbol {
             width: 2.25rem; 
             height: 2.25rem;
-            border-radius: 9999px;
-            background: none;
+            border-radius: 9999px; /* Make it circular */
+            background-image: linear-gradient(to-br, #60a5fa, #a78bfa); /* from-blue-400 to-purple-500 */
             color: white; 
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            box-shadow: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: all 0.3s;
-            overflow: hidden;
+            /* NEW: For emoji */
+            font-size: 1.5rem; 
+            line-height: 2rem; 
         }
         
-        /* Button Press Effect (Expressive Feedback) */
+        /* Button Press Effect */
         .btn-icon:active, .input-bar-container button:active {
             transform: scale(0.95);
             opacity: 0.8;
             transition: transform 0.1s;
         }
         
-        /* --- Enhanced Send Button --- */
+        /* Send Button */
         #send-button {
             box-shadow: 0 4px 14px rgba(59, 130, 246, 0.5);
         }
@@ -274,24 +281,9 @@
              box-shadow: 0 4px 14px rgba(96, 165, 250, 0.5);
         }
 
-        /* Typing Indicator Styles */
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: #2563eb;
-            display: inline-block;
-            animation: bounce 1.4s infinite ease-in-out both;
-            margin: 0 1px;
-        }
-
         .file-input-hidden { display: none; }
         
-        /* Placeholder Text Styling */
+        /* Placeholder Text */
         #prompt-input::placeholder {
             color: #9ca3af; 
             opacity: 1; 
@@ -300,15 +292,15 @@
             color: #94a3b8; 
         }
         
-        /* --- Sidebar / Drawer Styles (M3) --- */
+        /* --- Sidebar / Drawer Styles --- */
         .sidebar-drawer {
             position: fixed;
             top: 0;
             left: 0;
-            width: 80%; /* Mobile optimized width */
+            width: 80%;
             max-width: 280px;
             height: 100vh;
-            z-index: 50; /* Above backdrop and nav */
+            z-index: 50;
             background-color: #ffffff;
             border-right: 1px solid #e5e7eb;
             transform: translateX(-100%);
@@ -319,10 +311,27 @@
             transform: translateX(0);
         }
         
+        /* Custom Scrollbar for Sidebar Nav */
+        .sidebar-drawer nav::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar-drawer nav::-webkit-scrollbar-track {
+            background: transparent;
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+        .sidebar-drawer nav::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+        }
+        .dark .sidebar-drawer nav::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
         .menu-backdrop {
             position: fixed;
             inset: 0;
-            z-index: 49; /* Below sidebar */
+            z-index: 49;
             background-color: rgba(0, 0, 0, 0.5);
             transition: opacity 0.3s;
         }
@@ -344,7 +353,7 @@
             color: #93c5fd;
         }
         
-        /* --- AI Message Button Styles --- */
+        /* AI Message Button Styles */
         .ai-btn-container {
             position: absolute;
             top: 0;
@@ -361,29 +370,29 @@
         }
         .ai-btn {
             display: block;
-            padding: 0.375rem; /* p-1.5 */
-            border-radius: 9999px; /* rounded-full */
-            color: #6b7280; /* text-gray-500 */
+            padding: 0.375rem;
+            border-radius: 9999px;
+            color: #6b7280;
         }
         .ai-btn:hover {
-            background-color: #f3f4f6; /* hover:bg-gray-100 */
+            background-color: #f3f4f6;
         }
         .dark .ai-btn {
-            color: #9ca3af; /* dark:text-gray-400 */
+            color: #9ca3af;
         }
         .dark .ai-btn:hover {
-            background-color: #374151; /* dark:hover:bg-gray-700 */
+            background-color: #374151;
         }
         .ai-btn.speaking svg {
-            color: #2563eb; /* text-blue-600 */
+            color: #2563eb;
         }
         
-        /* --- User Message Button Styles --- */
+        /* User Message Button Styles */
         .user-message-wrapper .user-btn-container {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            left: -3.5rem; /* 14*4px = 56px */
+            left: -3.5rem;
             display: flex;
             opacity: 0;
             transition: opacity 0.2s;
@@ -391,30 +400,43 @@
         .user-message-wrapper:hover .user-btn-container {
             opacity: 1;
         }
-        .user-message-wrapper .ai-btn { /* Re-use ai-btn style */
-            background-color: #ffffff; /* bg-white */
+        .user-message-wrapper .ai-btn {
+            background-color: #ffffff;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .dark .user-message-wrapper .ai-btn {
-            background-color: #374151; /* dark:bg-gray-700 */
+            background-color: #374151;
         }
         
-        /* --- Model Select Dropdown Style --- */
+        /* Model Select Dropdown Style */
         #model-select-dropdown {
             width: 100%;
-            padding: 0.5rem 0.75rem; /* px-3 py-2 */
-            font-size: 0.875rem; /* text-sm */
-            border: 1px solid #D1D5DB; /* border-gray-300 */
-            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.5rem;
         }
         #model-select-dropdown:focus {
             outline: 2px solid transparent;
             outline-offset: 2px;
-            border-color: #2563eb; /* focus:border-blue-600 */
-            box-shadow: 0 0 0 2px #BFDBFE; /* focus:ring-2 focus:ring-blue-300 */
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px #BFDBFE;
         }
-        
-        /* --- REMOVED: Folder & Chat List Styles --- */
+
+        /* Chat Options Button (Hover) */
+        .chat-options-btn {
+            display: none;
+            flex-shrink: 0;
+            align-items: center;
+            z-index: 10;
+        }
+        .menu-item:hover .chat-options-btn {
+            display: flex;
+        }
+        .pin-btn.pinned svg {
+            fill: #fbbf24;
+            color: #f59e0b;
+        }
 
     </style>
 </head>
@@ -434,23 +456,19 @@
                 </div>
             </div>
             
-            <!-- Sign In Button -->
             <button id="menu-sign-in-button" onclick="signInWithGoogle(); closeSidebar()" class="px-3 py-1.5 bg-blue-600 text-white font-medium text-sm rounded-lg shadow-md hover:bg-blue-700 transition duration-300 transform active:scale-95">
                 Sign In with Google
             </button>
-
         </div>
 
-        <!-- Main Navigation/Actions -->
+        <!-- Main Navigation (Single Scroll) -->
         <nav class="flex-grow overflow-y-auto">
             
-            <!-- New Chat / Clear History -->
             <div onclick="newChat(); closeSidebar()" class="menu-item flex items-center space-x-3 text-red-600 font-semibold border-b dark:border-gray-700">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                 <span>New Chat (Save & Clear)</span>
             </div>
             
-            <!-- Export Chat -->
             <div onclick="exportChat(); closeSidebar()" class="menu-item flex items-center space-x-3 text-blue-600 border-b dark:border-gray-700">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 <span>Export Current Chat</span>
@@ -459,7 +477,7 @@
             <!-- AI Modes -->
             <h3 class="text-xs font-semibold uppercase text-gray-500 px-4 pt-4 pb-2">AI Modes</h3>
             <div id="ai-modes-section">
-                <!-- Modes will be rendered here -->
+                <!-- Modes -->
                 <div class="menu-item mode-selector flex items-center space-x-3" data-mode="search" onclick="setMode('search'); closeSidebar()">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     <span>Research/Search Mode</span>
@@ -488,30 +506,24 @@
                 <p class="text-sm text-gray-400">Loading models...</p>
             </div>
 
-            <!-- MODIFIED: Chats Section (Simplified) -->
+            <!-- Chats Section -->
             <div class="border-t dark:border-gray-700 mt-4 pt-4 px-3">
-                <!-- Section Header -->
                 <div class="flex items-center justify-between mb-2 px-1">
                     <h3 class="text-xs font-semibold uppercase text-gray-500">My Chats</h3>
-                    <!-- REMOVED: New Folder Button -->
                 </div>
                 
-                <!-- Search Chats Input -->
                 <div class="pb-2">
                     <input type="text" id="chat-search-input" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Search chats...">
                 </div>
                 
-                <!-- REMOVED: Folders List -->
-                
-                <!-- Recent Chats List -->
-                <div id="recent-chats-list" class="overflow-y-auto" style="max-height: 250px;">
+                <div id="recent-chats-list">
                     <p class="px-4 text-sm text-gray-400">Sign in to view recent chats.</p>
                 </div>
             </div>
             
             <!-- Settings -->
             <h3 class="text-xs font-semibold uppercase text-gray-500 px-4 pt-4 pb-2 border-t dark:border-gray-700 mt-4">Settings</h3>
-            <div class="menu-item flex items-center justify-between">
+            <div class="menu-item flex items-center justify-between mb-4">
                 <span>Dark Mode</span>
                 <label class="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" id="menu-dark-mode-toggle-checkbox" value="" class="sr-only peer" onclick="toggleDarkMode(true)">
@@ -521,7 +533,7 @@
 
         </nav>
         
-        <!-- Footer / Sign Out Section (Visible when logged in) -->
+        <!-- Footer / Sign Out Section (Sticky) -->
         <div id="sign-out-section" class="p-4 border-t dark:border-gray-700 hidden">
              <button onclick="signOutUser(); closeSidebar()" class="w-full text-left px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition duration-150 rounded-lg">
                 <svg class="w-4 h-4 inline mr-2 align-text-bottom" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
@@ -533,45 +545,36 @@
     <!-- Menu Backdrop -->
     <div id="drawer-backdrop" class="menu-backdrop hidden" onclick="closeSidebar()"></div>
 
-    <!-- Header (Elevated Surface) - THINNER -->
+    <!-- Header -->
     <header class="p-3 bg-white border-b border-gray-100 shadow-xl sticky top-0 z-20 flex items-center justify-between transition-all duration-400" style="height: 3.5rem;">
         
-        <!-- Menu Toggle Button -->
         <button onclick="openSidebar()" class="btn-icon p-2 text-gray-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-300 transform active:scale-95" title="Open Menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
 
         <div class="flex items-center space-x-2">
-            <!-- Indr.ai Icon/Logo in Header -->
-            <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-md overflow-hidden">
-                 <img src="1000012844.jpg" alt="Indr.ai Logo" class="w-full h-full object-cover">
-            </div>
+            <!-- MODIFIED: Emoji Logo 🌅 -->
+            <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-md bg-gradient-to-br from-blue-400 to-purple-500 text-2xl">🌅</div>
             <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 transition-colors duration-400">Indr.<span class="text-blue-600">ai</span></h1>
         </div>
 
-        <!-- Auth Status Placeholder/Sign In Button -->
         <div class="w-10 h-10 flex items-center justify-center">
-            <!-- Sign In Button (Small, visible when logged out) -->
             <button id="header-sign-in-button" onclick="signInWithGoogle()" class="px-3 py-1.5 bg-blue-600 text-white font-medium text-sm rounded-full shadow-lg hover:bg-blue-700 transition duration-300 transform active:scale-95 hidden" title="Sign in with Google">
                 Sign In
             </button>
-            <!-- User Avatar (Small, visible when logged in) -->
             <img id="header-user-avatar" class="w-10 h-10 rounded-full cursor-pointer border-2 border-blue-600 shadow-lg ring-2 ring-blue-200 hover:ring-blue-400 transition-all duration-300 hidden" onclick="openSidebar()" src="https://placehold.co/40x40/93c5fd/ffffff?text=U" alt="User Avatar">
         </div>
     </header>
 
-    <!-- Main Content Area (Chat Only) -->
+    <!-- Main Content Area -->
     <main class="flex-grow dark:bg-gray-800">
         
-        <!-- Home Panel (Chat) -->
         <div id="home-panel" class="w-full h-full flex flex-col">
             <div id="chat-container" class="chat-container w-full">
                 
-                <!-- Initial Welcome Message (Minimal Style) -->
                 <div class="ai-message-wrapper" id="initial-message-wrapper">
-                    <div class="indrai-symbol">
-                        <img src="1000012844.jpg" alt="Logo" class="w-full h-full object-cover">
-                    </div>
+                    <!-- MODIFIED: Emoji Logo 🌅 -->
+                    <div class="indrai-symbol">🌅</div>
                     <div class="ai-response-content-wrapper">
                         <p class="font-bold text-blue-700 mb-2 transition-colors duration-400" id="current-mode-display">Indr.ai (Research Mode)</p>
                         <div id="initial-message-content" class="ai-content-text text-gray-700 dark:text-gray-300 transition-colors duration-400">
@@ -583,11 +586,10 @@
                 <!-- Messages will be injected here -->
             </div>
             
-            <!-- Input Area (Expressive, Elevated Footer) -->
+            <!-- Input Area -->
             <div class="input-footer p-4 bg-transparent flex justify-center dark:bg-transparent transition-all duration-400">
                 <div class="w-full max-w-3xl flex flex-col space-y-3">
                     
-                    <!-- Image Preview Area (Subtle Elevation) -->
                     <div id="image-preview-container" class="hidden relative p-3 border border-blue-300 rounded-xl bg-blue-50 shadow-md dark:bg-gray-700 dark:border-blue-700 transition-colors duration-400">
                         <img id="image-preview" class="max-h-32 rounded-lg object-contain w-full" src="" alt="Uploaded image preview">
                         <button onclick="removeImage()" class="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition duration-300 shadow-lg" title="Remove Image">
@@ -596,10 +598,8 @@
                         <span id="image-filename" class="text-xs text-blue-700 font-medium mt-2 block truncate w-40 dark:text-blue-300 transition-colors duration-400"></span>
                     </div>
 
-                    <!-- Input Bar (Expressive Rounded Edges, Strong Elevation) -->
                     <div class="input-bar-container flex items-center p-3 border border-gray-300 rounded-[2rem] shadow-xl transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500">
                         
-                        <!-- 1. Plus Sign (Image Upload) -->
                         <input type="file" id="file-upload" class="file-input-hidden" accept="image/jpeg, image/png" onchange="handleFileSelect(event)">
                         <button id="upload-button" onclick="document.getElementById('file-upload').click()" 
                                 class="btn-icon p-2 w-10 h-10 flex-shrink-0 flex items-center justify-center text-gray-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
@@ -607,17 +607,14 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                         </button>
 
-                        <!-- 1.5. Microphone (Speech to Text) -->
                         <button id="mic-button" onclick="toggleSpeechRecognition()" 
                                 class="btn-icon p-2 w-10 h-10 flex-shrink-0 flex items-center justify-center text-gray-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-300 disabled:opacity-30 disabled:cursor-not-allowed"
                                 title="Toggle Speech to Text">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v2a3 3 0 01-3 3z"></path></svg>
                         </button>
                         
-                        <!-- 2. Textarea (Single line) -->
                         <textarea id="prompt-input" rows="1" class="flex-grow py-2.5 px-1 text-gray-800 border-none focus:ring-0 resize-none outline-none dark:bg-transparent dark:text-gray-100 transition-colors duration-300" placeholder="Type your prompt here..." ></textarea>
                         
-                        <!-- 3. Send Button (Vibrant, Prominent) -->
                         <button id="send-button" onclick="sendMessage()" class="btn-icon p-2 w-10 h-10 flex-shrink-0 flex items-center justify-center text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 disabled:opacity-40 disabled:cursor-not-allowed ml-2" disabled>
                             <svg id="send-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </button>
@@ -640,24 +637,12 @@
     <div id="confirmation-modal-container" class="fixed inset-0 flex items-center justify-center z-50 p-4 transition-opacity duration-300 hidden">
         <!-- Modal content will be injected here -->
     </div>
-
-    <!-- REMOVED: List/Move Modal -->
     
     <!-- Custom Message Modal (z-50) -->
     <div id="message-modal-container" class="fixed inset-0 flex items-center justify-center z-50 p-4 transition-opacity duration-300 hidden">
         <!-- Modal content will be injected here -->
     </div>
     
-    <!-- NEW: Context Menu Modal (z-50) -->
-    <div id="context-menu-modal" class="fixed inset-0 flex items-center justify-center z-50 p-4 transition-opacity duration-300 hidden">
-        <div class="bg-white dark:bg-gray-700 p-4 rounded-2xl shadow-2xl max-w-xs w-full transition-all duration-300 transform scale-100">
-            <div id="context-menu-content" class="flex flex-col space-y-2">
-                <!-- Buttons will be injected here -->
-            </div>
-        </div>
-    </div>
-
-
     <!-- 
       ==================================================================
       MAIN APPLICATION SCRIPT (MODULAR)
@@ -684,7 +669,6 @@
             getDocs,
             deleteDoc,
             query, 
-            // REMOVED: where
             limit, 
             serverTimestamp 
         } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
@@ -736,16 +720,11 @@
         const chatSearchInput = document.getElementById('chat-search-input');
         const modelSelectorContainer = document.getElementById('model-selector-container');
         
-        // --- MODIFIED: Simplified Chat List Elements ---
         const recentChatsList = document.getElementById('recent-chats-list');
         const modalBackdrop = document.getElementById('modal-backdrop');
         const inputModalContainer = document.getElementById('input-modal-container');
         const confirmationModalContainer = document.getElementById('confirmation-modal-container');
         const messageModalContainer = document.getElementById('message-modal-container');
-        
-        // --- NEW: Context Menu Modal ---
-        const contextMenuModal = document.getElementById('context-menu-modal');
-        const contextMenuContent = document.getElementById('context-menu-content');
         
         const micButton = document.getElementById('mic-button');
 
@@ -766,13 +745,6 @@
         // --- Model State ---
         let currentModelName = 'gemini-2.5-flash-preview-09-2025'; // Default fallback
         let availableModels = [];
-        
-        // --- REMOVED: Folder State ---
-        
-        // --- NEW: Long Press State ---
-        let pressTimer = null;
-        let isLongPress = false;
-
 
         // --- Sidebar Functions ---
         window.openSidebar = function() {
@@ -791,16 +763,13 @@
             }
         }
         
-        // --- MODIFIED: Filter Recent Chats (simpler) ---
         function filterRecentChats() {
             const searchTerm = chatSearchInput.value.toLowerCase();
-            // Filter chat items
             const chatItems = recentChatsList.querySelectorAll('.menu-item');
             chatItems.forEach(item => {
                 const title = item.title.toLowerCase();
                 item.style.display = title.includes(searchTerm) ? 'flex' : 'none';
             });
-            // REMOVED: Folder filtering
         }
 
         // --- Speech Recognition Logic (No changes) ---
@@ -925,7 +894,6 @@
                 headerUserAvatar.src = avatarUrl;
                 menuUserName.textContent = displayName;
                 
-                // --- MODIFIED: Load chats directly ---
                 loadRecentChats();
 
             } else {
@@ -936,12 +904,10 @@
                 headerSignInButton.classList.remove('hidden');
                 headerUserAvatar.classList.add('hidden');
 
-                // Clear sidebar
                 recentChatsList.innerHTML = '<p class="px-4 text-sm text-gray-400">Sign in to view recent chats.</p>';
             }
         }
 
-        /** Google Sign-In function (v9+) */
         window.signInWithGoogle = function() {
             closeSidebar();
             const provider = new GoogleAuthProvider();
@@ -955,7 +921,6 @@
                 });
         }
 
-        /** Sign out function (v9+) */
         window.signOutUser = function() {
             closeSidebar();
             signOut(auth).then(() => {
@@ -967,16 +932,11 @@
             });
         }
         
-        /**
-         * --- MODIFIED: Generates title and saves first chat ---
-         */
         async function generateAndSaveFirstChat() {
-            // --- REMOVED: folderId ---
             if (!currentUser || chatHistory.length < 3 || currentChatId !== null) return;
             
             const DYNAMIC_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${currentModelName}:generateContent?key=${API_KEY}`;
             
-            // 1. Generate Title
             const titlePrompt = `Analyze the following conversation and provide a very short, concise chat title (5 words or less). Example: 'History of Rome'. Do not add any other text. Title:\n\nUser: ${chatHistory[1].parts[0].text}\nModel: ${chatHistory[2].parts[0].text}`;
             let chatTitle = null;
             
@@ -1000,34 +960,28 @@
                 console.error("Title generation failed:", e); 
             }
 
-            // 2. Fallback Title
             if (!chatTitle) {
                 const firstUserPart = chatHistory[1].parts.find(p => p.text)?.text || 'Untitled Chat';
                 chatTitle = `${firstUserPart.substring(0, 30)}${firstUserPart.length > 30 ? '...' : ''}`;
             }
 
-            // 3. Save New Chat
             try {
                 const chatData = {
                     title: chatTitle,
                     mode: currentMode,
                     messages: JSON.stringify(chatHistory),
                     timestamp: serverTimestamp(),
-                    isPinned: false // --- Stays ---
-                    // REMOVED: folderId
+                    isPinned: false
                 };
                 const collectionRef = collection(db, 'users', currentUser.uid, 'recent_chats');
                 const newDoc = await addDoc(collectionRef, chatData);
                 currentChatId = newDoc.id;
-                loadRecentChats(); // Refresh sidebar
+                loadRecentChats();
             } catch (error) {
                 console.error("Error saving new chat:", error);
             }
         }
 
-        /**
-         * --- MODIFIED: Saves updates to an existing chat history ---
-         */
         async function saveChat() {
             if (!currentUser || !currentChatId || chatHistory.length <= 1) return;
 
@@ -1044,12 +998,11 @@
             }
         }
         
-        // --- REMOVED: Folder and Chat List Logic ---
-        // (createNewFolder, loadFolders, selectFolder)
-
-        /** Renders the list of recent chats in the sidebar */
+        /**
+         * --- MODIFIED: Renders chats with numbers and hover buttons ---
+         */
         function renderRecentChats(chats) {
-            chatSearchInput.value = ''; // Clear search on re-render
+            chatSearchInput.value = '';
             recentChatsList.innerHTML = ''; 
 
             if (chats.length === 0) {
@@ -1057,105 +1010,65 @@
                 return;
             }
 
-            chats.forEach(chat => {
+            chats.forEach((chat, index) => {
                 const chatElement = document.createElement('div');
                 chatElement.className = 'menu-item flex items-center justify-between space-x-2 truncate';
                 chatElement.title = chat.title;
                 
-                // --- NEW: Long Press and Click Handlers ---
-                chatElement.addEventListener('mousedown', (e) => handlePressStart(e, chat));
-                chatElement.addEventListener('touchstart', (e) => handlePressStart(e, chat));
-                chatElement.addEventListener('mouseup', (e) => handlePressEnd(e, chat));
-                chatElement.addEventListener('touchend', (e) => handlePressEnd(e, chat));
-                chatElement.addEventListener('contextmenu', (e) => e.preventDefault()); // Disable right-click menu
-                
+                chatElement.onclick = () => loadChat(chat.id, chat.mode); 
+
                 const titleWrapper = document.createElement('div');
-                titleWrapper.className = 'flex items-center space-x-3 truncate flex-grow min-w-0';
+                titleWrapper.className = 'flex items-center space-x-2 truncate flex-grow min-w-0';
                 
                 const pinIcon = chat.isPinned 
                     ? `<svg class="w-4 h-4 text-yellow-500 fill-yellow-400 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.152 1.02a.5.5 0 01.696 0l2.25 2.999a.5.5 0 01-.348.85H7.25a.5.5 0 01-.348-.85l2.25-2.999A.5.5 0 0110 1.02V1zM11 11.554V18.5a.5.5 0 01-1 0v-6.946L8.03 14.12a.5.5 0 01-.66-.748L10 10.118l2.63 3.254a.5.5 0 01-.66.748L11 11.554zM5.23 7.21a.5.5 0 01.707 0L10 11.283l4.06-4.073a.5.5 0 01.708.707L10.707 12 10 12.707l-.707-.707-4.062-4.06a.5.5 0 010-.707z" clip-rule="evenodd"></path></svg>`
-                    : `<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>`;
+                    : ``;
                     
                 titleWrapper.innerHTML = `
-                    ${pinIcon}
+                    <span class="text-xs text-gray-400 w-5 text-right flex-shrink-0">${index + 1}.</span>
+                    ${pinIcon ? `<span class="flex-shrink-0">${pinIcon}</span>` : ''}
                     <span class="truncate">${chat.title}</span>
                 `;
                 
-                // --- REMOVED: Button Container ---
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'chat-options-btn';
+
+                // Pin Button
+                const pinButton = document.createElement('button');
+                pinButton.className = `ai-btn pin-btn ${chat.isPinned ? 'pinned' : ''}`;
+                pinButton.title = chat.isPinned ? "Unpin chat" : "Pin chat";
+                pinButton.innerHTML = `<svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.152 1.02a.5.5 0 01.696 0l2.25 2.999a.5.5 0 01-.348.85H7.25a.5.5 0 01-.348-.85l2.25-2.999A.5.5 0 0110 1.02V1zM11 11.554V18.5a.5.5 0 01-1 0v-6.946L8.03 14.12a.5.5 0 01-.66-.748L10 10.118l2.63 3.254a.5.5 0 01-.66.748L11 11.554zM5.23 7.21a.5.5 0 01.707 0L10 11.283l4.06-4.073a.5.5 0 01.708.707L10.707 12 10 12.707l-.707-.707-4.062-4.06a.5.5 0 010-.707z" clip-rule="evenodd"></path></svg>`;
+
+                // Rename Button
+                const renameButton = document.createElement('button');
+                renameButton.className = 'ai-btn';
+                renameButton.title = "Rename chat";
+                renameButton.innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536l12.232-12.232z"></path></svg>
+                `;
+                
+                // Delete Button
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'ai-btn';
+                deleteButton.title = "Delete chat";
+                deleteButton.innerHTML = `
+                    <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                `;
+
+                pinButton.onclick = (event) => window.togglePin(event, chat.id, !chat.isPinned);
+                renameButton.onclick = (event) => window.renameChat(event, chat.id, chat.title);
+                deleteButton.onclick = (event) => window.deleteChat(event, chat.id, chat.title);
+
+                buttonContainer.appendChild(pinButton);
+                buttonContainer.appendChild(renameButton);
+                buttonContainer.appendChild(deleteButton);
                 
                 chatElement.appendChild(titleWrapper);
+                chatElement.appendChild(buttonContainer);
                 recentChatsList.appendChild(chatElement);
             });
         }
         
-        // --- NEW: Long Press Handlers ---
-        
-        function handlePressStart(e, chat) {
-            e.preventDefault(); // Prevent text selection
-            isLongPress = false; // Reset flag
-            
-            pressTimer = setTimeout(() => {
-                isLongPress = true;
-                // Vibrate for feedback on mobile
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
-                showPinMenu(chat);
-            }, 500); // 500ms for long press
-        }
-        
-        function handlePressEnd(e, chat) {
-            clearTimeout(pressTimer);
-            if (!isLongPress) {
-                // This was a short press (click)
-                loadChat(chat.id, chat.mode);
-            }
-            // Reset flag
-            isLongPress = false;
-        }
-
-        // --- NEW: Context Menu for Pin/Rename/Delete ---
-        
-        function showPinMenu(chat) {
-            const pinText = chat.isPinned ? "Unpin Chat 📍" : "Pin Chat 📌";
-            
-            contextMenuContent.innerHTML = `
-                <p class="font-semibold text-center text-sm truncate mb-2 px-2 text-gray-800 dark:text-gray-100">${chat.title}</p>
-                <button id="context-pin" class="w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600">${pinText}</button>
-                <button id="context-rename" class="w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600">Rename</button>
-                <button id="context-delete" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900">Delete</button>
-                <hr class="my-1 border-gray-200 dark:border-gray-600">
-                <button id="context-cancel" class="w-full text-left px-4 py-2 text-sm rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600">Cancel</button>
-            `;
-            
-            modalBackdrop.classList.remove('hidden');
-            contextMenuModal.classList.remove('hidden');
-            
-            const closeModal = () => {
-                modalBackdrop.classList.add('hidden');
-                contextMenuModal.classList.add('hidden');
-            };
-
-            document.getElementById('context-pin').onclick = () => {
-                togglePin(chat.id, !chat.isPinned);
-                closeModal();
-            };
-            document.getElementById('context-rename').onclick = () => {
-                closeModal();
-                // Delay to allow modal to close
-                setTimeout(() => renameChat(chat.id, chat.title), 100);
-            };
-            document.getElementById('context-delete').onclick = () => {
-                closeModal();
-                // Delay to allow modal to close
-                setTimeout(() => deleteChat(chat.id, chat.title), 100);
-            };
-            document.getElementById('context-cancel').onclick = closeModal;
-        }
-
-        /**
-         * --- MODIFIED: Modal Functions now use containers ---
-         */
         function showInputModal(title, prefillValue, saveCallback) {
             const sanitizedValue = prefillValue.replace(/"/g, '&quot;');
             inputModalContainer.innerHTML = `
@@ -1232,19 +1145,14 @@
             cancelButton.onclick = closeModal;
         }
         
-        // --- REMOVED: showMoveModal, moveChatToFolder ---
-        
-        /**
-         * --- MODIFIED: Toggles the pin state of a chat ---
-         */
-        window.togglePin = async function(chatId, newPinState) {
-            // REMOVED: event.stopPropagation();
+        window.togglePin = async function(event, chatId, newPinState) {
+            event.stopPropagation();
             if (!currentUser) return;
             
             const docRef = doc(db, 'users', currentUser.uid, 'recent_chats', chatId);
             try {
                 await updateDoc(docRef, { isPinned: newPinState });
-                loadRecentChats(); // Refresh list to re-sort
+                loadRecentChats();
             } catch (error) {
                 console.error("Error toggling pin:", error);
                 showCustomMessage("Error updating pin.", 'error');
@@ -1252,9 +1160,8 @@
         }
 
         
-        /** Renames a chat in Firestore */
-        window.renameChat = async function(chatId, oldTitle) {
-            // REMOVED: event.stopPropagation();
+        window.renameChat = async function(event, chatId, oldTitle) {
+            event.stopPropagation();
             showInputModal("Rename Chat", oldTitle, async (newName) => {
                 if (!newName || newName === oldTitle || !currentUser) return;
                 
@@ -1262,7 +1169,7 @@
                 try {
                     await updateDoc(chatRef, { title: newName });
                     showCustomMessage("Chat renamed successfully!", 'success');
-                    loadRecentChats(); // Refresh the sidebar
+                    loadRecentChats();
                 } catch (error) {
                     console.error("Error renaming chat:", error);
                     showCustomMessage("Error renaming chat.", 'error');
@@ -1270,11 +1177,8 @@
             });
         }
         
-        /**
-         * --- MODIFIED: Deletes a chat from Firestore ---
-         */
-        window.deleteChat = async function(chatId, chatTitle) {
-            // REMOVED: event.stopPropagation();
+        window.deleteChat = async function(event, chatId, chatTitle) {
+            event.stopPropagation();
             const safeTitle = chatTitle.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             
             showConfirmationModal("Delete Chat?", `Are you sure you want to delete '${safeTitle}'? This cannot be undone.`, async () => {
@@ -1286,10 +1190,10 @@
                     showCustomMessage("Chat deleted successfully.", 'success');
                     
                     if (currentChatId === chatId) {
-                        newChat(true); // true = suppress message
+                        newChat(true);
                     }
                     
-                    loadRecentChats(); // Refresh the sidebar
+                    loadRecentChats();
                 } catch (error) {
                     console.error("Error deleting chat:", error);
                     showCustomMessage("Error deleting chat.", 'error');
@@ -1298,16 +1202,12 @@
         }
 
 
-        /**
-         * --- MODIFIED: Fetches all chats (no folder filter) ---
-         */
         async function loadRecentChats() {
             if (!currentUser) return;
             
             recentChatsList.innerHTML = '<p class="px-4 text-sm text-gray-400">Loading chats...</p>';
 
             try {
-                // --- MODIFIED: Simplified Query ---
                 let q = collection(db, 'users', currentUser.uid, 'recent_chats');
                 
                 const snapshot = await getDocs(q);
@@ -1339,12 +1239,10 @@
             }
         }
 
-        /** Loads a specific chat history from Firestore (v9+) */
         async function loadChat(chatId, mode = 'search') {
             if (!currentUser) return;
             closeSidebar();
             
-            // 1. Save current chat before loading new one
             if (currentChatId && chatHistory.length > 1) {
                 await saveChat(); 
             }
@@ -1357,7 +1255,6 @@
                     const data = docSnap.data();
                     
                     currentChatId = chatId;
-                    // REMOVED: folderId logic
                     
                     setMode(data.mode || mode, true);
 
@@ -1375,7 +1272,6 @@
             }
         }
 
-        /** Renders the full chat history from the chatHistory array */
         function renderChatHistory() {
             const messages = chatContainer.querySelectorAll('.ai-message-wrapper:not(#initial-message-wrapper), .user-message-wrapper');
             messages.forEach(msg => msg.remove());
@@ -1406,7 +1302,7 @@
             scrollToBottom();
         }
 
-        /** Adds a model message directly to the DOM for history rendering */
+        /** MODIFIED: Emoji Logo 🌅 */
         function addModelMessageFromHistory(text) {
             const modeLabel = MODE_CONFIGS[currentMode].label;
             const messageWrapper = document.createElement('div');
@@ -1414,7 +1310,7 @@
 
             const symbolDiv = document.createElement('div');
             symbolDiv.className = 'indrai-symbol';
-            symbolDiv.innerHTML = `<img src="1000012844.jpg" alt="Logo" class="w-full h-full object-cover">`;
+            symbolDiv.innerHTML = `🌅`; // Emoji
             messageWrapper.appendChild(symbolDiv);
             
             const contentWrapper = document.createElement('div');
@@ -1437,7 +1333,6 @@
             chatContainer.appendChild(messageWrapper);
         }
 
-        /** Sets the current AI mode and updates the UI */
         window.setMode = function(modeKey, skipWelcomeMessage = false) {
             if (isTyping) {
                  showCustomMessage("Please wait for the current response to finish.", 'error');
@@ -1473,9 +1368,6 @@
             }
         }
         
-        /**
-         * --- NEW: Sets the current AI model ---
-         */
         window.setModel = function(modelName) {
             if (isTyping) {
                  showCustomMessage("Please wait for the current response to finish.", 'error');
@@ -1492,7 +1384,7 @@
             currentModelName = modelName;
             
             showCustomMessage(`Model switched to ${model.displayName}.`, 'success');
-            newChat(true); // Start new chat
+            newChat(true);
             closeSidebar();
         }
 
@@ -1527,8 +1419,6 @@
             }];
             currentChatId = null;
             
-            // REMOVED: folderId logic
-
             const messages = chatContainer.querySelectorAll('.ai-message-wrapper:not(#initial-message-wrapper), .user-message-wrapper');
             messages.forEach(msg => msg.remove());
             
@@ -1781,7 +1671,7 @@
             html = html.replace(/\n\s*\n/g, '</p><p>'); 
             html = html.replace(/(?<!\<\/p\>)(?<!\>)\n(?![\*\-]\s)(?!<)/g, '<br>');
             html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            if (html.trim().length > 0 && !html.startsWith('<p>') && !html.startsWith('<pre>') && !html.startsWith('<ul>') && !html.startsWith('<li>') && !html.startsWith('<ol>')) {
+            if (html.trim().length > 0 && !html.startsWith('<p>') && !html.startsWith('<pre>') && !html.startsWith('<ul>') && !html.startsWith('<li>') && !html.startsWith('ol>')) {
                  html = '<p>' + html + '</p>';
             }
             html = html.replace(/<p>([\s\S]*?)<\/p>/g, function(match, content) {
@@ -1842,6 +1732,7 @@
             }
         }
 
+        /** MODIFIED: Emoji Logo 🌅 */
         function addModelMessageStructure() {
             const modeLabel = MODE_CONFIGS[currentMode].label;
             
@@ -1850,7 +1741,7 @@
 
             const symbolDiv = document.createElement('div');
             symbolDiv.className = 'indrai-symbol';
-            symbolDiv.innerHTML = `<img src="1000012844.jpg" alt="Logo" class="w-full h-full object-cover">`;
+            symbolDiv.innerHTML = `🌅`; // Emoji
             messageWrapper.appendChild(symbolDiv);
             
             const contentWrapper = document.createElement('div');
@@ -2170,8 +2061,6 @@
             scrollToBottom();
         }
         
-        // --- Model Fetching Functions (No changes) ---
-        
         function renderModelSelector() {
             if (availableModels.length === 0) {
                 modelSelectorContainer.innerHTML = `<p class="text-sm text-red-400">No compatible text models found.</p>`;
@@ -2259,8 +2148,6 @@
         });
         
         chatSearchInput.addEventListener('input', filterRecentChats);
-
-        // --- Initial DOMContentLoaded ---
         
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
              toggleDarkMode(false);
@@ -2270,6 +2157,93 @@
         updateSendButtonState(); 
         setupSpeechRecognition();
         fetchAvailableModels();
+
+        // --- NEW: PWA Service Worker Registration ---
+        
+        /**
+         * Registers an inline service worker.
+         */
+        const registerServiceWorker = async () => {
+            if ('serviceWorker' in navigator) {
+                try {
+                    // 1. Define the Service Worker code as a string
+                    const swCode = `
+                        const CACHE_NAME = 'indrai-cache-v1';
+                        // Cache the app shell and static assets
+                        const urlsToCache = [
+                            '/', // Main HTML file
+                            'https://cdn.tailwindcss.com',
+                            'https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap',
+                            'https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js',
+                            'https://www.gstatic.com/firebasejs/12.5.0/firebase-analytics.js',
+                            'https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js',
+                            'https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js'
+                        ];
+        
+                        self.addEventListener('install', (event) => {
+                            // Perform install steps
+                            event.waitUntil(
+                                caches.open(CACHE_NAME)
+                                    .then((cache) => {
+                                        console.log('Opened cache');
+                                        return cache.addAll(urlsToCache);
+                                    })
+                            );
+                        });
+        
+                        self.addEventListener('fetch', (event) => {
+                            // Cache-first strategy
+                            event.respondWith(
+                                caches.match(event.request)
+                                    .then((response) => {
+                                        // Cache hit - return response
+                                        if (response) {
+                                            return response;
+                                        }
+                                        // Not in cache - fetch from network
+                                        return fetch(event.request);
+                                    }
+                                )
+                            );
+                        });
+        
+                        self.addEventListener('activate', (event) => {
+                            // Remove old caches
+                            const cacheWhitelist = [CACHE_NAME];
+                            event.waitUntil(
+                                caches.keys().then((cacheNames) => {
+                                    return Promise.all(
+                                        cacheNames.map((cacheName) => {
+                                            if (cacheWhitelist.indexOf(cacheName) === -1) {
+                                                return caches.delete(cacheName);
+                                            }
+                                        })
+                                    );
+                                })
+                            );
+                        });
+                    `;
+        
+                    // 2. Create a Blob from the string
+                    const blob = new Blob([swCode], { type: 'application/javascript' });
+        
+                    // 3. Create an Object URL from the Blob
+                    const swUrl = URL.createObjectURL(blob);
+        
+                    // 4. Register the Service Worker using the Object URL
+                    const registration = await navigator.serviceWorker.register(swUrl);
+                    console.log('Service Worker registered with scope:', registration.scope);
+                
+                } catch (error) {
+                    console.error('Service Worker registration failed:', error);
+                }
+            }
+        };
+        
+        // Register the SW after the page has loaded
+        window.addEventListener('load', () => {
+            registerServiceWorker();
+        });
 
     </script>
 </body>
