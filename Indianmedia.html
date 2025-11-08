@@ -183,7 +183,8 @@
             addDoc, 
             query, 
             onSnapshot, 
-            serverTimestamp 
+            serverTimestamp,
+            setLogLevel // *** FIX: Import setLogLevel ***
         } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
         // --- NEW: Firebase Storage Import ---
         import { 
@@ -194,22 +195,17 @@
         } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js";
 
         // --- User's Firebase Configuration (from previous app) ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyA4zw5cZqxLwzkTy2e5NiHz-tGKqk1KGdI",
-            authDomain: "newstally-df03c.firebaseapp.com",
-            databaseURL: "https://newstally-df03c-default-rtdb.firebaseio.com",
-            projectId: "newstally-df03c",
-            storageBucket: "newstally-df03c.firebasestorage.app",
-            messagingSenderId: "506893212961",
-            appId: "1:506893212961:web:1ccecae08a1c50c0207260",
-            measurementId: "G-5Y1HR4J88Y"
-        };
+        // *** FIX: Use __firebase_config global variable ***
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 
         // --- Initialize Firebase (Modular) ---
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         const storage = getStorage(app); // NEW: Initialize Storage
+        
+        // *** FIX: Add Log Level for debugging Firestore ***
+        setLogLevel('Debug');
 
         // --- Global State ---
         let currentUser = null;
@@ -217,8 +213,8 @@
         let feedListener = null; // To unsubscribe from feed updates on logout
         
         // --- App ID (from config) ---
-        // Hum rules ke according public data /artifacts/{appId}/public/data/ me save karenge
-        const appId = firebaseConfig.projectId; 
+        // *** FIX: Use __app_id global variable for security rules ***
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const postsCollectionRef = collection(db, `/artifacts/${appId}/public/data/posts`);
 
         // --- DOM Elements ---
@@ -317,9 +313,9 @@
                 
                 renderFeed(posts);
             }, (error) => {
-                console.error("Error loading feed: ", error);
+                console.error("Error loading feed: ", error); // This will show in console
                 feedLoader.classList.add('hidden');
-                feedContainer.innerHTML = '<p class="text-center text-red-500">Feed load karne mein error hua.</p>';
+                feedContainer.innerHTML = '<p class="text-center text-red-500">Feed load karne mein error hua. (Permissions check karein)</p>';
             });
         }
         
@@ -426,7 +422,6 @@
             };
             reader.readAsDataURL(file);
             
-            // Enable post button if caption is also ready (or just enable it)
             postButton.disabled = false;
         };
         
@@ -452,7 +447,9 @@
             uploadProgress.classList.remove('hidden');
 
             // 1. Create a unique storage reference
-            const storageRef = ref(storage, `posts/${currentUser.uid}/${Date.now()}-${fileToUpload.name}`);
+            // *** FIX: Use the sandboxed private user path for Storage ***
+            const storagePath = `/artifacts/${appId}/users/${currentUser.uid}/uploads/${Date.now()}-${fileToUpload.name}`;
+            const storageRef = ref(storage, storagePath);
             
             // 2. Start the upload task
             const uploadTask = uploadBytesResumable(storageRef, fileToUpload);
@@ -467,7 +464,7 @@
                 (error) => {
                     // Handle upload error
                     console.error("Upload failed:", error);
-                    showToast('Image upload failed.', 'error');
+                    showToast('Image upload failed. (Storage permissions check karein)', 'error');
                     postButton.disabled = false;
                     postButton.textContent = 'Post';
                 }, 
@@ -487,6 +484,7 @@
         
         async function savePostToFirestore(imageUrl, caption) {
             try {
+                // Save to the public collection
                 await addDoc(postsCollectionRef, {
                     imageUrl: imageUrl,
                     caption: caption,
@@ -535,4 +533,5 @@
     </script>
 </body>
 </html>
+
 
