@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndianMedia</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Light gray background like social apps */
+        }
+        .dark body {
+            background-color: #1a1c1e;
+            color: #e3e3e3;
+        }
+        .dark .post-card,
+        .dark .app-header {
+            background-color: #242526;
+            border-color: #3a3b3c;
+        }
+        .dark .modal-content {
+            background-color: #242526;
+        }
+
+        /* Custom scrollbar */
+        main::-webkit-scrollbar {
+            width: 6px;
+        }
+        main::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        main::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+        }
+        .dark main::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Custom Toast for messages */
+        #toast-notification {
+            transition: transform 0.3s ease-in-out, opacity 0.3s;
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        #toast-notification.show {
+            transform: translateY(-1.5rem); /* 24px */
+            opacity: 1;
+        }
+        
+        /* Progress bar */
+        progress {
+            accent-color: #3b82f6; /* blue-500 */
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen antialiased">
+
+    <!-- 1. Login Screen (Hidden by default) -->
+    <div id="login-screen" class="flex items-center justify-center h-screen hidden">
+        <div class="text-center p-8 bg-white shadow-xl rounded-2xl">
+            <h1 class="text-4xl font-extrabold tracking-tight text-gray-900">
+                Indian<span class="text-blue-600">Media</span>
+            </h1>
+            <p class="mt-4 text-lg text-gray-600">Duniya se judne ke liye sign in karein.</p>
+            <button id="login-button" onclick="signInWithGoogle()" class="mt-8 w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 transform active:scale-95">
+                Sign In with Google
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. App Screen (Main App, hidden by default) -->
+    <div id="app-screen" class="flex-col h-screen hidden">
+        
+        <!-- App Header (Sticky) -->
+        <header class="app-header sticky top-0 z-20 w-full bg-white border-b border-gray-200 shadow-sm">
+            <div class="max-w-lg mx-auto flex items-center justify-between p-3">
+                <!-- Brand Logo -->
+                <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                    Indian<span class="text-blue-600">Media</span>
+                </h1>
+                
+                <!-- Header Icons -->
+                <div class="flex items-center space-x-4">
+                    <!-- Upload Button -->
+                    <button onclick="showUploadModal()" class="btn-icon p-2 text-gray-700 dark:text-gray-200 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition duration-300" title="Naya Post Banayein">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </button>
+                    
+                    <!-- User Avatar (Sign Out) -->
+                    <img id="header-avatar" class="w-9 h-9 rounded-full cursor-pointer border-2 border-blue-500" src="https://placehold.co/40x40/93c5fd/ffffff?text=U" alt="User Avatar" onclick="signOutUser()" title="Sign Out">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Feed (Scrollable) -->
+        <main id="feed-container" class="flex-grow overflow-y-auto py-6">
+            
+            <!-- Loading Spinner for feed -->
+            <div id="feed-loader" class="flex justify-center items-center h-full">
+                <svg class="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+
+            <!-- Posts will be injected here -->
+            
+        </main>
+    </div>
+    
+    <!-- 3. Upload Modal (Hidden by default) -->
+    <div id="upload-modal" class="fixed inset-0 z-40 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden">
+        <div class="modal-content w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-4 border-b dark:border-gray-700">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Naya Post Banayein</h2>
+                <button onclick="hideUploadModal()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                    <svg class="w-6 h-6 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 space-y-4">
+                <!-- Image Preview -->
+                <div id="image-preview-box" class="w-full h-48 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center text-gray-400 hidden">
+                    <img id="image-preview" src="" alt="Image Preview" class="max-h-48 rounded-lg object-contain">
+                </div>
+                
+                <!-- File Input -->
+                <input type="file" id="file-upload" class="block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-50 file:text-blue-700
+                    hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300 dark:hover:file:bg-blue-800"
+                    accept="image/jpeg, image/png" onchange="handleFileSelect(event)">
+                
+                <!-- Caption Input -->
+                <textarea id="caption-input" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:border-gray-600 dark:text-white" placeholder="Caption likhein..."></textarea>
+                
+                <!-- Progress Bar -->
+                <progress id="upload-progress" class="w-full hidden" value="0" max="100"></progress>
+                
+                <!-- Post Button -->
+                <button id="post-button" onclick="uploadPost()" class="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 disabled:opacity-50" disabled>
+                    Post
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 4. Toast Notification -->
+    <div id="toast-notification" class="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-full shadow-lg font-semibold">
+        <!-- Message will be injected here -->
+    </div>
+
+
+    <!-- 
+      ==================================================================
+      MAIN APPLICATION SCRIPT (Firebase v12.5.0)
+      ==================================================================
+    -->
+    <script type="module">
+        // --- Firebase v12.5.0 Modular Imports ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            doc, 
+            addDoc, 
+            query, 
+            onSnapshot, 
+            serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+        // --- NEW: Firebase Storage Import ---
+        import { 
+            getStorage, 
+            ref, 
+            uploadBytesResumable, 
+            getDownloadURL 
+        } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js";
+
+        // --- User's Firebase Configuration (from previous app) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyA4zw5cZqxLwzkTy2e5NiHz-tGKqk1KGdI",
+            authDomain: "newstally-df03c.firebaseapp.com",
+            databaseURL: "https://newstally-df03c-default-rtdb.firebaseio.com",
+            projectId: "newstally-df03c",
+            storageBucket: "newstally-df03c.firebasestorage.app",
+            messagingSenderId: "506893212961",
+            appId: "1:506893212961:web:1ccecae08a1c50c0207260",
+            measurementId: "G-5Y1HR4J88Y"
+        };
+
+        // --- Initialize Firebase (Modular) ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app); // NEW: Initialize Storage
+
+        // --- Global State ---
+        let currentUser = null;
+        let fileToUpload = null;
+        let feedListener = null; // To unsubscribe from feed updates on logout
+        
+        // --- App ID (from config) ---
+        // Hum rules ke according public data /artifacts/{appId}/public/data/ me save karenge
+        const appId = firebaseConfig.projectId; 
+        const postsCollectionRef = collection(db, `/artifacts/${appId}/public/data/posts`);
+
+        // --- DOM Elements ---
+        const loginScreen = document.getElementById('login-screen');
+        const appScreen = document.getElementById('app-screen');
+        const headerAvatar = document.getElementById('header-avatar');
+        const feedContainer = document.getElementById('feed-container');
+        const feedLoader = document.getElementById('feed-loader');
+        
+        // Modal Elements
+        const uploadModal = document.getElementById('upload-modal');
+        const imagePreviewBox = document.getElementById('image-preview-box');
+        const imagePreview = document.getElementById('image-preview');
+        const captionInput = document.getElementById('caption-input');
+        const postButton = document.getElementById('post-button');
+        const uploadProgress = document.getElementById('upload-progress');
+        const fileUploadInput = document.getElementById('file-upload');
+
+        // --- 1. Authentication Logic ---
+        
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User logged in
+                currentUser = user;
+                appScreen.classList.remove('hidden');
+                appScreen.classList.add('flex');
+                loginScreen.classList.add('hidden');
+                
+                headerAvatar.src = user.photoURL || 'https://placehold.co/40x40/93c5fd/ffffff?text=U';
+                
+                // Start listening to the feed
+                loadFeed();
+            } else {
+                // User logged out
+                currentUser = null;
+                appScreen.classList.add('hidden');
+                appScreen.classList.remove('flex');
+                loginScreen.classList.remove('hidden');
+                
+                // Stop listening to the feed
+                if (feedListener) {
+                    feedListener(); // Unsubscribe
+                    feedListener = null;
+                }
+                feedContainer.innerHTML = ''; // Clear feed
+            }
+        });
+
+        window.signInWithGoogle = () => {
+            const provider = new GoogleAuthProvider();
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    showToast(`Welcome, ${result.user.displayName}!`, 'success');
+                })
+                .catch((error) => {
+                    console.error('Sign-in error:', error);
+                    showToast(`Sign-in failed: ${error.message}`, 'error');
+                });
+        };
+
+        window.signOutUser = () => {
+            if (confirm('Kya aap sign out karna chahte hain?')) {
+                signOut(auth).then(() => {
+                    showToast('Aap successfully sign out ho gaye hain.', 'info');
+                }).catch((error) => {
+                    console.error('Sign-out error:', error);
+                    showToast('Sign-out failed.', 'error');
+                });
+            }
+        };
+        
+        // --- 2. Feed Logic ---
+        
+        function loadFeed() {
+            feedLoader.classList.remove('hidden');
+            
+            // Hum Firestore se real-time updates lenge
+            // NOTE: Rules ke according, hum orderBy() use nahi kar rahe hain.
+            // Hum client-side par sort karenge.
+            const q = query(postsCollectionRef);
+            
+            feedListener = onSnapshot(q, (snapshot) => {
+                feedLoader.classList.add('hidden');
+                
+                let posts = [];
+                snapshot.forEach((doc) => {
+                    posts.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Client-side sorting (newest first)
+                posts.sort((a, b) => {
+                    const timeA = a.timestamp?.toMillis() || 0;
+                    const timeB = b.timestamp?.toMillis() || 0;
+                    return timeB - timeA;
+                });
+                
+                renderFeed(posts);
+            }, (error) => {
+                console.error("Error loading feed: ", error);
+                feedLoader.classList.add('hidden');
+                feedContainer.innerHTML = '<p class="text-center text-red-500">Feed load karne mein error hua.</p>';
+            });
+        }
+        
+        function renderFeed(posts) {
+            feedContainer.innerHTML = ''; // Clear existing posts
+            
+            if (posts.length === 0) {
+                feedContainer.innerHTML = '<p class="text-center text-gray-500">Koi posts nahi hain. Pehla post karein!</p>';
+                return;
+            }
+            
+            posts.forEach(post => {
+                const postCard = createPostCard(post);
+                feedContainer.appendChild(postCard);
+            });
+        }
+        
+        function createPostCard(post) {
+            const card = document.createElement('div');
+            card.className = 'post-card max-w-lg mx-auto bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden mb-6';
+            
+            // Post Header
+            const header = document.createElement('div');
+            header.className = 'flex items-center p-4';
+            header.innerHTML = `
+                <img class="w-10 h-10 rounded-full" src="${post.userAvatar || 'https://placehold.co/40x40/93c5fd/ffffff?text=U'}" alt="${post.username} avatar">
+                <span class="ml-3 font-semibold text-gray-900 dark:text-white">${post.username || 'Anonymous'}</span>
+            `;
+            
+            // Post Image
+            const img = document.createElement('img');
+            img.className = 'w-full h-auto bg-gray-200';
+            img.src = post.imageUrl;
+            img.alt = post.caption;
+            
+            // Post Actions (Like, Comment - non-functional)
+            const actions = document.createElement('div');
+            actions.className = 'p-4 flex items-center space-x-4 border-t dark:border-gray-700';
+            actions.innerHTML = `
+                <svg class="w-6 h-6 text-gray-700 dark:text-gray-300 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.5l1.318-1.182a4.5 4.5 0 116.364 6.364L12 20.06l-7.682-7.682a4.5 4.5 0 010-6.364z"></path></svg>
+                <svg class="w-6 h-6 text-gray-700 dark:text-gray-300 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+            `;
+            
+            // Post Caption
+            const caption = document.createElement('div');
+            caption.className = 'px-4 pb-4';
+            caption.innerHTML = `
+                <p class="text-gray-900 dark:text-white">
+                    <strong class="font-semibold">${post.username || 'Anonymous'}</strong>
+                    ${post.caption.replace(/</g, "&lt;").replace(/>/g, "&gt;")} <!-- Basic sanitization -->
+                </p>
+                <time class="text-xs text-gray-500 uppercase">${new Date(post.timestamp?.toDate()).toLocaleString()}</time>
+            `;
+            
+            card.appendChild(header);
+            card.appendChild(img);
+            card.appendChild(actions);
+            card.appendChild(caption);
+            
+            return card;
+        }
+
+        // --- 3. Upload Modal Logic ---
+        
+        window.showUploadModal = () => {
+            uploadModal.classList.remove('hidden');
+            resetUploadModal();
+        };
+
+        window.hideUploadModal = () => {
+            uploadModal.classList.add('hidden');
+            resetUploadModal();
+        };
+        
+        function resetUploadModal() {
+            fileToUpload = null;
+            imagePreview.src = '';
+            imagePreviewBox.classList.add('hidden');
+            fileUploadInput.value = null;
+            captionInput.value = '';
+            postButton.disabled = true;
+            uploadProgress.classList.add('hidden');
+            uploadProgress.value = 0;
+            postButton.textContent = 'Post';
+        }
+
+        window.handleFileSelect = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('Sirf image files (JPEG, PNG) allowed hain.', 'error');
+                resetUploadModal();
+                return;
+            }
+            
+            fileToUpload = file;
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.src = e.target.result;
+                imagePreviewBox.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+            
+            // Enable post button if caption is also ready (or just enable it)
+            postButton.disabled = false;
+        };
+        
+        // --- 4. Upload & Save Logic ---
+
+        window.uploadPost = () => {
+            const caption = captionInput.value.trim();
+            if (!fileToUpload) {
+                showToast('Please ek image select karein.', 'error');
+                return;
+            }
+            if (!caption) {
+                showToast('Please ek caption likhein.', 'error');
+                return;
+            }
+            if (!currentUser) {
+                showToast('Post karne ke liye login zaroori hai.', 'error');
+                return;
+            }
+
+            postButton.disabled = true;
+            postButton.textContent = 'Uploading...';
+            uploadProgress.classList.remove('hidden');
+
+            // 1. Create a unique storage reference
+            const storageRef = ref(storage, `posts/${currentUser.uid}/${Date.now()}-${fileToUpload.name}`);
+            
+            // 2. Start the upload task
+            const uploadTask = uploadBytesResumable(storageRef, fileToUpload);
+
+            // 3. Monitor upload progress
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    // Update progress bar
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    uploadProgress.value = progress;
+                }, 
+                (error) => {
+                    // Handle upload error
+                    console.error("Upload failed:", error);
+                    showToast('Image upload failed.', 'error');
+                    postButton.disabled = false;
+                    postButton.textContent = 'Post';
+                }, 
+                () => {
+                    // 4. Upload complete, get download URL
+                    postButton.textContent = 'Processing...';
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        // 5. Save post data to Firestore
+                        savePostToFirestore(downloadURL, caption);
+                    }).catch((error) => {
+                        console.error("Failed to get download URL:", error);
+                        showToast('Post create karne mein error hua.', 'error');
+                    });
+                }
+            );
+        };
+        
+        async function savePostToFirestore(imageUrl, caption) {
+            try {
+                await addDoc(postsCollectionRef, {
+                    imageUrl: imageUrl,
+                    caption: caption,
+                    userId: currentUser.uid,
+                    username: currentUser.displayName,
+                    userAvatar: currentUser.photoURL,
+                    timestamp: serverTimestamp()
+                });
+                
+                showToast('Post successfully create ho gaya!', 'success');
+                hideUploadModal();
+                
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                showToast('Post save karne mein error hua.', 'error');
+                postButton.disabled = false;
+                postButton.textContent = 'Post';
+            }
+        }
+
+        // --- 5. Helper Functions (Toast) ---
+        
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast-notification');
+            toast.textContent = message;
+            
+            // Remove old color classes
+            toast.classList.remove('bg-green-500', 'bg-red-500', 'bg-blue-500', 'text-white');
+            
+            if (type === 'success') {
+                toast.classList.add('bg-green-500', 'text-white');
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-500', 'text-white');
+            } else { // info
+                toast.classList.add('bg-blue-500', 'text-white');
+            }
+            
+            toast.classList.add('show');
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+    </script>
+</body>
+</html>
+
