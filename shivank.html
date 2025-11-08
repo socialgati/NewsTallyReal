@@ -359,6 +359,31 @@
             color: #2563eb; /* text-blue-600 */
         }
         
+        /* --- NEW: User Message Edit Button --- */
+        .user-edit-btn {
+            display: block;
+            padding: 0.375rem; /* p-1.5 */
+            border-radius: 9999px; /* rounded-full */
+            color: #6b7280; /* text-gray-500 */
+            margin-right: 0.5rem; /* 8px */
+            align-self: center; /* Darocha: vertically center with bubble */
+            opacity: 0;
+            transition: opacity 0.2s;
+            flex-shrink: 0; /* Darocha: prevent shrinking */
+        }
+        .user-message-wrapper:hover .user-edit-btn {
+            opacity: 1;
+        }
+        .dark .user-edit-btn {
+            color: #9ca3af; /* dark:text-gray-400 */
+        }
+        .dark .user-edit-btn:hover {
+            background-color: #374151; /* dark:hover:bg-gray-700 */
+        }
+        .user-edit-btn:hover {
+            background-color: #f3f4f6; /* hover:bg-gray-100 */
+        }
+        
         /* --- NEW: Model Select Dropdown Style --- */
         #model-select-dropdown {
             /* Mimics the chat search input style */
@@ -518,16 +543,26 @@
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         </button>
 
-        <div class="flex items-center space-x-2">
-            <!-- MODIFIED: Indr.ai Icon/Logo in Header -->
-            <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-md overflow-hidden">
-                 <img src="1000012844.jpg" alt="Indr.ai Logo" class="w-full h-full object-cover">
+        <!-- UPDATED: Center Content (Brand or Title) -->
+        <div class="flex-grow flex items-center justify-center min-w-0 px-4"> 
+            <!-- Original Brand (Default) -->
+            <div id="header-brand-container" class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-md overflow-hidden">
+                     <img src="1000012844.jpg" alt="Indr.ai Logo" class="w-full h-full object-cover">
+                </div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 transition-colors duration-400">Indr.<span class="text-blue-600">ai</span></h1>
             </div>
-            <h1 class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100 transition-colors duration-400">Indr.<span class="text-blue-600">ai</span></h1>
+            
+            <!-- NEW: Dynamic Chat Title (Hidden by default) -->
+            <div id="header-title-container" class="hidden min-w-0">
+                <h2 id="header-title-text" class="text-lg font-semibold text-gray-900 dark:text-gray-100 truncate">
+                    <!-- Chat Title will be injected here -->
+                </h2>
+            </div>
         </div>
 
         <!-- Auth Status Placeholder/Sign In Button -->
-        <div class="w-10 h-10 flex items-center justify-center">
+        <div class="w-10 h-10 flex items-center justify-center flex-shrink-0"> <!-- Added flex-shrink-0 -->
             <!-- Sign In Button (Small, visible when logged out) -->
             <button id="header-sign-in-button" onclick="signInWithGoogle()" class="px-3 py-1.5 bg-blue-600 text-white font-medium text-sm rounded-full shadow-lg hover:bg-blue-700 transition duration-300 transform active:scale-95 hidden" title="Sign in with Google">
                 Sign In
@@ -609,7 +644,7 @@
     </main>
 
     <!-- NEW: Profile Panel (Right Side) -->
-    <div id="profile-backdrop" class="hidden" onclick="closeProfilePanel()"></div>
+    <div id="profile-backdrop" class="menu-backdrop hidden" onclick="closeProfilePanel()"></div>
     <div id="profile-panel" class="profile-panel flex flex-col">
         
         <!-- Header -->
@@ -755,6 +790,11 @@
         const profilePanelAvatar = document.getElementById('profile-panel-avatar');
         const profilePanelName = document.getElementById('profile-panel-name');
         const profilePanelEmail = document.getElementById('profile-panel-email');
+        
+        // --- NEW: Header Title Elements ---
+        const headerBrandContainer = document.getElementById('header-brand-container');
+        const headerTitleContainer = document.getElementById('header-title-container');
+        const headerTitleText = document.getElementById('header-title-text');
         
         const micButton = document.getElementById('mic-button');
 
@@ -1061,6 +1101,10 @@
                 const newDoc = await addDoc(collectionRef, chatData);
                 currentChatId = newDoc.id; // Set the ID for future updates
                 loadRecentChats(); // Refresh sidebar
+                
+                // --- NEW: Update header with new title ---
+                updateHeaderText(chatTitle);
+                
             } catch (error) {
                 console.error("Error saving new chat:", error);
             }
@@ -1256,6 +1300,12 @@
                 try {
                     await updateDoc(chatRef, { title: newName });
                     showCustomMessage("Chat renamed successfully!", 'success');
+                    
+                    // --- NEW: Update header if this is the current chat ---
+                    if (currentChatId === chatId) {
+                        updateHeaderText(newName);
+                    }
+                    
                     loadRecentChats(); // Refresh the sidebar
                 } catch (error) {
                     console.error("Error renaming chat:", error);
@@ -1355,6 +1405,10 @@
                     
                     // 2. Render the loaded history
                     renderChatHistory(); 
+                    
+                    // --- NEW: Update header with loaded chat title ---
+                    updateHeaderText(data.title);
+                    
                     showCustomMessage(`Loaded chat: ${data.title}`, 'success');
 
                 } else {
@@ -1450,6 +1504,8 @@
             // If we're not just loading an old chat, reset the chat ID
             if (!skipWelcomeMessage) {
                 currentChatId = null; 
+                // --- NEW: Reset header on mode switch (which implies new chat) ---
+                updateHeaderText(null);
             }
             
             const config = MODE_CONFIGS[modeKey];
@@ -1504,6 +1560,22 @@
         
         // --- UI & Utility Functions ---
 
+        /**
+         * --- NEW: Updates the main header text ---
+         */
+        function updateHeaderText(title) {
+            if (title) {
+                headerTitleText.textContent = title;
+                headerBrandContainer.classList.add('hidden');
+                headerTitleContainer.classList.remove('hidden');
+            } else {
+                // Reset to default
+                headerTitleText.textContent = '';
+                headerBrandContainer.classList.remove('hidden');
+                headerTitleContainer.classList.add('hidden');
+            }
+        }
+
         /** Updates the disabled state of the send and upload buttons. */
         function updateSendButtonState() {
             const isInputEmpty = promptInput.value.trim() === '';
@@ -1540,6 +1612,9 @@
             // 4. Re-add the initial message structure dynamically
             document.getElementById('initial-message-content').innerHTML = renderMarkdown(welcomeText);
             initialMessageWrapper.style.display = 'flex';
+            
+            // --- NEW: Reset header to default ---
+            updateHeaderText(null);
 
 
             if (!suppressMessage) {
@@ -1694,12 +1769,23 @@
             contentWrapper.appendChild(container);
         }
 
+        /**
+         * --- NEW: Puts user text into the input box for editing ---
+         */
+        window.editUserMessage = function(text) {
+            promptInput.value = text;
+            promptInput.focus();
+            updateSendButtonState();
+            // Scroll to the bottom to make sure input is in view
+            promptInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
 
         function renderMarkdown(text) {
             let html = text;
             
             // 1. Handle code blocks 
-            html = html.replace(/```(\w+)?\n([\s\S]*?)\n```/g, function(match, lang, code) {
+            html = html.replace(/```(\w+)?\n([\s-S]*?)\n```/g, function(match, lang, code) {
                 const escapedCode = code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                 const languageLabel = lang ? `<span class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1 block">${lang.toUpperCase()}</span>` : '';
                 return `<pre>${languageLabel}<code>${escapedCode}</code></pre>`;
@@ -2111,7 +2197,7 @@
                     
                     // --- NEW: Check if this is the first message to create the chat ---
                     if (currentChatId === null && currentUser) {
-                        generateAndSaveFirstChat();
+                        generateAndSaveFirstChat(); // This will now also update the header
                     } else if (currentChatId && currentUser) {
                         // Save updates to existing chat
                         saveChat();
@@ -2122,11 +2208,30 @@
             }
         }
 
+        /**
+         * --- UPDATED: To include Edit button for user messages ---
+         */
         function addMessageToChat(text, role, fileData) {
             const messageWrapper = document.createElement('div');
-            
             messageWrapper.className = `user-message-wrapper mb-4 flex justify-end`;
 
+            // --- NEW: Add Edit Button for user ---
+            if (role === 'user' && text) { // Only add edit for text messages
+                const editButton = document.createElement('button');
+                editButton.className = 'user-edit-btn btn-icon'; // Re-use btn-icon for :active
+                editButton.title = 'Edit and resend';
+                editButton.innerHTML = `
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536l12.232-12.232z"></path>
+                    </svg>
+                `;
+                editButton.onclick = (e) => {
+                    e.stopPropagation();
+                    editUserMessage(text);
+                };
+                messageWrapper.appendChild(editButton);
+            }
+            
             const messageDiv = document.createElement('div');
             messageDiv.className = `user-message flex flex-col space-y-3`;
 
