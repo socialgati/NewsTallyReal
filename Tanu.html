@@ -193,6 +193,7 @@
                 <!-- Skeletons -->
                 <div class="news-card h-80 rounded-xl p-4"><div class="skeleton w-full h-40 rounded-lg mb-4"></div><div class="skeleton h-4 w-3/4 mb-2"></div><div class="skeleton h-4 w-1/2"></div></div>
                 <div class="news-card h-80 rounded-xl p-4"><div class="skeleton w-full h-40 rounded-lg mb-4"></div><div class="skeleton h-4 w-3/4 mb-2"></div><div class="skeleton h-4 w-1/2"></div></div>
+                <div class="news-card h-80 rounded-xl p-4"><div class="skeleton w-full h-40 rounded-lg mb-4"></div><div class="skeleton h-4 w-3/4 mb-2"></div><div class="skeleton h-4 w-1/2"></div></div>
               </div>
               <div id="load-more" class="text-center mt-12">
                 <button id="load-more-btn" class="px-10 py-3 rounded-full shadow-xl bg-blue-600 text-white font-bold transition transform hover:scale-105 hover:shadow-blue-500/50 ring-2 ring-offset-2 ring-blue-600 dark:ring-offset-gray-900">Load More News</button>
@@ -202,23 +203,12 @@
 
       <!-- COMMUNITY VIEW -->
       <div id="view-community" class="hidden container mx-auto px-4 py-6 max-w-2xl">
-          <div class="flex items-center justify-between mb-6 bg-purple-100 dark:bg-purple-900/30 p-6 rounded-2xl">
+          <div class="flex items-center justify-between mb-8 bg-purple-100 dark:bg-purple-900/30 p-6 rounded-2xl">
               <div>
                   <h2 class="text-2xl font-black text-purple-700 dark:text-purple-400"><i class="fas fa-hashtag mr-2"></i>Community</h2>
                   <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Discover what people are talking about.</p>
               </div>
               <div class="bg-white dark:bg-gray-800 p-3 rounded-full shadow-sm text-purple-600"><i class="fas fa-users text-2xl"></i></div>
-          </div>
-
-          <!-- Search Bar (New Feature) -->
-          <div class="relative mb-8 group z-20">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400"><i class="fas fa-search"></i></div>
-              <input type="text" id="community-search-input" placeholder="Search users (e.g. news_guru)..." class="w-full pl-10 p-3 rounded-xl border dark:border-gray-700 bg-white dark:bg-gray-800 dark:text-white focus:ring-2 ring-purple-500 outline-none shadow-sm transition">
-              
-              <!-- Search Results Dropdown -->
-              <div id="community-search-results" class="absolute top-12 left-0 w-full bg-white dark:bg-gray-800 rounded-xl shadow-xl hidden flex-col overflow-hidden border dark:border-gray-700 z-30 max-h-60 overflow-y-auto">
-                  <!-- Results injected here -->
-              </div>
           </div>
           
           <!-- Reposts Feed -->
@@ -232,7 +222,7 @@
 
     </div>
 
-    <!-- News Detail Page (Conditional Comments) -->
+    <!-- News Detail Page (With Comments) -->
     <div id="news-detail-page" class="bg-white dark:bg-gray-900">
       <div id="reading-progress-bar" class="sticky top-0 left-0 w-full h-1.5 bg-gray-200 dark:bg-gray-800 z-50"><div id="reading-progress-bar-inner" class="h-full bg-gradient-to-r from-blue-600 to-purple-500 w-0 transition-all duration-100"></div></div>
       
@@ -249,6 +239,11 @@
         </div>
 
         <article class="px-4 md:px-10 py-6 animate-[slideUpFade_0.4s_ease-out]">
+            <!-- Repost Context Banner -->
+            <div id="detail-repost-context" class="hidden mb-6 p-3 bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 rounded-xl flex items-center gap-2 text-sm text-purple-700 dark:text-purple-300">
+                 <i class="fas fa-retweet"></i> You are viewing a community repost discussion.
+            </div>
+
             <span id="detail-category-badge" class="inline-block bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wide mb-4">Category</span>
             <h1 id="detail-headline" class="text-3xl md:text-5xl font-black mb-6 text-gray-900 dark:text-white leading-tight">Headline</h1>
             
@@ -269,25 +264,32 @@
 
             <div id="detail-article-content" class="prose dark:prose-invert prose-lg max-w-none text-gray-700 dark:text-gray-300 leading-relaxed mb-16"></div>
 
-            <!-- COMMENTS SECTION (Shown only if from Community) -->
-            <div class="border-t dark:border-gray-800 pt-10 hidden" id="comments-anchor">
-                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2"><i class="far fa-comments"></i> Discussion</h3>
-                
-                <div class="flex gap-4 mb-8">
-                    <img id="comment-user-avatar" src="https://placehold.co/50?text=?" class="w-10 h-10 rounded-full border dark:border-gray-700">
-                    <div class="flex-1 relative">
-                        <textarea id="comment-input" rows="2" class="w-full bg-gray-50 dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-4 focus:ring-2 ring-blue-500 outline-none resize-none transition" placeholder="Share your thoughts..."></textarea>
-                        <button id="post-comment-btn" class="absolute bottom-3 right-3 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-paper-plane text-xs"></i></button>
+            <!-- COMMENTS SECTION (Visible only on Reposts) -->
+            <div id="comments-section-wrapper">
+                <div class="border-t dark:border-gray-800 pt-10" id="comments-anchor">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2"><i class="far fa-comments"></i> Discussion</h3>
+                    
+                    <!-- Add Comment -->
+                    <div class="flex gap-4 mb-8">
+                        <img id="comment-user-avatar" src="https://placehold.co/50?text=?" class="w-10 h-10 rounded-full border dark:border-gray-700">
+                        <div class="flex-1 relative">
+                            <textarea id="comment-input" rows="2" class="w-full bg-gray-50 dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-4 focus:ring-2 ring-blue-500 outline-none resize-none transition" placeholder="Share your thoughts..."></textarea>
+                            <button id="post-comment-btn" class="absolute bottom-3 right-3 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-paper-plane text-xs"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Comments List -->
+                    <div id="comments-list" class="space-y-6">
+                        <!-- Comments injected here -->
                     </div>
                 </div>
-
-                <div id="comments-list" class="space-y-6"></div>
             </div>
-
-            <!-- Message when comments are disabled (Sheet News) -->
-            <div id="comments-disabled-msg" class="border-t dark:border-gray-800 pt-10 text-center text-gray-500 italic hidden">
-                Comments are disabled on raw news feeds. <br> 
-                <span class="text-blue-500 cursor-pointer font-bold hover:underline" onclick="$('#detail-repost-btn').click()">Repost this story to Community</span> to start a discussion.
+            
+            <!-- No Comments Fallback (Visible on Main Feed) -->
+            <div id="no-comments-fallback" class="hidden border-t dark:border-gray-800 pt-10 text-center">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Start a Conversation</h3>
+                <p class="text-gray-500 mb-6">Comments are disabled on the main feed. Repost this story to the community to start a discussion!</p>
+                <button id="fallback-repost-btn" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-full transition shadow-lg"><i class="fas fa-retweet mr-2"></i> Repost to Discuss</button>
             </div>
 
         </article>
@@ -301,7 +303,14 @@
              <button onclick="$('#public-profile-modal').classList.remove('open')" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center dark:text-white hover:bg-gray-200 transition"><i class="fas fa-times"></i></button>
         </div>
         <div class="container mx-auto max-w-lg p-6">
-            <div id="public-profile-content" class="text-center animate-[slideUpFade_0.3s_ease-out]"></div>
+            <div id="public-profile-content" class="text-center animate-[slideUpFade_0.3s_ease-out]">
+                <!-- Populated via JS -->
+                <div class="animate-pulse">
+                    <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-4"></div>
+                    <div class="h-6 w-48 bg-gray-200 dark:bg-gray-700 mx-auto rounded mb-2"></div>
+                    <div class="h-4 w-32 bg-gray-200 dark:bg-gray-700 mx-auto rounded"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -310,7 +319,7 @@
         <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl w-11/12 max-w-md text-center relative transform transition-all">
             <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-user-tag"></i></div>
             <h3 class="text-2xl font-black mb-2 dark:text-white">Choose a Handle</h3>
-            <p class="text-gray-500 mb-6">Create a unique username.</p>
+            <p class="text-gray-500 mb-6">Create a unique username to join the discussion and build your following.</p>
             <div class="relative">
                 <span class="absolute left-4 top-3.5 text-gray-400 font-bold">@</span>
                 <input type="text" id="new-username-input" placeholder="username" class="w-full pl-10 p-3 border rounded-xl mb-4 bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-2 ring-blue-500 outline-none font-bold text-lg">
@@ -364,10 +373,9 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc, updateDoc, getDoc, deleteDoc, onSnapshot, arrayUnion, arrayRemove, collection, addDoc, query, orderBy, limit, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, updateDoc, getDoc, deleteDoc, onSnapshot, arrayUnion, arrayRemove, collection, addDoc, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
     // CONFIGURATION
-    // Using existing keys
     const GOOGLE_SHEETS_API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
     const SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
     const APP_ID = 'newstally-social';
@@ -391,12 +399,12 @@
         allNews: [],
         filteredNews: [],
         bookmarks: [],
-        following: new Set(),
+        following: new Set(), // Set of UIDs I follow
         user: null,
         username: null,
         category: 'All',
         limit: 12,
-        activeContextId: null // To track repost vs sheet news
+        currentOpenTargetId: null // Can be Article Hash OR Repost ID
     };
 
     // Helper Functions
@@ -408,24 +416,22 @@
         $('#toast-container').appendChild(d); setTimeout(()=>d.remove(),3500);
     };
     
+    // Use Base64 of headline as ID for consistency across sheets
+    const getArticleId = (headline) => btoa(encodeURIComponent(headline)).replace(/=/g, '');
+
     // --- PATH HELPERS ---
     const getUserRef = (uid) => doc(db, 'users', uid); 
     const getPublicRepostsCol = () => collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts');
     const getCommentsCol = () => collection(db, 'artifacts', APP_ID, 'public', 'data', 'comments');
     const getFollowingRef = (myUid, targetUid) => doc(db, 'users', myUid, 'following', targetUid);
 
-    // --- ROBUST DATA LOADING ---
-    const SAMPLE_NEWS = [
-        {headline: "SpaceX Launches Starship Successfully", source: "TechCrunch", date: "Today", category: "Technology", image: "https://placehold.co/600x400?text=SpaceX", description: "A major milestone in space exploration as Starship reaches orbit."},
-        {headline: "Global Markets Rally on Tech Earnings", source: "Bloomberg", date: "Yesterday", category: "Business", image: "https://placehold.co/600x400?text=Markets", description: "Stocks surged as major tech companies reported better than expected earnings."},
-        {headline: "New AI Regulations Proposed in EU", source: "Reuters", date: "2 days ago", category: "Politics", image: "https://placehold.co/600x400?text=AI+Law", description: "European lawmakers are setting the standard for AI safety and ethics."}
-    ];
-
+    // --- ENHANCED DATA LOADING ---
     async function loadNews() {
         $('#loading-bar').classList.remove('hidden');
+        const timestamp = new Date().getTime();
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${GOOGLE_SHEETS_API_KEY}&t=${timestamp}`;
+
         try {
-            // Try fetching with timestamp
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${GOOGLE_SHEETS_API_KEY}&t=${Date.now()}`;
             const res = await fetch(url);
             if (!res.ok) throw new Error(`API Error: ${res.status}`);
             const json = await res.json();
@@ -441,15 +447,14 @@
                 image: (r[7] && r[7].startsWith('http')) ? r[7] : `https://placehold.co/600x400/2563eb/ffffff?text=News`
             })).reverse();
             
-            $('#last-updated').innerText = "Live: " + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-
-        } catch(e) { 
-            console.warn("News Load Error:", e); 
-            showToast("Using backup feed", "fas fa-wifi");
-            state.allNews = SAMPLE_NEWS;
-        } finally {
             renderCarousel();
             filterNews('All');
+            $('#last-updated').innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+        } catch(e) { 
+            console.error("News Load Error:", e); 
+            showToast("Could not refresh news", "fas fa-exclamation-triangle");
+        } finally {
             $('#loading-bar').classList.add('hidden');
         }
     }
@@ -495,10 +500,14 @@
     function renderCarousel() {
         const top = state.allNews.filter(n => n.category === 'Top Story').slice(0, 5);
         const container = $('#carousel-content-wrapper');
-        const data = top.length ? top : state.allNews.slice(0, 5);
         
-        container.innerHTML = data.map((n,i) => `
-            <div class="carousel-slide ${i===0?'active':''} cursor-pointer" onclick="window.openDetail('${encodeURIComponent(n.headline)}', 'sheet')">
+        if(!top.length) {
+            container.innerHTML = `<div class="flex items-center justify-center h-full text-gray-500">No Top Stories</div>`;
+            return;
+        }
+        
+        container.innerHTML = top.map((n,i) => `
+            <div class="carousel-slide ${i===0?'active':''} cursor-pointer" onclick="window.openDetail('${encodeURIComponent(n.headline)}', null)">
                 <img src="${n.image}" onerror="this.src='https://placehold.co/800x400?text=Top+Story'">
                 <div class="carousel-text-container">
                     <span class="bg-blue-600 px-3 py-1 text-xs rounded-full uppercase tracking-wider font-bold shadow-sm mb-3 inline-block text-white border border-white/20 backdrop-blur-sm">${n.category}</span>
@@ -527,13 +536,16 @@
         }
 
         feed.innerHTML = list.map(n => `
-            <article class="news-card rounded-2xl overflow-hidden bg-white dark:bg-gray-800 group cursor-pointer" onclick="window.openDetail('${encodeURIComponent(n.headline)}', 'sheet')">
+            <article class="news-card rounded-2xl overflow-hidden bg-white dark:bg-gray-800 group cursor-pointer" onclick="window.openDetail('${encodeURIComponent(n.headline)}', null)">
                 <div class="h-48 overflow-hidden relative">
                     <img src="${n.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" onerror="this.src='https://placehold.co/600x400?text=News'">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
                     <span class="absolute bottom-3 left-3 bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs font-bold px-2 py-1 rounded">${n.category}</span>
                 </div>
                 <div class="p-5 relative flex-1 flex flex-col">
+                    <button class="card-action-btn absolute -top-6 right-4 z-10" onclick="event.stopPropagation(); window.openDetail('${encodeURIComponent(n.headline)}', null)">
+                        <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition"></i>
+                    </button>
                     <h3 class="font-bold text-lg leading-snug mb-3 text-gray-900 dark:text-white line-clamp-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">${n.headline}</h3>
                     <div class="mt-auto pt-4 text-xs font-medium text-gray-400 flex justify-between items-center border-t dark:border-gray-700">
                         <span class="flex items-center gap-1.5"><img src="https://ui-avatars.com/api/?name=${n.source}&background=random&size=16" class="rounded-full w-4 h-4"> ${n.source}</span>
@@ -548,52 +560,62 @@
     }
     $('#load-more-btn').onclick = () => { state.limit += 12; renderFeed(); };
 
-    // --- DETAIL VIEW & CONDITIONAL COMMENTS ---
-    window.openDetail = (encHl, context, repostId = null, repostData = null) => {
-        let n;
-        if (context === 'sheet') {
-            n = state.allNews.find(x => x.headline === decodeURIComponent(encHl));
-        } else if (context === 'community') {
-            n = repostData || state.allNews.find(x => x.headline === decodeURIComponent(encHl));
-        }
+    // --- DETAIL VIEW ---
+    // Modified: Accepts repostId. If null, it's a main story (no comments). If set, it's a community repost (comments allowed).
+    window.openDetail = (encHl, repostId = null) => {
+        const n = state.allNews.find(x => x.headline === decodeURIComponent(encHl));
         if(!n) return;
         
+        // UI Population
         $('#detail-headline').innerText = n.headline;
         $('#detail-image').src = n.image;
-        $('#detail-category-badge').innerText = n.category || 'Community';
+        $('#detail-category-badge').innerText = n.category;
         $('#detail-source').innerText = n.source;
         $('#detail-date').innerText = n.date;
         $('#detail-article-content').innerHTML = n.description.split('\n').filter(p=>p.trim()).map(p=>`<p class="mb-5">${p}</p>`).join('');
         
-        // Logic: Context Switch
-        const commentsSection = $('#comments-anchor');
-        const disabledMsg = $('#comments-disabled-msg');
-
-        if (context === 'community' && repostId) {
-             // Enable Comments
-             state.activeContextId = repostId; 
-             commentsSection.classList.remove('hidden');
-             disabledMsg.classList.add('hidden');
-             loadComments(repostId);
-             // Update Auth Avatars
-             if(state.user) $('#comment-user-avatar').src = state.user.photoURL || 'https://placehold.co/50?text=U';
-        } else {
-             // Disable Comments for Sheet News
-             state.activeContextId = null;
-             commentsSection.classList.add('hidden');
-             disabledMsg.classList.remove('hidden');
-        }
+        // Handle Auth Buttons for Comments
+        if(state.user) $('#comment-user-avatar').src = state.user.photoURL || 'https://placehold.co/50?text=U';
+        else $('#comment-user-avatar').src = 'https://placehold.co/50?text=?';
 
         // Actions
         $('#detail-bookmark-btn').onclick = () => toggleBookmark(n);
         $('#detail-repost-btn').onclick = () => initiateRepost(n);
+        $('#fallback-repost-btn').onclick = () => initiateRepost(n);
         $('#tts-button').onclick = () => speakText(n.description);
         $('#share-copy').onclick = () => { navigator.clipboard.writeText(window.location.href); showToast("Link copied!"); };
-        $('#post-comment-btn').onclick = () => postComment();
-
+        
         updateBookmarkIcon(n.headline);
+
+        // --- COMMENT LOGIC MODIFICATION ---
+        const commentSection = $('#comments-section-wrapper');
+        const noCommentsFallback = $('#no-comments-fallback');
+        const repostContext = $('#detail-repost-context');
+
+        if (repostId) {
+            // Viewed via Community Feed -> Enable Comments
+            state.currentOpenTargetId = repostId; // Use REPOST ID for comments
+            commentSection.classList.remove('hidden');
+            noCommentsFallback.classList.add('hidden');
+            repostContext.classList.remove('hidden');
+            
+            // Post Comment Button Action
+            $('#post-comment-btn').onclick = () => postComment(repostId);
+            $('#comment-input').onkeydown = (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); postComment(repostId); } };
+            
+            loadComments(repostId); // Load comments for this specific repost
+        } else {
+            // Viewed via Home Feed -> Disable Comments
+            state.currentOpenTargetId = null;
+            commentSection.classList.add('hidden');
+            noCommentsFallback.classList.remove('hidden');
+            repostContext.classList.add('hidden');
+            $('#comments-list').innerHTML = ''; // Clear old comments
+        }
+
         $('#news-detail-page').classList.add('open');
     };
+
     $('#back-to-feed-btn').onclick = () => {
         $('#news-detail-page').classList.remove('open');
         window.speechSynthesis.cancel();
@@ -605,92 +627,81 @@
         window.speechSynthesis.speak(utterance);
     }
 
-    // --- COMMUNITY SEARCH ---
-    $('#community-search-input').oninput = async (e) => {
-        const val = e.target.value.toLowerCase().trim();
-        const resDiv = $('#community-search-results');
-        
-        if(val.length < 2) { resDiv.classList.add('hidden'); return; }
-        
-        resDiv.classList.remove('hidden');
-        resDiv.innerHTML = '<div class="p-4 text-center text-gray-400"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
-
-        // Search Firestore
-        const q = query(collection(db, 'users'), where('username', '>=', val), where('username', '<=', val + '\uf8ff'), limit(5));
-        const snap = await getDocs(q);
-
-        if(snap.empty) { resDiv.innerHTML = '<div class="p-3 text-sm text-gray-500 text-center">No user found</div>'; return; }
-        
-        resDiv.innerHTML = snap.docs.map(d => {
-            const u = d.data();
-            return `<div class="flex items-center gap-3 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700 last:border-0" onclick="window.openPublicProfile('${d.id}')">
-                <img src="${u.photoURL||'https://placehold.co/40'}" class="w-10 h-10 rounded-full border">
-                <div><p class="font-bold text-sm dark:text-white">${u.displayName}</p><p class="text-xs text-purple-500">@${u.username}</p></div>
-            </div>`;
-        }).join('');
-    };
-    
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.relative.mb-8.group.z-20')) {
-            $('#community-search-results').classList.add('hidden');
-        }
-    });
-
     // --- COMMENTS SYSTEM ---
     let commentsUnsub = null;
-    function loadComments(articleId) {
+    function loadComments(targetId) {
         if(commentsUnsub) commentsUnsub();
         $('#comments-list').innerHTML = '<div class="text-center text-gray-400 py-4"><i class="fas fa-spinner fa-spin"></i> Loading thoughts...</div>';
         
-        const q = query(getCommentsCol(), where('targetId', '==', articleId), orderBy('timestamp', 'desc'), limit(50));
+        // Query comments where targetId matches the Repost ID
+        const q = query(getCommentsCol(), where('targetId', '==', targetId), orderBy('timestamp', 'desc'), limit(50));
         
         commentsUnsub = onSnapshot(q, (snap) => {
             const list = $('#comments-list');
             if(snap.empty) {
-                list.innerHTML = '<div class="text-center text-gray-400 py-6 bg-gray-50 dark:bg-gray-800 rounded-xl">No comments yet. Be the first!</div>';
+                list.innerHTML = '<div class="text-center text-gray-400 py-6 bg-gray-50 dark:bg-gray-800 rounded-xl">No comments yet on this repost. Be the first!</div>';
                 return;
             }
+            
             list.innerHTML = snap.docs.map(doc => {
                 const c = doc.data();
-                return `<div class="flex gap-3 animate-[slideUpFade_0.3s_ease-out]">
-                    <img src="${c.userAvatar}" class="w-10 h-10 rounded-full border cursor-pointer" onclick="window.openPublicProfile('${c.userId}')">
+                const isMe = state.user && c.userId === state.user.uid;
+                const time = new Date(c.timestamp).toLocaleDateString() + ' ' + new Date(c.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                return `
+                <div class="flex gap-3 animate-[slideUpFade_0.3s_ease-out]">
+                    <img src="${c.userAvatar}" class="w-10 h-10 rounded-full border cursor-pointer hover:opacity-80 transition" onclick="window.openPublicProfile('${c.userId}')">
                     <div class="flex-1">
                         <div class="flex items-baseline justify-between mb-1">
                             <span class="font-bold text-sm dark:text-white cursor-pointer hover:underline" onclick="window.openPublicProfile('${c.userId}')">@${c.username}</span>
-                            <span class="text-xs text-gray-400">Just now</span>
+                            <span class="text-xs text-gray-400">${time}</span>
                         </div>
-                        <div class="comment-bubble bg-gray-100 dark:bg-gray-800 dark:text-gray-200 text-sm leading-relaxed">
+                        <div class="comment-bubble bg-gray-100 dark:bg-gray-800 dark:text-gray-200 text-sm leading-relaxed ${isMe ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800' : ''}">
                            ${c.text}
                         </div>
                     </div>
-                </div>`;
+                </div>
+                `;
             }).join('');
         });
     }
 
-    async function postComment() {
-        const txt = $('#comment-input').value.trim();
-        if(!state.user) { showToast("Sign in to comment"); signInWithPopup(auth, provider); return; }
-        if(!state.username) return $('#username-modal').classList.add('open');
-        if(!txt || !state.activeContextId) return;
+    async function postComment(targetId) {
+        const input = $('#comment-input');
+        const text = input.value.trim();
+        
+        if(!state.user) { showToast("Please sign in to comment", "fas fa-user-lock"); signInWithPopup(auth, provider); return; }
+        if(!state.username) { $('#username-modal').classList.add('open'); return; } // Must have username
+        if(!text) return;
 
-        await addDoc(getCommentsCol(), {
-            targetId: state.activeContextId, text: txt,
-            userId: state.user.uid, username: state.username, userAvatar: state.user.photoURL,
-            timestamp: new Date().toISOString()
-        });
-        $('#comment-input').value = '';
+        try {
+            input.value = ''; // Optimistic clear
+            await addDoc(getCommentsCol(), {
+                targetId: targetId, // Links comment to SPECIFIC REPOST
+                text: text,
+                userId: state.user.uid,
+                username: state.username,
+                userAvatar: state.user.photoURL,
+                timestamp: new Date().toISOString()
+            });
+        } catch(e) {
+            console.error(e);
+            showToast("Failed to post comment", "fas fa-times-circle");
+        }
     }
 
-    // --- PUBLIC PROFILE & FOLLOWING ---
+    // --- PUBLIC PROFILE & FOLLOWING (NEW) ---
     window.openPublicProfile = async (uid) => {
         $('#public-profile-modal').classList.add('open');
         const content = $('#public-profile-content');
-        content.innerHTML = `<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Loading...</div>`;
+        
+        // Render Skeleton
+        content.innerHTML = `<div class="animate-pulse flex flex-col items-center"><div class="w-24 h-24 bg-gray-200 rounded-full mb-4"></div><div class="h-6 w-32 bg-gray-200 rounded"></div></div>`;
 
         try {
             const userSnap = await getDoc(getUserRef(uid));
             if(!userSnap.exists()) { content.innerHTML = "User not found"; return; }
+            
             const u = userSnap.data();
             const isMe = state.user && state.user.uid === uid;
             const isFollowing = state.following.has(uid);
@@ -699,70 +710,158 @@
                 <img src="${u.photoURL || 'https://placehold.co/100'}" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white shadow-md">
                 <h2 class="text-2xl font-black dark:text-white">${u.displayName || 'User'}</h2>
                 <p class="text-blue-500 font-bold mb-6">@${u.username || 'anonymous'}</p>
-                ${!isMe ? `<button onclick="window.toggleFollow('${uid}')" class="px-8 py-2 rounded-full font-bold transition shadow-lg ${isFollowing ? 'bg-white border border-gray-300 text-gray-700' : 'bg-black text-white'}">${isFollowing ? 'Following' : 'Follow'}</button>` : ''}
+                
+                ${!isMe ? `
+                <button id="follow-btn-modal" onclick="window.toggleFollow('${uid}')" class="btn-follow px-8 py-2 rounded-full font-bold shadow-lg transition ${isFollowing ? 'bg-white border border-gray-300 text-gray-700' : 'bg-black text-white'}">
+                    ${isFollowing ? 'Following' : 'Follow'}
+                </button>
+                ` : `<span class="bg-gray-100 px-4 py-1 rounded-full text-xs font-bold text-gray-500">That's You!</span>`}
+                
                 <div class="grid grid-cols-2 gap-4 mt-8 border-t dark:border-gray-800 pt-6">
-                    <div><span class="block text-xl font-black dark:text-white">--</span><span class="text-xs text-gray-500">Followers</span></div>
-                    <div><span class="block text-xl font-black dark:text-white">--</span><span class="text-xs text-gray-500">Reposts</span></div>
-                </div>`;
+                    <div class="text-center">
+                        <span class="block text-xl font-black dark:text-white">--</span>
+                        <span class="text-xs text-gray-500 uppercase">Followers</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block text-xl font-black dark:text-white">--</span>
+                        <span class="text-xs text-gray-500 uppercase">Reposts</span>
+                    </div>
+                </div>
+                
+                <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-sm text-blue-800 dark:text-blue-200">
+                    <i class="fas fa-info-circle mr-1"></i> User stats are hidden in this demo version.
+                </div>
+            `;
+
         } catch(e) { console.error(e); content.innerHTML = "Error loading profile"; }
     };
 
-    window.toggleFollow = async (uid) => {
+    window.toggleFollow = async (targetUid) => {
         if(!state.user) { signInWithPopup(auth, provider); return; }
-        const ref = doc(db, 'users', state.user.uid, 'following', uid);
-        if(state.following.has(uid)) { await deleteDoc(ref); state.following.delete(uid); }
-        else { await setDoc(ref, { ts: Date.now() }); state.following.add(uid); }
-        window.openPublicProfile(uid); 
+        
+        const btn = $('#follow-btn-modal');
+        const isFollowing = state.following.has(targetUid);
+        
+        // Optimistic UI Update
+        if(btn) {
+            if(isFollowing) {
+                btn.innerText = "Follow"; btn.className = "btn-follow px-8 py-2 rounded-full font-bold shadow-lg transition bg-black text-white";
+            } else {
+                btn.innerText = "Following"; btn.className = "btn-follow px-8 py-2 rounded-full font-bold shadow-lg transition bg-white border border-gray-300 text-gray-700";
+            }
+        }
+
+        try {
+            const ref = getFollowingRef(state.user.uid, targetUid);
+            if(isFollowing) {
+                await deleteDoc(ref);
+                state.following.delete(targetUid);
+                showToast("Unfollowed");
+            } else {
+                await setDoc(ref, { timestamp: new Date().toISOString() });
+                state.following.add(targetUid);
+                showToast("Following!");
+            }
+            updateProfileStats(); // Update my own "Following" count display
+        } catch(e) { 
+            console.error(e); 
+            showToast("Action failed", "fas fa-times"); 
+        }
     };
 
-    // --- REPOST & COMMUNITY FEED ---
-    async function initiateRepost(item) {
-        if(!state.user) { showToast("Please login"); signInWithPopup(auth, provider); return; }
-        if(!state.username) { $('#username-modal').classList.add('open'); window.tempItem = item; return; }
+    // --- COMMUNITY & REPOST ---
+    async function initiateRepost(newsItem) {
+        if(!state.user) { showToast("Please login to repost", "fas fa-lock"); signInWithPopup(auth, provider); return; }
         
-        await addDoc(getPublicRepostsCol(), {
-            headline: item.headline, image: item.image, source: item.source,
-            repostedBy: { uid: state.user.uid, username: state.username, avatar: state.user.photoURL },
-            likes: [], timestamp: new Date().toISOString()
-        });
-        showToast("Reposted to Community!");
-        switchView('community'); 
+        if(!state.username) {
+            $('#username-modal').classList.add('open');
+            window.pendingRepostItem = newsItem; 
+            return;
+        }
+        postToCommunity(newsItem);
+    }
+
+    async function postToCommunity(item) {
+        try {
+            await addDoc(getPublicRepostsCol(), {
+                headline: item.headline,
+                image: item.image,
+                source: item.source,
+                repostedBy: { uid: state.user.uid, username: state.username, avatar: state.user.photoURL },
+                likes: [], 
+                shareCount: 0,
+                timestamp: new Date().toISOString()
+            });
+            showToast("Shared to Community!", "fas fa-rocket");
+            switchView('community'); 
+        } catch(e) { showToast("Repost failed", "fas fa-times"); }
     }
 
     $('#save-username-btn').onclick = async () => {
         const val = $('#new-username-input').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
         if(val.length < 3) { showToast("Username too short"); return; }
-        await setDoc(getUserRef(state.user.uid), { username: val, displayName: state.user.displayName, photoURL: state.user.photoURL }, { merge: true });
-        state.username = val;
-        $('#username-modal').classList.remove('open');
-        if(window.tempItem) initiateRepost(window.tempItem);
+        
+        try {
+            await setDoc(getUserRef(state.user.uid), { username: val, displayName: state.user.displayName, photoURL: state.user.photoURL }, { merge: true });
+            state.username = val;
+            $('#username-modal').classList.remove('open');
+            showToast("Identity Created!", "fas fa-check");
+            if(window.pendingRepostItem) postToCommunity(window.pendingRepostItem);
+        } catch(e) { showToast("Error saving username"); }
     };
 
+    // Community Feed
     let communityUnsub = null;
     function loadCommunityFeed() {
         if(communityUnsub) return; 
+        
         const q = query(getPublicRepostsCol(), orderBy('timestamp', 'desc'), limit(20));
         communityUnsub = onSnapshot(q, (snap) => {
             const feedContainer = $('#community-feed');
-            if(snap.empty) { feedContainer.innerHTML = '<div class="text-center py-10 text-gray-400">No reposts yet.</div>'; return; }
+            if(snap.empty) { feedContainer.innerHTML = '<div class="text-center py-10 text-gray-400">No reposts yet. Be the first!</div>'; return; }
+            
             feedContainer.innerHTML = snap.docs.map(doc => {
                 const d = doc.data();
-                const isLiked = state.user && d.likes?.includes(state.user.uid);
-                return `<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-5 border dark:border-gray-700 animate-fade-in">
-                    <div class="flex items-center gap-3 mb-3 cursor-pointer group" onclick="window.openPublicProfile('${d.repostedBy.uid}')">
-                        <img src="${d.repostedBy.avatar}" class="w-10 h-10 rounded-full border group-hover:border-purple-400 transition">
-                        <div><p class="font-bold text-sm dark:text-white group-hover:text-purple-500 transition">@${d.repostedBy.username}</p><p class="text-xs text-gray-400">Shared a story</p></div>
+                const isLiked = state.user && d.likes && d.likes.includes(state.user.uid);
+                const likeCount = d.likes ? d.likes.length : 0;
+                const timeAgo = new Date(d.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+                return `
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-5 border border-gray-100 dark:border-gray-700 animate-[slideUpFade_0.4s_ease-out]">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3 cursor-pointer group" onclick="window.openPublicProfile('${d.repostedBy.uid}')">
+                            <img src="${d.repostedBy.avatar||'https://placehold.co/40?text=U'}" class="w-10 h-10 rounded-full border-2 border-transparent group-hover:border-purple-400 transition">
+                            <div>
+                                <p class="text-sm font-bold dark:text-white group-hover:text-purple-500 transition">@${d.repostedBy.username}</p>
+                                <p class="text-xs text-gray-400">Shared ${timeAgo}</p>
+                            </div>
+                        </div>
+                        <button class="text-gray-300 hover:text-gray-500"><i class="fas fa-ellipsis-h"></i></button>
                     </div>
-                    <div class="bg-gray-50 dark:bg-gray-900 rounded-xl flex overflow-hidden cursor-pointer border dark:border-gray-700 hover:opacity-90 transition" onclick="window.openDetail('${encodeURIComponent(d.headline)}', 'community', '${doc.id}', {headline:'${d.headline.replace(/'/g, "\\'")}', image:'${d.image}', source:'${d.source}', category:'Repost'})">
-                        <img src="${d.image}" class="w-24 h-24 object-cover">
-                        <div class="p-3 flex-1 flex flex-col justify-center"><h4 class="font-bold text-sm dark:text-white line-clamp-2">${d.headline}</h4><p class="text-xs text-gray-500 mt-1">${d.source}</p></div>
+                    
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden cursor-pointer border dark:border-gray-700 hover:ring-2 ring-purple-100 dark:ring-purple-900 transition" onclick="window.openDetail('${encodeURIComponent(d.headline)}', '${doc.id}')">
+                        <div class="flex h-28">
+                             <img src="${d.image}" class="w-28 h-full object-cover" onerror="this.src='https://placehold.co/100?text=News'">
+                             <div class="p-4 flex-1 flex flex-col justify-center">
+                                <h4 class="font-bold text-sm md:text-base line-clamp-2 dark:text-white leading-snug mb-2">${d.headline}</h4>
+                                <p class="text-xs text-gray-500"><i class="far fa-newspaper"></i> ${d.source}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex gap-6 mt-4 px-2 text-sm text-gray-500 items-center">
-                        <button onclick="window.toggleLike('${doc.id}')" class="${isLiked?'text-red-500':'hover:text-red-500'} flex items-center gap-1"><i class="${isLiked?'fas':'far'} fa-heart text-lg"></i> ${d.likes?.length||0}</button>
-                        <button onclick="window.openDetail('${encodeURIComponent(d.headline)}', 'community', '${doc.id}', {headline:'${d.headline.replace(/'/g, "\\'")}', image:'${d.image}', source:'${d.source}', category:'Repost'})" class="hover:text-blue-500 flex items-center gap-1"><i class="far fa-comment text-lg"></i> Comment</button>
-                        <button class="hover:text-green-500 ml-auto"><i class="fas fa-share text-lg"></i></button>
+
+                    <div class="flex justify-between items-center mt-5 px-2">
+                        <div class="flex gap-6">
+                            <button onclick="window.toggleLike('${doc.id}')" class="flex items-center gap-2 text-sm font-medium transition ${isLiked ? 'text-red-500' : 'text-gray-500 hover:text-red-500'}">
+                                <i class="${isLiked ? 'fas' : 'far'} fa-heart text-lg"></i> ${likeCount}
+                            </button>
+                            <button onclick="window.openDetail('${encodeURIComponent(d.headline)}', '${doc.id}')" class="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-blue-500 transition">
+                                <i class="far fa-comment text-lg"></i> Discuss
+                            </button>
+                        </div>
+                        <button onclick="window.shareRepost('${doc.id}')" class="text-gray-400 hover:text-green-500 transition"><i class="fas fa-share text-lg"></i></button>
                     </div>
-                </div>`;
+                </div>
+                `;
             }).join('');
         });
     }
@@ -772,34 +871,98 @@
         const ref = doc(getPublicRepostsCol(), docId);
         const snap = await getDoc(ref);
         if(!snap.exists()) return;
+        
         const likes = snap.data().likes || [];
         if(likes.includes(state.user.uid)) await updateDoc(ref, { likes: arrayRemove(state.user.uid) });
         else await updateDoc(ref, { likes: arrayUnion(state.user.uid) });
     };
+    window.shareRepost = async(id) => { showToast("Link Copied"); };
 
-    // --- AUTH & SETUP ---
+    // --- BOOKMARK ---
+    async function toggleBookmark(item) {
+        if(!state.user) return signInWithPopup(auth, provider);
+        const ref = getUserRef(state.user.uid);
+        const isB = state.bookmarks.some(b=>b.headline===item.headline);
+        
+        if(isB) {
+            const old = state.bookmarks.find(b=>b.headline===item.headline);
+            await updateDoc(ref, { bookmarks: arrayRemove(old) });
+            showToast("Bookmark Removed");
+        } else {
+            await setDoc(ref, { bookmarks: arrayUnion({ headline: item.headline, image: item.image, category: item.category }) }, { merge: true });
+            showToast("Bookmark Saved");
+        }
+    }
+    function updateBookmarkIcon(hl) {
+        const isB = state.bookmarks.some(b=>b.headline===hl);
+        const icon = $('#detail-bookmark-btn i');
+        if(icon) icon.className = isB ? 'fas fa-heart text-lg text-red-500' : 'far fa-heart text-lg';
+    }
+
+    // --- AUTH STATE ---
     onAuthStateChanged(auth, async (user) => {
         state.user = user;
         if(user) {
-            $('#sign-in-button').classList.add('hidden'); $('#user-profile-button').classList.remove('hidden');
-            $('#user-profile-photo').src = user.photoURL; $('#profile-name').innerText = user.displayName; $('#profile-photo-lg').src = user.photoURL;
-            onSnapshot(getUserRef(user.uid), (d) => {
-                if(d.exists()) {
-                    state.username = d.data().username;
-                    state.bookmarks = d.data().bookmarks || [];
-                    $('#bookmarks-list').innerHTML = state.bookmarks.map(b=>`<div class="flex items-center gap-3 p-2 bg-gray-50 dark:bg-gray-700 rounded cursor-pointer" onclick="window.openDetail('${encodeURIComponent(b.headline)}','sheet');$('#profile-page').classList.remove('open')"><img src="${b.image}" class="w-10 h-10 rounded"><span class="text-sm font-bold truncate dark:text-white">${b.headline}</span></div>`).join('');
+            $('#sign-in-button').classList.add('hidden');
+            $('#user-profile-button').classList.remove('hidden');
+            $('#user-profile-photo').src = user.photoURL;
+            $('#profile-name').innerText = user.displayName;
+            $('#profile-photo-lg').src = user.photoURL;
+
+            // Ensure basic profile info exists in DB for others to see
+            const userRef = getUserRef(user.uid);
+            await setDoc(userRef, { 
+                displayName: user.displayName, 
+                photoURL: user.photoURL,
+                email: user.email // Optional, careful with privacy
+            }, { merge: true });
+
+            // Load User Data & Following
+            onSnapshot(userRef, (doc) => {
+                if(doc.exists()) {
+                    const data = doc.data();
+                    state.bookmarks = data.bookmarks || [];
+                    state.username = data.username || null;
+                    if(state.username) $('#profile-username-display').innerText = '@'+state.username;
+                    
+                    // Render Bookmarks
+                    $('#bookmarks-list').innerHTML = state.bookmarks.map(b=>`<div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-xl cursor-pointer" onclick="window.openDetail('${encodeURIComponent(b.headline)}', null);$('#profile-page').classList.remove('open')"><img src="${b.image}" class="w-12 h-12 rounded-lg object-cover"><span class="text-sm font-bold truncate flex-1">${b.headline}</span></div>`).join('');
                 }
             });
-            onSnapshot(collection(db, 'users', user.uid, 'following'), (s) => state.following = new Set(s.docs.map(d=>d.id)));
+
+            // Load Following List
+            onSnapshot(collection(db, 'users', user.uid, 'following'), (snap) => {
+                state.following = new Set(snap.docs.map(d => d.id));
+                updateProfileStats();
+            });
+
         } else {
-            $('#sign-in-button').classList.remove('hidden'); $('#user-profile-button').classList.add('hidden');
+            $('#sign-in-button').classList.remove('hidden');
+            $('#user-profile-button').classList.add('hidden');
+            state.bookmarks = [];
+            state.following = new Set();
         }
     });
+    
+    function updateProfileStats() {
+        $('#my-following-count').innerText = state.following.size;
+    }
 
-    // UI Handlers
-    $('#dark-mode-toggle').onclick = () => $('html').classList.toggle('dark');
+    $('#dark-mode-toggle').onclick = () => {
+        $('html').classList.toggle('dark');
+        $('#dark-mode-toggle i').className = $('html').classList.contains('dark') ? 'fas fa-sun text-yellow-400' : 'fas fa-moon';
+    };
     $('#sign-in-button').onclick = () => signInWithPopup(auth, provider);
     $('#user-profile-button').onclick = () => $('#profile-page').classList.add('open');
+    $('#mobile-profile-trigger').onclick = () => state.user ? $('#profile-page').classList.add('open') : signInWithPopup(auth, provider);
+    $$('.profile-tab').forEach(t => t.onclick = () => {
+        $$('.profile-tab').forEach(x => x.classList.remove('active'));
+        $$('.profile-content-section').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        $(`#${t.dataset.target}`).classList.add('active');
+    });
+
+    // Menu
     $('#menu-toggle').onclick = () => $('#nav-panel').classList.add('open');
     $('#close-panel').onclick = () => $('#nav-panel').classList.remove('open');
     $$('.nav-category, .nav-category-mobile').forEach(b => b.onclick = () => {
@@ -808,9 +971,15 @@
         $('#nav-panel').classList.remove('open');
     });
 
+    // Progress Bar
+    $('#news-detail-page').onscroll = () => {
+        const el = $('#news-detail-page');
+        const percent = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+        $('#reading-progress-bar-inner').style.width = percent + '%';
+    };
+
     loadNews();
   </script>
 </body>
 </html>
-
 
