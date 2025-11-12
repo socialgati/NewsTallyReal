@@ -331,11 +331,11 @@
     <div id="toast-container"></div>
   </div>
 
-  <!-- --- MODULAR FIREBASE SCRIPTS (v12.5.0 from Indr.ai) --- -->
+  <!-- --- MODULAR FIREBASE SCRIPTS (v11.0.2 Stable) --- -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, updateDoc, onSnapshot, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, updateDoc, onSnapshot, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
     // --- Constants ---
     const API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
@@ -601,8 +601,7 @@
     }
 
     function renderNewsHeartIcons() {
-        // Simple re-render logic not fully implemented here to avoid flicker, 
-        // relies on toggleBookmark for immediate feedback and page reload for full sync visual
+        // Simple re-render logic
     }
     
     function updateDetailHeart() {
@@ -633,7 +632,6 @@
         userHistory.unshift(newItem);
         if (userHistory.length > 50) userHistory.pop();
 
-        // Use setDoc with merge for history too, just in case
         try {
             await setDoc(userRef, { history: userHistory }, { merge: true });
         } catch (e) { console.error("History save error", e); }
@@ -663,7 +661,6 @@
                     icon.classList.remove('text-red-500');
                 }
                 showToast("Removed from Bookmarks");
-                // updateDoc is fine for removal if we know doc exists
                 await updateDoc(userRef, { bookmarks: arrayRemove(itemObj) });
             } else {
                 if(icon) {
@@ -671,18 +668,11 @@
                     icon.classList.add('text-red-500');
                 }
                 showToast("Added to Bookmarks");
-                // Use setDoc with merge: true to AUTO-CREATE document if missing
                 await setDoc(userRef, { bookmarks: arrayUnion(itemObj) }, { merge: true });
             }
         } catch (e) {
             console.error("Bookmark Error", e);
-            // Fallback: If update failed (doc missing), try recreate empty
-             if (isBookmarked && e.code === 'not-found') {
-                 await setDoc(userRef, { bookmarks: [] }, { merge: true });
-                 showToast("Sync fixed. Please try again.");
-            } else {
-                 showToast("Error saving bookmark");
-            }
+            showToast("Error: " + e.message); // SHOW ACTUAL ERROR
         }
     };
 
