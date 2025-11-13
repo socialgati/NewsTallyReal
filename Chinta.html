@@ -3,120 +3,159 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NewsTally - Community</title>
+  <title>NewsTally - Social</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#f8fafc;--card:#fff;--accent:#6366f1}
-    body{font-family:Inter,sans-serif; background:var(--bg); color:#0f1724}
-    .insta-card{background:var(--card); border-radius:14px; box-shadow:0 4px 12px rgba(0,0,0,0.05); transition: transform 0.2s;}
-    .insta-card:hover{ transform: translateY(-2px); }
-    .uploader-drag{border:2px dashed #cbd5e1; border-radius:12px; background:#f1f5f9; transition: all 0.2s;}
-    .uploader-drag.drag-over { border-color: var(--accent); background: #e0e7ff; }
-    .image-preview{max-height:500px; object-fit:contain; width:100%; border-radius:8px; background: #000;}
-    .fade-in { animation: fadeIn 0.5s ease-in; }
+    :root{--bg:#f0f2f5;--card:#ffffff;--accent:#6366f1;--text:#1f2937}
+    body{font-family:'Inter',sans-serif; background:var(--bg); color:var(--text)}
+    .card{background:var(--card); border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.04); border:1px solid #e5e7eb;}
+    .btn-primary{background:var(--accent); color:white; transition:0.2s;}
+    .btn-primary:hover{background:#4f46e5;}
+    .fade-in { animation: fadeIn 0.4s ease-out; }
     @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    .uploader{border:2px dashed #d1d5db; background:#f9fafb; transition:0.2s;}
+    .uploader:hover{border-color:var(--accent); background:#eff6ff;}
   </style>
 </head>
-<body class="antialiased pb-20">
+<body class="pb-20">
 
-  <div class="max-w-6xl mx-auto p-4">
-    <!-- Header -->
-    <header class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-extrabold tracking-tight">NewsTally <span class="text-indigo-600">Social</span></h1>
-      <div class="flex gap-3">
-        <button id="new-post-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-full font-semibold shadow-md transition flex items-center gap-2">
-          <i class="fas fa-plus"></i> New Post
-        </button>
-        <button id="refresh-btn" class="bg-white text-gray-600 p-2.5 rounded-full shadow hover:bg-gray-50">
-            <i class="fas fa-sync-alt"></i>
-        </button>
+  <!-- NAVBAR -->
+  <nav class="bg-white sticky top-0 z-50 border-b shadow-sm px-4 py-3">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <div class="bg-indigo-600 text-white p-1.5 rounded-lg font-bold text-lg">NT</div>
+        <h1 class="text-xl font-extrabold tracking-tight text-gray-800 hidden sm:block">NewsTally</h1>
       </div>
-    </header>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       
-      <!-- LEFT: Composer (Desktop) -->
-      <div class="hidden md:block md:col-span-1">
-        <div class="insta-card p-5 sticky top-6">
-            <h3 class="font-bold text-lg mb-4">Share a Moment</h3>
-            
-            <div id="main-uploader" class="uploader-drag p-6 flex flex-col items-center justify-center cursor-pointer min-h-[200px] mb-4">
-                <i class="fas fa-cloud-upload-alt text-4xl text-indigo-400 mb-2"></i>
-                <p class="text-sm text-gray-500 font-medium">Click or Drop Image</p>
-                <input type="file" id="main-file" accept="image/*" class="hidden">
-                <img id="main-preview" class="hidden w-full h-48 object-cover rounded-lg mt-2">
+      <div class="flex items-center gap-4">
+        <!-- Auth Buttons -->
+        <div id="auth-section" class="flex items-center gap-3">
+            <button id="login-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-full font-medium text-sm transition shadow-sm">
+                <i class="fab fa-google mr-2"></i>Login
+            </button>
+        </div>
+        
+        <!-- Logged In User View (Hidden by default) -->
+        <div id="user-section" class="hidden flex items-center gap-3 cursor-pointer p-1 rounded-full hover:bg-gray-100 transition border border-transparent hover:border-gray-200">
+            <img id="nav-avatar" src="" class="w-9 h-9 rounded-full border border-gray-300 object-cover">
+            <div class="hidden md:block text-left mr-2">
+                <div id="nav-name" class="text-sm font-bold text-gray-800 leading-tight">User</div>
+                <div id="nav-email" class="text-xs text-gray-500">email@gmail.com</div>
             </div>
+            <button id="logout-btn" class="text-gray-400 hover:text-red-500 px-2"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+      </div>
+    </div>
+  </nav>
 
-            <input id="main-title" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Write a headline...">
-            <textarea id="main-desc" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg mb-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none" rows="3" placeholder="What's on your mind?"></textarea>
-            
-            <div class="flex gap-2 mb-4">
-                <select id="main-cat" class="p-2 bg-gray-50 border rounded-lg text-sm flex-1">
-                    <option>General</option>
-                    <option>News</option>
-                    <option>Tech</option>
-                    <option>Sports</option>
-                    <option>Meme</option>
-                </select>
+  <!-- MAIN LAYOUT -->
+  <div class="max-w-6xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2">
+    
+    <!-- LEFT SIDEBAR (Profile & Composer) -->
+    <div class="lg:col-span-1 space-y-6">
+        
+        <!-- Profile Card (Shows when logged in) -->
+        <div id="profile-card" class="card p-6 text-center hidden">
+            <div class="relative w-20 h-20 mx-auto mb-3">
+                <img id="profile-avatar" src="" class="w-full h-full rounded-full object-cover border-4 border-white shadow-md">
+                <div class="absolute bottom-0 right-0 bg-green-500 w-4 h-4 rounded-full border-2 border-white"></div>
             </div>
-
-            <button id="main-submit" class="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-bold shadow hover:bg-indigo-700 transition disabled:opacity-50">Post</button>
+            <h2 id="profile-name" class="text-lg font-bold text-gray-900">User Name</h2>
+            <p id="profile-email" class="text-sm text-gray-500 mb-4 font-medium bg-gray-100 inline-block px-3 py-1 rounded-full mt-1">user@gmail.com</p>
             
+            <div class="flex justify-center gap-6 text-sm text-gray-600 border-t pt-4 mt-2">
+                <div class="text-center"><span class="block font-bold text-black text-lg">0</span>Posts</div>
+                <div class="text-center"><span class="block font-bold text-black text-lg">0</span>Likes</div>
+            </div>
+        </div>
+
+        <!-- Guest Card (Shows when logged out) -->
+        <div id="guest-card" class="card p-8 text-center">
+            <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fas fa-user-lock"></i>
+            </div>
+            <h3 class="font-bold text-lg mb-2">Welcome Guest</h3>
+            <p class="text-gray-500 text-sm mb-4">Login to verify your identity, post updates, and like content.</p>
+            <button id="guest-login-btn" class="text-indigo-600 font-bold hover:underline">Login with Google</button>
+        </div>
+
+        <!-- Mini Composer (Desktop) -->
+        <div class="card p-5 hidden lg:block sticky top-24">
+            <h3 class="font-bold text-gray-700 mb-3">Create Post</h3>
+            <div id="desktop-uploader" class="uploader p-4 rounded-lg text-center cursor-pointer mb-3">
+                <i class="fas fa-image text-2xl text-gray-400 mb-1"></i>
+                <p class="text-xs text-gray-500">Click to Upload Image</p>
+                <img id="desktop-preview" class="hidden w-full h-32 object-cover rounded mt-2">
+            </div>
+            <input id="desktop-title" class="w-full text-sm p-2 border rounded mb-2 bg-gray-50" placeholder="Headline...">
+            <button id="desktop-post-btn" class="w-full btn-primary py-2 rounded-lg font-semibold text-sm">Post Update</button>
             <!-- Progress -->
-            <div id="main-progress-wrap" class="mt-3 hidden">
-                <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                    <div id="main-progress" class="bg-indigo-500 h-full w-0 transition-all"></div>
-                </div>
-                <p class="text-xs text-center text-gray-500 mt-1">Uploading...</p>
+            <div id="desktop-progress-wrap" class="hidden mt-2">
+                <div class="h-1 w-full bg-gray-200 rounded overflow-hidden"><div id="desktop-progress" class="h-full bg-indigo-600 w-0"></div></div>
+                <div class="text-xs text-center text-gray-400 mt-1">Publishing...</div>
             </div>
         </div>
-      </div>
+    </div>
 
-      <!-- RIGHT: Feed -->
-      <div class="md:col-span-2">
+    <!-- RIGHT FEED -->
+    <div class="lg:col-span-2">
+        <!-- Mobile Trigger for Post -->
+        <div class="lg:hidden mb-4 card p-3 flex items-center gap-3 cursor-pointer" id="mobile-composer-trigger">
+            <div class="w-10 h-10 bg-gray-200 rounded-full flex-shrink-0 overflow-hidden">
+                 <img id="mobile-bar-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1 bg-gray-100 rounded-full px-4 py-2 text-gray-500 text-sm">What's happening?</div>
+            <i class="fas fa-image text-indigo-500 text-xl mr-2"></i>
+        </div>
+
         <div id="feed-container" class="space-y-6">
-            <!-- Loading Spinner -->
-            <div class="text-center py-20">
-                <i class="fas fa-circle-notch fa-spin text-4xl text-indigo-500 mb-3"></i>
-                <p class="text-gray-500">Loading community posts...</p>
+            <div class="text-center py-16">
+                <i class="fas fa-spinner fa-spin text-3xl text-indigo-400"></i>
+                <p class="text-gray-400 text-sm mt-3">Loading community...</p>
             </div>
         </div>
-      </div>
-
     </div>
   </div>
 
-  <!-- Mobile/Modal Composer -->
-  <div id="modal-composer" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-     <div class="bg-white w-full max-w-lg rounded-xl overflow-hidden shadow-2xl">
-        <div class="p-4 border-b flex justify-between items-center">
-            <h3 class="font-bold">Create Post</h3>
-            <button id="modal-close" class="w-8 h-8 bg-gray-100 rounded-full hover:bg-gray-200"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="p-4">
-            <div id="modal-drop" class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer mb-4 hover:bg-gray-50">
-                <i class="fas fa-image text-3xl text-gray-400"></i>
-                <p class="text-sm text-gray-500 mt-2">Select Image</p>
-                <input type="file" id="modal-file" accept="image/*" class="hidden">
-                <img id="modal-preview-img" class="hidden w-full max-h-60 object-contain rounded mt-2">
-            </div>
-            <input id="modal-title-in" class="w-full p-3 border rounded-lg mb-3" placeholder="Headline">
-            <textarea id="modal-desc-in" class="w-full p-3 border rounded-lg mb-3" rows="3" placeholder="Caption..."></textarea>
-            <button id="modal-submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold">Post</button>
-            <div id="modal-progress-wrap" class="hidden mt-3">
-                <div class="w-full bg-gray-200 h-2 rounded-full"><div id="modal-progress" class="bg-indigo-600 h-full w-0"></div></div>
-            </div>
-        </div>
-     </div>
+  <!-- Hidden File Input for Desktop Composer -->
+  <input type="file" id="desktop-file" class="hidden" accept="image/*">
+
+  <!-- Mobile Composer Modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden bg-black/80 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-xl p-4 animate-slide-up">
+          <div class="flex justify-between items-center mb-4 border-b pb-2">
+              <h3 class="font-bold">New Post</h3>
+              <button id="close-modal" class="w-8 h-8 bg-gray-100 rounded-full"><i class="fas fa-times"></i></button>
+          </div>
+          <div id="modal-uploader" class="uploader p-8 rounded-xl text-center cursor-pointer mb-4">
+              <i class="fas fa-cloud-upload-alt text-3xl text-indigo-400 mb-2"></i>
+              <p class="text-sm text-gray-500">Tap to select image</p>
+              <img id="modal-preview" class="hidden w-full max-h-48 object-contain mt-2 rounded">
+          </div>
+          <input type="file" id="modal-file" class="hidden" accept="image/*">
+          <input id="modal-title" class="w-full p-3 bg-gray-50 border rounded-lg mb-3 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Write a headline...">
+          <textarea id="modal-desc" class="w-full p-3 bg-gray-50 border rounded-lg mb-4 outline-none focus:ring-2 focus:ring-indigo-500" rows="3" placeholder="Add a caption..."></textarea>
+          
+          <button id="modal-submit" class="w-full btn-primary py-3 rounded-xl font-bold text-lg shadow-lg">Post</button>
+          
+          <div id="modal-progress-wrap" class="hidden mt-3">
+              <div class="h-2 w-full bg-gray-200 rounded-full overflow-hidden"><div id="modal-progress" class="h-full bg-indigo-600 w-0"></div></div>
+              <p class="text-center text-xs text-gray-500 mt-1">Uploading...</p>
+          </div>
+      </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-xl text-sm font-medium opacity-0 pointer-events-none transition-opacity z-50">
+      Message
+  </div>
+
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
-    import { getFirestore, collection, addDoc, serverTimestamp, query, limit, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove, orderBy } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
+    import { getFirestore, collection, addDoc, serverTimestamp, query, limit, onSnapshot, doc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
     import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js';
 
     const firebaseConfig = {
@@ -136,106 +175,197 @@
     const APP_ID = 'newstally-social';
 
     let currentUser = null;
-    onAuthStateChanged(auth, (u) => { 
-        currentUser = u;
-        console.log("Auth Status:", u ? "Logged In" : "Guest");
+
+    // --- AUTH LISTENER (Handles UI Updates) ---
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        if(user) {
+            // Show Logged In UI
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('user-section').classList.remove('hidden');
+            
+            // Navbar Updates
+            document.getElementById('nav-avatar').src = user.photoURL;
+            document.getElementById('nav-name').innerText = user.displayName.split(' ')[0]; // First name
+            document.getElementById('nav-email').innerText = user.email;
+            document.getElementById('mobile-bar-avatar').src = user.photoURL;
+
+            // Profile Card Updates
+            document.getElementById('guest-card').classList.add('hidden');
+            document.getElementById('profile-card').classList.remove('hidden');
+            document.getElementById('profile-avatar').src = user.photoURL;
+            document.getElementById('profile-name').innerText = user.displayName;
+            document.getElementById('profile-email').innerText = user.email; // Showing Gmail
+        } else {
+            // Show Guest UI
+            document.getElementById('auth-section').classList.remove('hidden');
+            document.getElementById('user-section').classList.add('hidden');
+            
+            document.getElementById('guest-card').classList.remove('hidden');
+            document.getElementById('profile-card').classList.add('hidden');
+            document.getElementById('mobile-bar-avatar').src = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+        }
     });
 
-    // --- MAIN COMPOSER LOGIC ---
-    const mainUploader = document.getElementById('main-uploader');
-    const mainFileIn = document.getElementById('main-file');
-    const mainPreview = document.getElementById('main-preview');
-    let mainFileObj = null;
-
-    mainUploader.addEventListener('click', () => mainFileIn.click());
-    mainFileIn.addEventListener('change', (e) => handleFileSelect(e.target.files[0], mainPreview, (f) => mainFileObj = f));
-
-    // Drag & Drop
-    mainUploader.addEventListener('dragover', (e) => { e.preventDefault(); mainUploader.classList.add('drag-over'); });
-    mainUploader.addEventListener('dragleave', (e) => { e.preventDefault(); mainUploader.classList.remove('drag-over'); });
-    mainUploader.addEventListener('drop', (e) => {
-        e.preventDefault();
-        mainUploader.classList.remove('drag-over');
-        handleFileSelect(e.dataTransfer.files[0], mainPreview, (f) => mainFileObj = f);
-    });
-
-    function handleFileSelect(file, previewEl, setFileCallback) {
-        if(!file) return;
-        if(!file.type.startsWith('image/')) { alert('Images only!'); return; }
-        if(file.size > 5*1024*1024) { alert('File too big (Max 5MB)'); return; }
-        
-        setFileCallback(file);
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            previewEl.src = e.target.result;
-            previewEl.classList.remove('hidden');
-        };
-        reader.readAsDataURL(file);
+    // --- LOGIN / LOGOUT ACTIONS ---
+    const loginAction = async () => {
+        try {
+            await signInWithPopup(auth, provider);
+            showToast('Welcome back!');
+        } catch(e) { console.error(e); showToast('Login failed'); }
     }
+    
+    document.getElementById('login-btn').addEventListener('click', loginAction);
+    document.getElementById('guest-login-btn').addEventListener('click', loginAction);
+    document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
-    // --- UPLOAD FUNCTION ---
-    document.getElementById('main-submit').addEventListener('click', () => {
-        doUpload(
-            mainFileObj, 
-            document.getElementById('main-title').value,
-            document.getElementById('main-desc').value,
-            document.getElementById('main-cat').value,
-            document.getElementById('main-submit'),
-            document.getElementById('main-progress-wrap'),
-            document.getElementById('main-progress'),
-            () => { // Reset Callback
-                mainFileObj = null;
-                mainPreview.src = ''; mainPreview.classList.add('hidden');
-                document.getElementById('main-title').value = '';
-                document.getElementById('main-desc').value = '';
+
+    // --- FEED LOGIC ---
+    const feedContainer = document.getElementById('feed-container');
+    // No sort in query to avoid index errors
+    const q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), limit(50));
+
+    onSnapshot(q, (snapshot) => {
+        if(snapshot.empty) {
+            feedContainer.innerHTML = `<div class="text-center py-10 text-gray-400">No posts yet.</div>`;
+            return;
+        }
+        
+        // Client side sorting (Newest first)
+        const posts = snapshot.docs.map(d => ({id: d.id, ...d.data()}))
+            .sort((a,b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+
+        feedContainer.innerHTML = posts.map(p => {
+            const isLiked = currentUser && p.likes && p.likes.includes(currentUser.uid);
+            const time = p.timestamp ? new Date(p.timestamp.seconds * 1000).toLocaleDateString() : '';
+            
+            return `
+                <div class="card mb-6 fade-in">
+                    <!-- Post Header -->
+                    <div class="p-4 flex items-center gap-3">
+                        <img src="${p.latestReposter?.avatar || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover border">
+                        <div>
+                            <div class="font-bold text-gray-900 text-sm">${escapeHtml(p.latestReposter?.username || 'User')}</div>
+                            <div class="text-xs text-gray-500">${time} • ${escapeHtml(p.category || 'General')}</div>
+                        </div>
+                        <button class="ml-auto text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-h"></i></button>
+                    </div>
+
+                    <!-- Image -->
+                    <div class="bg-black">
+                        <img src="${p.image}" class="w-full max-h-[500px] object-contain mx-auto">
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex gap-5">
+                                <button onclick="toggleLike('${p.id}')" class="text-2xl transition ${isLiked ? 'text-red-500 drop-shadow-sm' : 'text-gray-600 hover:text-red-500'}">
+                                    <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
+                                </button>
+                                <button class="text-2xl text-gray-600 hover:text-indigo-600"><i class="far fa-comment"></i></button>
+                                <button class="text-2xl text-gray-600 hover:text-indigo-600"><i class="far fa-paper-plane"></i></button>
+                            </div>
+                            <button class="text-2xl text-gray-600 hover:text-gray-900"><i class="far fa-bookmark"></i></button>
+                        </div>
+
+                        <div class="font-bold text-sm mb-2">${p.likes ? p.likes.length : 0} likes</div>
+                        
+                        <div>
+                            <span class="font-bold text-sm mr-2">${escapeHtml(p.latestReposter?.username)}</span>
+                            <span class="font-bold text-sm text-gray-800">${escapeHtml(p.headline)}</span>
+                        </div>
+                        <div class="text-sm text-gray-600 mt-1">${escapeHtml(p.description)}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    });
+
+    // --- UPLOAD LOGIC (Refactored) ---
+    
+    // Desktop
+    const dUploader = document.getElementById('desktop-uploader');
+    const dFile = document.getElementById('desktop-file');
+    const dPreview = document.getElementById('desktop-preview');
+    let dFileObj = null;
+    
+    dUploader.addEventListener('click', () => dFile.click());
+    dFile.addEventListener('change', (e) => {
+        const f = e.target.files[0];
+        if(f) {
+            dFileObj = f;
+            dPreview.src = URL.createObjectURL(f);
+            dPreview.classList.remove('hidden');
+        }
+    });
+    
+    document.getElementById('desktop-post-btn').addEventListener('click', () => {
+        uploadPost(
+            dFileObj, 
+            document.getElementById('desktop-title').value,
+            '', // no desc in mini composer
+            document.getElementById('desktop-post-btn'),
+            document.getElementById('desktop-progress-wrap'),
+            document.getElementById('desktop-progress'),
+            () => {
+                dFileObj = null; dPreview.classList.add('hidden'); dFile.value = '';
+                document.getElementById('desktop-title').value = '';
             }
         );
     });
 
-    // Modal Logic
-    const modal = document.getElementById('modal-composer');
-    document.getElementById('new-post-btn').addEventListener('click', () => {
-        if(!currentUser) { signInWithPopup(auth, provider); return; }
+    // Mobile / Modal
+    const modal = document.getElementById('modal');
+    const mUploader = document.getElementById('modal-uploader');
+    const mFile = document.getElementById('modal-file');
+    const mPreview = document.getElementById('modal-preview');
+    let mFileObj = null;
+
+    document.getElementById('mobile-composer-trigger').addEventListener('click', () => {
+        if(!currentUser) { loginAction(); return; }
         modal.classList.remove('hidden');
     });
-    document.getElementById('modal-close').addEventListener('click', () => modal.classList.add('hidden'));
+    document.getElementById('close-modal').addEventListener('click', () => modal.classList.add('hidden'));
     
-    let modalFileObj = null;
-    document.getElementById('modal-drop').addEventListener('click', () => document.getElementById('modal-file').click());
-    document.getElementById('modal-file').addEventListener('change', (e) => handleFileSelect(e.target.files[0], document.getElementById('modal-preview-img'), (f)=>modalFileObj=f));
-    
+    mUploader.addEventListener('click', () => mFile.click());
+    mFile.addEventListener('change', (e) => {
+        const f = e.target.files[0];
+        if(f) {
+            mFileObj = f;
+            mPreview.src = URL.createObjectURL(f);
+            mPreview.classList.remove('hidden');
+        }
+    });
+
     document.getElementById('modal-submit').addEventListener('click', () => {
-        doUpload(
-            modalFileObj,
-            document.getElementById('modal-title-in').value,
-            document.getElementById('modal-desc-in').value,
-            'General',
+        uploadPost(
+            mFileObj,
+            document.getElementById('modal-title').value,
+            document.getElementById('modal-desc').value,
             document.getElementById('modal-submit'),
             document.getElementById('modal-progress-wrap'),
             document.getElementById('modal-progress'),
             () => {
-                modal.classList.add('hidden');
-                modalFileObj = null;
-                document.getElementById('modal-preview-img').classList.add('hidden');
-                document.getElementById('modal-title-in').value = '';
-                document.getElementById('modal-desc-in').value = '';
+                modal.classList.add('hidden'); mFileObj = null; mPreview.classList.add('hidden'); mFile.value='';
+                document.getElementById('modal-title').value = '';
+                document.getElementById('modal-desc').value = '';
             }
         );
     });
 
-    async function doUpload(file, title, desc, cat, btn, pWrap, pBar, onSuccess) {
-        if(!currentUser) { signInWithPopup(auth, provider); return; }
-        if(!file) { alert('Please select an image'); return; }
-        if(!title) { alert('Title is required'); return; }
+    async function uploadPost(file, title, desc, btn, pWrap, pBar, onSuccess) {
+        if(!currentUser) { loginAction(); return; }
+        if(!file) { showToast('Please select an image'); return; }
+        if(!title) { showToast('Headline is required'); return; }
 
         btn.disabled = true;
-        btn.innerText = 'Uploading...';
         pWrap.classList.remove('hidden');
-        pBar.style.width = '0%';
+        pBar.style.width = '10%';
 
         try {
-            // 1. Upload to Storage
-            const path = `community/${Date.now()}_${file.name.replace(/\s/g,'_')}`;
+            // Upload Image
+            const path = `community/${Date.now()}_${file.name}`;
             const storageRef = ref(storage, path);
             const task = uploadBytesResumable(storageRef, file);
 
@@ -244,14 +374,14 @@
                     const pct = (snap.bytesTransferred / snap.totalBytes) * 100;
                     pBar.style.width = pct + '%';
                 },
-                (err) => { throw err; },
+                (err) => { console.error(err); showToast('Upload Error'); btn.disabled=false; },
                 async () => {
-                    // 2. Save to Firestore
                     const url = await getDownloadURL(task.snapshot.ref);
+                    
                     await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), {
                         headline: title,
                         description: desc || '',
-                        category: cat || 'General',
+                        category: 'General',
                         image: url,
                         timestamp: serverTimestamp(),
                         likes: [],
@@ -259,124 +389,44 @@
                         latestReposter: {
                             uid: currentUser.uid,
                             username: currentUser.displayName,
-                            avatar: currentUser.photoURL
+                            avatar: currentUser.photoURL,
+                            email: currentUser.email // Storing email in doc too if needed
                         }
                     });
-                    
-                    alert('Posted!');
+
+                    showToast('Posted Successfully!');
                     btn.disabled = false;
-                    btn.innerText = 'Post';
                     pWrap.classList.add('hidden');
                     onSuccess();
                 }
             );
-        } catch(err) {
-            console.error(err);
-            alert('Error: ' + err.message);
+        } catch(e) {
+            console.error(e);
+            showToast('Error: ' + e.message);
             btn.disabled = false;
-            btn.innerText = 'Post';
-            pWrap.classList.add('hidden');
         }
     }
 
-    // --- FEED LOGIC (No Sort to prevent index errors) ---
-    const feedContainer = document.getElementById('feed-container');
-    
-    // NOTE: Removed orderBy('timestamp') temporarily to fix "Loading" loop if index is missing.
-    // We will sort in client side.
-    const q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), limit(50));
-
-    onSnapshot(q, (snapshot) => {
-        if(snapshot.empty) {
-            feedContainer.innerHTML = `<div class="text-center py-10 text-gray-400">No posts yet. Be the first!</div>`;
-            return;
-        }
-
-        // Client-side sort (Newest first)
-        const posts = snapshot.docs.map(d => ({id: d.id, ...d.data()}))
-                                   .sort((a,b) => {
-                                       const t1 = a.timestamp ? (a.timestamp.seconds || 0) : 0;
-                                       const t2 = b.timestamp ? (b.timestamp.seconds || 0) : 0;
-                                       return t2 - t1;
-                                   });
-
-        feedContainer.innerHTML = posts.map(p => {
-            const liked = currentUser && p.likes && p.likes.includes(currentUser.uid);
-            return `
-                <div class="insta-card p-4 fade-in">
-                    <div class="flex items-center gap-3 mb-3">
-                        <img src="${p.latestReposter?.avatar || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full object-cover border">
-                        <div>
-                            <div class="font-bold text-sm">${escapeHtml(p.latestReposter?.username || 'User')}</div>
-                            <div class="text-xs text-gray-500">${escapeHtml(p.category)}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gray-100 rounded-lg overflow-hidden mb-3 border">
-                        <img src="${p.image}" class="w-full max-h-[500px] object-contain block">
-                    </div>
-
-                    <div class="flex gap-4 mb-2">
-                        <button onclick="toggleLike('${p.id}')" class="text-2xl transition ${liked ? 'text-red-500' : 'text-gray-600 hover:text-gray-800'}">
-                            <i class="${liked ? 'fas' : 'far'} fa-heart"></i>
-                        </button>
-                        <button class="text-2xl text-gray-600"><i class="far fa-comment"></i></button>
-                    </div>
-                    
-                    <div class="font-semibold text-sm mb-1">${p.likes ? p.likes.length : 0} likes</div>
-                    <div class="text-sm">
-                        <span class="font-bold">${escapeHtml(p.headline)}</span> 
-                        <span class="text-gray-700">${escapeHtml(p.description)}</span>
-                    </div>
-                </div>
-            `;
-        }).join('');
-
-    }, (err) => {
-        console.error("Snapshot Error:", err);
-        feedContainer.innerHTML = `<div class="bg-red-50 p-4 rounded text-red-600 text-center">
-            Error loading feed. <br> <span class="text-xs opacity-75">${err.message}</span>
-        </div>`;
-    });
-
-    // Like Function exposed to Window
+    // Global Functions
     window.toggleLike = async (pid) => {
-        if(!currentUser) { signInWithPopup(auth, provider); return; }
-        const ref = doc(db, 'artifacts', APP_ID, 'public', 'data', 'reposts', pid);
-        
-        // Simple toggle check based on current UI state or blind toggle
-        // For safety, we just try to add. If you want true toggle, we need to read document or use UI state.
-        // Let's read the button state from DOM for optimistic toggle direction.
-        // But Firestore requires us to know logic.
-        // Let's use arrayUnion. If user wants to UNLIKE, we need arrayRemove.
-        // We will implement a check inside the transaction or just guess. 
-        // A simpler way for this demo:
-        // We can't easily know if user liked it inside this function without passing state.
-        // We will fetch the doc first (small read cost)
-        // OR just use the feed data which is in memory? No, scope issue.
-        // Let's just try to ADD for now. To make it perfect, we'd need the 'posts' array in scope.
-        
-        // IMPROVED: Since onSnapshot updates the UI, we can just check if the current user is in the 'likes' array 
-        // by querying the DOM button class? No, that's hacky. 
-        // Let's just do arrayUnion for now. 
-        // If you want un-like, we need to implement proper logic.
-        
-        // Hack for this single-file demo:
+        if(!currentUser) { loginAction(); return; }
         try {
-            // Attempt to add. If we want toggle, we need to check if already liked. 
-            // We can't check easily without reading.
-            // Let's blindly ADD.
+            const ref = doc(db, 'artifacts', APP_ID, 'public', 'data', 'reposts', pid);
             await updateDoc(ref, { likes: arrayUnion(currentUser.uid) });
+            // Note: To toggle off requires checking state. Simple add for now.
         } catch(e) { console.error(e); }
     }
 
-    function escapeHtml(text) {
-        if (!text) return '';
-        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.classList.remove('opacity-0');
+        setTimeout(() => t.classList.add('opacity-0'), 3000);
     }
 
-    document.getElementById('refresh-btn').addEventListener('click', () => window.location.reload());
-
+    function escapeHtml(text) {
+        return text ? text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : '';
+    }
   </script>
 </body>
 </html>
