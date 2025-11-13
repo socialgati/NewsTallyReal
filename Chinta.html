@@ -1,0 +1,334 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NewsTally - Community (Instagram-style)</title>
+  <meta name="description" content="NewsTally - Social News with Instagram-like Community" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    :root{--bg:#f8fafc;--card:#fff;--muted:#6b7280;--accent:#6366f1}
+    html.dark{--bg:#0b1220;--card:#0f1724;--muted:#9ca3af;--accent:#7c3aed}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial; background:var(--bg); color:#0f1724}
+    .insta-card{background:var(--card); border-radius:14px; box-shadow:0 6px 18px rgba(16,24,40,0.06);}
+    .uploader-drag{border:2px dashed rgba(15,23,42,0.06); border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.4));}
+    .image-preview{max-height:520px; object-fit:cover; border-radius:10px}
+    .pill{background:rgba(99,102,241,0.08); color:var(--accent); padding:6px 8px; border-radius:999px; font-weight:600;}
+    .glass{backdrop-filter:blur(6px); background:rgba(255,255,255,0.6)}
+    .skeleton{position:relative;overflow:hidden;background:linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.06) 75%); background-size:200% 100%; animation:skeleton-shimmer 1.6s linear infinite}
+    @keyframes skeleton-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  </style>
+</head>
+<body class="antialiased">
+  <div class="max-w-6xl mx-auto p-4">
+    <!-- Header -->
+    <header class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-extrabold">NewsTally <span class="text-sm text-gray-500 font-medium">Community</span></h1>
+      <div class="flex items-center gap-3">
+        <button id="new-post-btn" class="px-4 py-2 rounded-full bg-gradient-to-r from-indigo-600 to-indigo-400 text-white font-semibold shadow-lg hover:brightness-105"><i class="fas fa-plus mr-2"></i>New Post</button>
+        <button id="refresh-community" class="p-2 rounded-full glass"><i class="fas fa-sync-alt"></i></button>
+      </div>
+    </header><!-- Composer + Feed Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <!-- Left: Composer (large on desktop) -->
+  <div class="md:col-span-1 insta-card p-4">
+    <h3 class="font-bold mb-3">Create Post</h3>
+    <div id="composer" class="space-y-3">
+      <label class="block text-sm font-medium text-gray-600">Image</label>
+      <div id="uploader" class="uploader-drag p-3 flex flex-col gap-3 items-center justify-center cursor-pointer" tabindex="0">
+        <input id="file-input" type="file" accept="image/*" class="hidden">
+        <div class="text-center text-sm text-gray-500">
+          <i class="fas fa-cloud-upload-alt text-3xl mb-2 text-indigo-500"></i>
+          <div class="font-medium">Drag & drop an image, or <button id="uploader-browse" class="text-indigo-600 underline">browse</button></div>
+          <div class="text-xs text-gray-400 mt-1">JPEG/PNG up to 8MB</div>
+        </div>
+        <img id="local-preview" src="" alt="Preview" class="w-full rounded-lg mt-2 hidden image-preview">
+      </div>
+
+      <label class="block text-sm font-medium text-gray-600">Title / Topic</label>
+      <input id="post-title" type="text" placeholder="Add a short headline" class="w-full p-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-300">
+
+      <label class="block text-sm font-medium text-gray-600">Description</label>
+      <textarea id="post-desc" rows="4" placeholder="Write something about this post..." class="w-full p-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-300"></textarea>
+
+      <label class="block text-sm font-medium text-gray-600">Category</label>
+      <div class="flex gap-2 items-center">
+        <select id="post-category" class="p-2 border rounded-lg flex-1">
+          <option value="General">General</option>
+          <option value="Politics">Politics</option>
+          <option value="Technology">Technology</option>
+          <option value="Business">Business</option>
+          <option value="Sports">Sports</option>
+          <option value="Other">Other (custom)</option>
+        </select>
+        <input id="post-category-custom" class="p-2 border rounded-lg hidden" placeholder="Enter category" />
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="submit-post" class="flex-1 px-4 py-2 rounded-full bg-indigo-600 text-white font-semibold shadow hover:brightness-105">Post</button>
+        <button id="clear-post" class="px-3 py-2 rounded-full border">Clear</button>
+      </div>
+
+      <div id="upload-progress" class="w-full bg-gray-100 rounded-full h-2 overflow-hidden hidden"><div id="upload-bar" class="h-full bg-indigo-500 w-0"></div></div>
+    </div>
+  </div>
+
+  <!-- Middle: Feed -->
+  <div class="md:col-span-2 space-y-6">
+    <div id="community-feed" class="space-y-6">
+      <!-- posts injected here -->
+      <div class="text-center text-gray-400 py-12">No posts yet — create the first one or refresh.</div>
+    </div>
+  </div>
+</div>
+
+  </div>  <!-- Composer Modal (big screen) -->  <div id="composer-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl w-[95%] md:w-[900px] max-h-[90vh] overflow-auto p-4 insta-card">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-lg font-bold">Create Post</h3>
+        <button id="close-composer" class="p-2 rounded-full"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <div class="uploader-drag p-3" id="modal-uploader" tabindex="0">
+            <input id="modal-file-input" type="file" accept="image/*" class="hidden">
+            <div class="text-center text-gray-500">
+              <i class="fas fa-image text-4xl text-indigo-500"></i>
+              <div class="mt-2">Select or drop an image</div>
+            </div>
+            <img id="modal-preview" class="w-full mt-2 hidden image-preview" src="" alt="">
+          </div>
+        </div>
+        <div>
+          <input id="modal-title" class="w-full p-2 rounded-lg border mb-2" placeholder="Headline / Topic">
+          <textarea id="modal-desc" rows="6" class="w-full p-2 rounded-lg border" placeholder="Write a caption..."></textarea>
+          <div class="mt-3">
+            <select id="modal-category" class="p-2 rounded-lg w-full">
+              <option>General</option>
+              <option>Politics</option>
+              <option>Technology</option>
+              <option>Business</option>
+              <option>Sports</option>
+              <option>Other</option>
+            </select>
+            <input id="modal-category-custom" class="w-full p-2 rounded-lg border mt-2 hidden" placeholder="Custom category">
+          </div>
+          <div class="flex gap-2 mt-4">
+            <button id="modal-post-btn" class="flex-1 bg-indigo-600 text-white py-2 rounded-lg">Post</button>
+            <button id="modal-cancel" class="py-2 px-4 rounded-lg border">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  <!-- Firebase + Logic -->  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js';
+    import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot, doc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+    import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js';
+
+    // CONFIG (keep as your project)
+    const firebaseConfig = {
+      apiKey: "AIzaSyA4zw5cZqxLwzkTy2e5NiHz-tGKqk1KGdI",
+      authDomain: "newstally-df03c.firebaseapp.com",
+      projectId: "newstally-df03c",
+      storageBucket: "newstally-df03c.appspot.com",
+      messagingSenderId: "506893212961",
+      appId: "1:506893212961:web:63882290195da992207260"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    const provider = new GoogleAuthProvider();
+
+    // Elements
+    const fileInput = document.getElementById('file-input');
+    const uploader = document.getElementById('uploader');
+    const uploaderBrowse = document.getElementById('uploader-browse');
+    const preview = document.getElementById('local-preview');
+    const titleEl = document.getElementById('post-title');
+    const descEl = document.getElementById('post-desc');
+    const categoryEl = document.getElementById('post-category');
+    const categoryCustom = document.getElementById('post-category-custom');
+    const submitBtn = document.getElementById('submit-post');
+    const clearBtn = document.getElementById('clear-post');
+    const progressBar = document.getElementById('upload-bar');
+    const progressWrap = document.getElementById('upload-progress');
+    const feed = document.getElementById('community-feed');
+    const newPostBtn = document.getElementById('new-post-btn');
+    const composerModal = document.getElementById('composer-modal');
+    const modalFile = document.getElementById('modal-file-input');
+    const modalPreview = document.getElementById('modal-preview');
+    const modalPostBtn = document.getElementById('modal-post-btn');
+    const modalCancel = document.getElementById('modal-cancel');
+    const modalUploader = document.getElementById('modal-uploader');
+    const modalTitle = document.getElementById('modal-title');
+    const modalDesc = document.getElementById('modal-desc');
+    const modalCategory = document.getElementById('modal-category');
+    const modalCategoryCustom = document.getElementById('modal-category-custom');
+
+    let currentUser = null;
+
+    // Auth
+    onAuthStateChanged(auth, (u)=>{ currentUser = u; if(!u) { /* optionally prompt login */ } });
+
+    // small helpers
+    function readFileToPreview(file, imgEl){
+      const reader = new FileReader();
+      reader.onload = ()=>{ imgEl.src = reader.result; imgEl.classList.remove('hidden'); }
+      reader.readAsDataURL(file);
+    }
+
+    // Drag & drop
+    ['dragenter','dragover'].forEach(ev=>{
+      uploader.addEventListener(ev,(e)=>{ e.preventDefault(); uploader.classList.add('ring-2','ring-indigo-300'); });
+      modalUploader.addEventListener(ev,(e)=>{ e.preventDefault(); modalUploader.classList.add('ring-2','ring-indigo-300'); });
+    });
+    ['dragleave','drop'].forEach(ev=>{
+      uploader.addEventListener(ev,(e)=>{ e.preventDefault(); uploader.classList.remove('ring-2','ring-indigo-300'); });
+      modalUploader.addEventListener(ev,(e)=>{ e.preventDefault(); modalUploader.classList.remove('ring-2','ring-indigo-300'); });
+    });
+
+    uploader.addEventListener('drop', (e)=>{
+      const f = e.dataTransfer.files && e.dataTransfer.files[0];
+      if(f) { fileInput.files = e.dataTransfer.files; readFileToPreview(f, preview); }
+    });
+    uploaderBrowse.addEventListener('click', ()=> fileInput.click());
+    fileInput.addEventListener('change', (e)=>{ const f = e.target.files[0]; if(f) readFileToPreview(f, preview); });
+
+    // modal uploader
+    modalUploader.addEventListener('drop', (e)=>{ const f = e.dataTransfer.files && e.dataTransfer.files[0]; if(f){ modalFile.files = e.dataTransfer.files; readFileToPreview(f, modalPreview);} });
+    modalUploader.addEventListener('click', ()=> modalFile.click());
+    modalFile.addEventListener('change', (e)=> { const f = e.target.files[0]; if(f) readFileToPreview(f, modalPreview); });
+
+    // category custom
+    categoryEl.addEventListener('change', ()=>{ if(categoryEl.value==='Other') categoryCustom.classList.remove('hidden'); else categoryCustom.classList.add('hidden'); });
+    modalCategory.addEventListener('change', ()=>{ if(modalCategory.value==='Other') modalCategoryCustom.classList.remove('hidden'); else modalCategoryCustom.classList.add('hidden'); });
+
+    // Clear
+    clearBtn.addEventListener('click', ()=>{ fileInput.value=''; preview.src=''; preview.classList.add('hidden'); titleEl.value=''; descEl.value=''; categoryEl.value='General'; categoryCustom.value=''; progressWrap.classList.add('hidden'); progressBar.style.width='0%'; });
+
+    // Open composer modal
+    newPostBtn.addEventListener('click', ()=> composerModal.classList.remove('hidden'));
+    document.getElementById('close-composer').addEventListener('click', ()=> composerModal.classList.add('hidden'));
+    modalCancel.addEventListener('click', ()=> composerModal.classList.add('hidden'));
+
+    // Post logic (modal)
+    async function uploadAndCreatePost(file, meta){
+      // file: File, meta: {title,desc,category,author}
+      const id = 'post_' + Date.now();
+      const path = `community/${id}_${file.name}`;
+      const storageRef = sRef(storage, path);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      progressWrap.classList.remove('hidden');
+      return new Promise((resolve,reject)=>{
+        uploadTask.on('state_changed', (snapshot)=>{
+          const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          progressBar.style.width = pct + '%';
+        }, (err)=>{ console.error(err); progressWrap.classList.add('hidden'); reject(err); }, async ()=>{
+          const url = await getDownloadURL(uploadTask.snapshot.ref);
+          const doc = await addDoc(collection(db,'community_posts'),{
+            title: meta.title, description: meta.desc, category: meta.category, image: url,
+            authorName: meta.authorName||'Anonymous', authorUid: meta.authorUid||null, timestamp: serverTimestamp(), likes: [], commentsCount:0
+          });
+          progressWrap.classList.add('hidden'); progressBar.style.width='0%';
+          resolve(doc.id);
+        });
+      });
+    }
+
+    // Modal Post button
+    modalPostBtn.addEventListener('click', async ()=>{
+      const f = modalFile.files[0];
+      if(!f){ alert('Please choose an image'); return; }
+      if(!currentUser){ if(confirm('Sign in to post?')) signInWithPopup(auth, provider); return; }
+      const cat = modalCategory.value === 'Other' ? modalCategoryCustom.value || 'Other' : modalCategory.value;
+      modalPostBtn.disabled = true; modalPostBtn.innerText='Posting...';
+      try{
+        const id = await uploadAndCreatePost(f, {title: modalTitle.value, desc: modalDesc.value, category: cat, authorName: currentUser.displayName, authorUid: currentUser.uid});
+        showLocalToast('Posted to community');
+        composerModal.classList.add('hidden');
+        modalFile.value=''; modalPreview.classList.add('hidden'); modalTitle.value=''; modalDesc.value=''; modalCategory.value='General'; modalCategoryCustom.value='';
+      }catch(err){ console.error(err); alert('Upload failed'); }
+      modalPostBtn.disabled = false; modalPostBtn.innerText='Post';
+    });
+
+    // Inline Post button (left composer)
+    submitBtn.addEventListener('click', async ()=>{
+      const f = fileInput.files[0];
+      if(!f){ alert('Choose an image first'); return; }
+      if(!currentUser){ if(confirm('Sign in to post?')) signInWithPopup(auth, provider); return; }
+      const cat = categoryEl.value === 'Other' ? (categoryCustom.value || 'Other') : categoryEl.value;
+      submitBtn.disabled = true; submitBtn.innerText='Posting...';
+      try{
+        await uploadAndCreatePost(f, {title: titleEl.value, desc: descEl.value, category: cat, authorName: currentUser.displayName, authorUid: currentUser.uid});
+        showLocalToast('Posted to community');
+        // clear
+        fileInput.value=''; preview.classList.add('hidden'); titleEl.value=''; descEl.value=''; categoryEl.value='General'; categoryCustom.value='';
+      }catch(err){ console.error(err); alert('Upload failed'); }
+      submitBtn.disabled=false; submitBtn.innerText='Post';
+    });
+
+    // Real-time feed listener
+    const q = query(collection(db,'community_posts'), orderBy('timestamp','desc'), limit(50));
+    onSnapshot(q, (snap)=>{
+      const docs = snap.docs.map(d=>({id:d.id, ...d.data()}));
+      renderFeed(docs);
+    });
+
+    // render feed
+    function renderFeed(posts){
+      if(!posts || !posts.length){ feed.innerHTML='<div class="text-center text-gray-400 py-12">No posts yet — create the first one.</div>'; return; }
+      feed.innerHTML = posts.map(p=>{
+        const t = p.timestamp && p.timestamp.toDate ? formatDate(p.timestamp.toDate()) : '';
+        return `
+          <div class="insta-card p-4">
+            <div class="flex items-center gap-3 mb-3">
+              <img src="${p.authorUid?`https://avatars.dicebear.com/api/identicon/${p.authorUid}.svg`:'https://placehold.co/40'}" class="w-10 h-10 rounded-full">
+              <div class="flex-1">
+                <div class="font-semibold">${escapeHtml(p.authorName||'Anonymous')}</div>
+                <div class="text-xs text-gray-400">${escapeHtml(p.category||'General')} • ${t}</div>
+              </div>
+              <button class="three-dot-btn p-2" data-post-id="${p.id}"><i class="fas fa-ellipsis-h"></i></button>
+            </div>
+            <div class="mb-3">
+              <img src="${p.image}" alt="${escapeHtml(p.title||'image')}" class="w-full rounded-lg image-preview">
+            </div>
+            <div class="flex items-center justify-between gap-3 mb-2">
+              <div class="flex items-center gap-3">
+                <button class="like-btn" data-id="${p.id}"><i class="far fa-heart"></i></button>
+                <button class="comment-open" data-id="${p.id}"><i class="far fa-comment"></i></button>
+                <button class="share-btn" data-id="${p.id}"><i class="fas fa-paper-plane"></i></button>
+              </div>
+              <div class="text-sm text-gray-500">${p.likes?p.likes.length:0} likes</div>
+            </div>
+            <div class="mb-2 font-bold">${escapeHtml(p.title||'')}</div>
+            <div class="text-sm text-gray-700">${escapeHtml(p.description||'')}</div>
+          </div>
+        `;
+      }).join('');
+
+      // attach event listeners for dynamic buttons
+      document.querySelectorAll('.like-btn').forEach(b=>{ b.onclick = async (e)=>{ const id=b.dataset.id; if(!currentUser){ if(confirm('Sign in to like?')) signInWithPopup(auth, provider); return;} try{ await updateDoc(doc(db,'community_posts',id), { likes: arrayUnion(currentUser.uid) }); showLocalToast('Liked'); }catch(err){ console.error(err);} }; });
+      document.querySelectorAll('.three-dot-btn').forEach(btn=>{ btn.onclick=(e)=>{ e.stopPropagation(); const pid=btn.dataset.postId; // simple menu
+          const menu = document.createElement('div'); menu.className='p-2 bg-white rounded shadow'; menu.innerHTML=`<div class="p-2 cursor-pointer" data-act="report">Report</div><div class="p-2 cursor-pointer" data-act="copy">Copy Link</div>`; document.body.appendChild(menu); const rect=btn.getBoundingClientRect(); menu.style.position='fixed'; menu.style.left=rect.right-10+'px'; menu.style.top=rect.bottom+6+'px'; setTimeout(()=>{ menu.addEventListener('click',(ev)=>{ if(ev.target.dataset.act==='report'){ alert('Reported'); } if(ev.target.dataset.act==='copy'){ navigator.clipboard.writeText(location.href+'#post/'+pid); showLocalToast('Link copied'); } menu.remove(); }); },20);
+      }; });
+    }
+
+    // small utilities
+    function escapeHtml(s){ if(!s) return ''; return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function formatDate(d){ try{ return d.toLocaleString(); }catch(e){ return ''; } }
+    function showLocalToast(msg){ const t=document.createElement('div'); t.className='fixed right-6 bottom-6 bg-black text-white px-4 py-2 rounded shadow'; t.innerText=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2500); }
+
+    // refresh
+    document.getElementById('refresh-community').addEventListener('click', ()=>{ showLocalToast('Refreshed'); });
+
+    // quick sign-in on demand
+    document.getElementById('new-post-btn').addEventListener('click', ()=>{ if(!currentUser){ signInWithPopup(auth, provider).catch(()=>{}); } });
+
+  </script></body>
+</html>
