@@ -3,1306 +3,978 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- SEO Meta Tags -->
-  <title>NewsTally - Latest and Trending News Worldwide</title>
-  <meta name="description" content="NewsTally is your all-in-one modern news platform, designed for the digital age. We bring you the latest headlines, breaking news, and in-depth stories from across the world, covering categories like Tech, Sports, Politics, Entertainment, Cricket, and more — all in one clean, Instagram-style feed. With real-time updates, category filters, advanced search, dark mode, and offline PWA support, NewsTally ensures a smooth and personalized news-reading experience on any device. Stay informed, stay ahead — with NewsTally." />
-  <meta name="keywords" content="Breaking News, Trending News, Tech Updates, World Headlines, Cricket News 2025, IPL 2025, Political News India, Entertainment Buzz, Viral Shorts, News Today, आज की ताज़ा खबरें, ब्रेकिंग न्यूज़, क्रिकेट समाचार, आईपीएल 2025 अपडेट, आज का मौसम, राजनीति की खबरें, मनोरंजन की दुनिया, वायरल वीडियो, तकनीकी समाचार, देश दुनिया की खबरें, Aaj ki Breaking News, IPL 2025 Live Updates, Viral Tech News, Bollywood ki Taza Khabar, Cricket Score Today, Trending Politics News, Desh Videsh Ki News, Entertainment Shorts, NewsTally Latest Feed, Taza Samachar Online, NewsTally" />
-  <meta name="robots" content="index, follow" />
-  <meta name="author" content="NewsTally Team" />
-  <link rel="canonical" href="https://newstally.online/index.html" />
-
-  <!-- Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7970185951737996" crossorigin="anonymous"></script>
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/jpeg" href="https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small" />
-
-  <!-- PWA Manifest -->
-  <link rel="manifest" href="/manifest.json" />
-  <meta name="theme-color" content="#1e3a8a" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-
-  <!-- Open Graph (OG) Tags for Social Media -->
-  <meta property="og:title" content="NewsTally - Latest and Trending News Worldwide" />
-  <meta property="og:description" content="Stay informed with NewsTally, your source for the latest and trending news from around the world in politics, sports, tech, entertainment, and more." />
-  <meta property="og:url" content="https://newstally.online/index.html" />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="https://newstally.online/images/logo.png" />
-  <meta property="og:site_name" content="NewsTally" />
-
-  <!-- Twitter Card Tags -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="NewsTally - Latest and Trending News Worldwide" />
-  <meta name="twitter:description" content="Stay informed with NewsTally, your source for the latest and trending news from around the world in politics, sports, tech, entertainment, and more." />
-  <meta name="twitter:image" content="https://newstally.online/images/logo.png" />
-
-  <!-- Google Analytics -->
-  <script async src="https://www.googlesagmanager.com/gtag/js?id=G-JYEMEVD1J4"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-JYEMEVD1J4');
-  </script>
-
+  <title>NewsTally - Social News</title>
+  <meta name="description" content="NewsTally - Read, Repost, Connect, and Discuss." />
+  
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-  <!-- Font Awesome CSS CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-  <!-- Structured Data (JSON-LD) for Organization and Website -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "Organization",
-          "name": "NewsTally",
-          "url": "https://newstally.online",
-          "logo": "https://newstally.online/images/logo.png",
-          "sameAs": [
-            "https://www.facebook.com/newstally",
-            "https://www.twitter.com/newstally",
-            "https://www.instagram.com/newstally",
-            "https://www.youtube.com/newstally"
-          ]
-        },
-        {
-          "@type": "WebSite",
-          "url": "https://newstally.online",
-          "name": "NewsTally",
-          "description": "Latest and trending news from around the world.",
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://newstally.online/index.html?search={search_term_string}",
-            "query-input": "required name=search_term_string"
-          }
-        }
-      ]
-    }
-  </script>
-
-  <!-- Firebase SDKs (compat version) -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-  <!-- Inline Styles -->
   <style>
-    /* Import Google Fonts for "Inter" */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; }
 
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-
-    /* Base colors for light mode */
     :root {
-      --bg-primary: #f9fafb; /* bg-gray-50 */
-      --bg-secondary: #ffffff; /* bg-white */
-      --text-primary: #111827; /* text-gray-900 */
-      --text-secondary: #4b5563; /* text-gray-600 */
-      --border-color: #e5e7eb; /* border-gray-200 */
-      --shadow-color: rgba(0, 0, 0, 0.08);
-      --gradient-start: #1e40af; /* blue-800 */
-      --gradient-end: #3b82f6; /* blue-500 */
-      --red-accent: #dc2626; /* red-600 */
-      --blue-accent: #2563eb; /* blue-600 */
-      --hover-bg: #f3f4f6; /* gray-100 */
-      --skeleton-bg: #e5e7eb; /* gray-200 */
+      --bg-primary: #f9fafb; --bg-secondary: #ffffff; --text-primary: #111827;
+      --text-secondary: #4b5563; --border-color: #e5e7eb; --blue-accent: #2563eb;
+      --gradient-start: #1e40af; --gradient-end: #3b82f6;
     }
-
-    /* Dark mode colors - Refined Palette */
     html.dark {
-      --bg-primary: #111827; /* gray-900 */
-      --bg-secondary: #1f2937; /* gray-800 */
-      --text-primary: #f9fafb; /* gray-50 */
-      --text-secondary: #9ca3af; /* gray-400 */
-      --border-color: #374151; /* gray-700 */
-      --shadow-color: rgba(0, 0, 0, 0.2);
-      --gradient-start: #1e3a8a; /* blue-900 */
-      --gradient-end: #3b82f6; /* blue-500 */
-      --red-accent: #f87171; /* red-400 */
-      --blue-accent: #60a5fa; /* blue-400 */
-      --hover-bg: #374151; /* gray-700 */
-      --skeleton-bg: #374151; /* gray-700 */
+      --bg-primary: #111827; --bg-secondary: #1f2937; --text-primary: #f9fafb;
+      --text-secondary: #9ca3af; --border-color: #374151;
+      --gradient-start: #1e3a8a; --gradient-end: #3b82f6;
     }
+    body { background-color: var(--bg-primary); color: var(--text-primary); transition: 0.3s; }
+    .gradient-bg { background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end)); }
 
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    /* Gradient background for top bar and footer */
-    .gradient-bg {
-      background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
-    }
-
-    /* Enhanced Header & Nav Styling */
-    .sticky-header {
-      background-color: var(--bg-secondary-translucent);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 2px 8px var(--shadow-color);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    header { z-index: 30; }
-    nav { z-index: 20; }
-    header .hover\:text-gray-200:hover { color: white; }
-
-    #nav-menu a {
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-      font-weight: 500;
-      font-size: 0.875rem;
-    }
-    #nav-menu a:hover {
-      background-color: var(--hover-bg);
-      transform: translateY(-2px);
-    }
-    #nav-menu a.nav-active {
-      background-color: var(--gradient-end);
-      color: white;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    #nav-menu a.nav-active::after { display: none; }
-
-    /* Sliding Navigation Panel */
-    #nav-panel {
-      position: fixed; top: 0; left: 0; height: 100%; width: 256px;
-      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-      transform: translateX(-100%); transition: transform 0.3s ease-in-out; z-index: 50;
-      overflow-y: auto; box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
-      scrollbar-width: none; -ms-overflow-style: none;
-    }
-    #nav-panel::-webkit-scrollbar { display: none; }
-    #nav-panel.open { transform: translateX(0); }
-    #nav-panel a {
-      display: flex; align-items: center; gap: 0.5rem; padding: 1rem;
-      color: white; font-weight: 500; font-size: 0.875rem;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      border-radius: 8px; margin: 0.25rem;
-    }
-    #nav-panel a:hover { background-color: rgba(255, 255, 255, 0.15); transform: translateX(5px); }
-    #nav-panel a.nav-active { background-color: rgba(255, 255, 255, 0.25); }
-
-    /* Bottom Navigation for Mobile and Tablet */
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 0; width: 100%; height: 60px;
-      background-color: var(--bg-secondary);
-      display: flex; justify-content: space-around; align-items: center;
-      box-shadow: 0 -2px 10px var(--shadow-color); z-index: 40;
-      border-top: 1px solid var(--border-color);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    }
-    @media (min-width: 1024px) { .bottom-nav { display: none; } }
-    .bottom-nav a {
-      display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
-      padding: 0.5rem; transition: all 0.3s ease; border-radius: 12px;
-      position: relative; color: var(--text-secondary);
-    }
-    .bottom-nav a:hover { transform: translateY(-3px); color: var(--blue-accent); }
-    .bottom-nav a.nav-active { color: var(--blue-accent); }
-    .bottom-nav a.nav-active::after {
-      content: ''; position: absolute; top: -2px; width: 5px; height: 5px;
-      background-color: var(--red-accent); border-radius: 50%;
-    }
-    .bottom-nav i { font-size: 1.3rem; }
-    .bottom-nav span { font-size: 0.7rem; }
-
-    /* News Card Enhancements */
-    .news-card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.5s ease, background-color 0.3s ease, border-color 0.3s ease;
-      opacity: 0; transform: translateY(20px);
-      background-color: var(--bg-secondary); color: var(--text-primary);
-      box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color);
-      border: 1px solid var(--border-color); cursor: pointer;
+    /* News Card */
+    .news-card { 
+      background-color: var(--bg-secondary); border: 1px solid var(--border-color); 
+      transition: transform 0.3s ease, box-shadow 0.3s ease; opacity: 0; transform: translateY(20px);
+      position: relative; display: flex; flex-direction: column;
     }
     .news-card.loaded { opacity: 1; transform: translateY(0); }
-    .news-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color);
-    }
-    .news-card a { color: inherit; }
-    .news-card h3 a:hover { color: var(--blue-accent); }
+    .news-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
 
-    /* Load More Button */
-    #load-more-btn {
-      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-      background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
-      color: white; box-shadow: 0 4px 10px var(--shadow-color);
+    /* Action Buttons */
+    .card-action-btn {
+        width: 40px; height: 40px; border-radius: 50%; 
+        display: flex; align-items: center; justify-content: center; cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); background: rgba(255,255,255,0.9); color: #6b7280;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(4px);
     }
-    #load-more-btn:hover { transform: scale(1.05); box-shadow: 0 6px 15px var(--shadow-color); }
-
-    /* Player Card Styling */
-    .player-image {
-      border-radius: 50%; object-fit: cover; border: 3px solid var(--border-color);
-      transition: transform 0.3s ease, border-color 0.3s ease;
-    }
-    .player-card:hover .player-image { transform: scale(1.1); border-color: var(--blue-accent); }
-    .player-card {
-      transition: background-color 0.3s ease;
-      background-color: transparent;
-    }
-    .player-card:hover { background-color: var(--hover-bg); }
-    .player-card h4 a:hover { color: var(--blue-accent); }
-
-    /* Enhanced Carousel Styling */
-    .carousel {
-      position: relative; overflow: hidden; border-radius: 1.25rem;
-      box-shadow: 0 10px 25px var(--shadow-color);
-      background-color: var(--bg-secondary);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    }
-    .carousel-slide {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      opacity: 0; transition: opacity 0.7s ease-in-out;
-    }
+    html.dark .card-action-btn { background: rgba(31,41,55,0.8); color: #d1d5db; }
+    .card-action-btn:hover { transform: scale(1.1); color: var(--blue-accent); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    
+    /* Carousel */
+    .carousel { position: relative; overflow: hidden; border-radius: 1.25rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); height: 400px; }
+    .carousel-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.7s ease-in-out; }
     .carousel-slide.active { opacity: 1; }
     .carousel-slide img { width: 100%; height: 100%; object-fit: cover; }
-    .carousel-content-wrapper { height: 450px; }
-    @media (max-width: 768px) { .carousel-content-wrapper { height: 300px; } }
-    .carousel-text-container {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 1.5rem 2rem; color: white;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
-    }
-    .carousel-text-container h3 { text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); }
+    .carousel-text-container { position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, transparent 100%); color: white; }
     
-    .carousel button {
-      transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
-      background-color: rgba(255, 255, 255, 0.8);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-    html.dark .carousel button { background-color: rgba(31, 41, 55, 0.8); }
-    .carousel button:hover { transform: scale(1.1) translateY(-50%); }
-    .carousel button i { color: var(--text-primary); }
-    .carousel-dots {
-      position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 0.5rem; z-index: 10;
-    }
-    .carousel-dot {
-      width: 10px; height: 10px; background-color: rgba(255, 255, 255, 0.5);
-      border-radius: 50%; cursor: pointer; transition: all 0.3s ease;
-    }
-    .carousel-dot.active { background-color: #ffffff; transform: scale(1.2); }
+    /* Modals */
+    #news-detail-page, #profile-page, #username-modal, #public-profile-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-primary); z-index: 80; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); overflow-y: auto; }
+    #news-detail-page.open, #profile-page.open, #public-profile-modal.open { transform: translateX(0); }
+    
+    /* Modal Overlays */
+    #username-modal { z-index: 150; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; transform: scale(0); opacity: 0; transition: all 0.3s; }
+    #username-modal.open { transform: scale(1); opacity: 1; }
 
-    /* Search/Menu/Dark Mode Toggles */
-    .header-btn {
-      padding: 0.5rem; border-radius: 50%;
-      transition: background-color 0.3s ease, transform 0.3s ease;
-      color: white;
-    }
-    .header-btn:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-      transform: scale(1.1);
-    }
-    .header-btn i { font-size: 1.2rem; }
+    /* Nav Panel */
+    #nav-panel { position: fixed; top: 0; left: 0; height: 100%; width: 280px; background: linear-gradient(145deg, var(--gradient-start), var(--gradient-end)); transform: translateX(-100%); transition: transform 0.3s ease-in-out; z-index: 90; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
+    #nav-panel.open { transform: translateX(0); }
 
-    /* Search Results Dropdown */
-    #search-results {
-      position: fixed; top: 64px; right: 1rem; width: 90%; max-width: 384px;
-      max-height: 400px; overflow-y: auto; background-color: var(--bg-secondary);
-      border-radius: 12px; box-shadow: 0 8px 20px var(--shadow-color); z-index: 35;
-      border: 1px solid var(--border-color);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    }
-    #search-results input {
-      width: 100%; padding: 0.75rem 1rem; border: none;
-      border-bottom: 1px solid var(--border-color); outline: none;
-      background-color: transparent; color: var(--text-primary);
-      transition: border-color 0.3s ease;
-    }
-    #search-results input::placeholder { color: var(--text-secondary); }
+    /* Tabs */
+    .profile-tab { cursor: pointer; padding: 12px 10px; border-bottom: 2px solid transparent; color: var(--text-secondary); transition: all 0.2s; flex: 1; text-align: center; font-size: 0.9rem; }
+    .profile-tab:hover { color: var(--blue-accent); }
+    .profile-tab.active { border-color: var(--blue-accent); color: var(--blue-accent); font-weight: bold; }
+    .profile-content-section { display: none; }
+    .profile-content-section.active { display: block; animation: slideUpFade 0.4s ease-out; }
+    
+    /* Comments */
+    .comment-bubble { border-radius: 1rem; padding: 12px 16px; position: relative; }
+    .comment-bubble::before { content: ''; position: absolute; top: 10px; left: -6px; width: 12px; height: 12px; transform: rotate(45deg); }
+    
+    /* Follow Button */
+    .btn-follow { transition: all 0.2s; }
+    .btn-follow:active { transform: scale(0.95); }
 
-    /* Category Scroll Nav */
-    #category-scroll-nav {
-      display: flex; overflow-x: auto; white-space: nowrap;
-      padding: 0.5rem 0; gap: 0.75rem; scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-    }
-    #category-scroll-nav::-webkit-scrollbar { display: none; }
-    #category-scroll-nav button {
-      flex-shrink: 0; padding: 0.5rem 1.25rem; border-radius: 9999px;
-      font-size: 0.875rem; font-weight: 600; background-color: var(--bg-secondary);
-      color: var(--text-primary); border: 1px solid var(--border-color);
-      box-shadow: 0 1px 3px var(--shadow-color);
-      transition: all 0.2s ease-in-out; cursor: pointer;
-    }
-    #category-scroll-nav button:hover {
-      transform: translateY(-2px); box-shadow: 0 4px 8px var(--shadow-color);
-    }
-    #category-scroll-nav button.active {
-      background-color: var(--blue-accent); color: white;
-      border-color: transparent; box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
-    }
-
-    /* Enhanced Skeleton Shimmer Animation */
-    .skeleton { background-color: var(--skeleton-bg); position: relative; overflow: hidden; }
-    .skeleton::after {
-      content: ''; position: absolute; top: 0; left: -150%; width: 150%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      animation: shimmer 1.8s infinite;
-    }
-    html.dark .skeleton::after {
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    }
+    @keyframes slideUpFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes shimmer { 0% { left: -150%; } 100% { left: 150%; } }
-
-    /* Settings Modal */
-    #settings-modal {
-      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      background: var(--bg-secondary); border-radius: 1rem; padding: 2rem;
-      box-shadow: 0 10px 25px var(--shadow-color); z-index: 100;
-      display: none; flex-direction: column; text-align: center;
-      width: 90%; max-width: 400px;
-    }
-    #settings-modal.open { display: flex; animation: fadeIn 0.3s ease; }
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.6); z-index: 99; display: none;
-      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    }
-    .modal-overlay.open { display: block; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    /* Loading Bar */
-    .loading-bar {
-        position: fixed; top: 64px; left: 0; width: 100%; height: 3px; z-index: 999;
-    }
-    .loading-bar-inner {
-        width: 100%; height: 100%; background: var(--red-accent);
-        animation: loading-animation 1.5s infinite;
-    }
-    @keyframes loading-animation {
-        0% { transform: translateX(-100%) scaleX(0.2); }
-        50% { transform: translateX(0) scaleX(0.8); }
-        100% { transform: translateX(100%) scaleX(0.2); }
-    }
     
-    /* User Profile Menu */
-    #profile-menu {
-        top: 4rem; right: 0.5rem; background-color: var(--bg-secondary);
-        border-radius: 0.75rem; padding: 0.5rem; box-shadow: 0 4px 12px var(--shadow-color);
-        z-index: 45; border: 1px solid var(--border-color);
-    }
+    .skeleton { background-color: #e5e7eb; position: relative; overflow: hidden; }
+    html.dark .skeleton { background-color: #374151; }
+    .skeleton::after { content: ''; position: absolute; top: 0; left: -150%; width: 150%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: shimmer 1.8s infinite; }
+
+    /* Toast */
+    #toast-container { position: fixed; bottom: 6rem; left: 50%; transform: translateX(-50%); z-index: 120; display: flex; flex-direction: column; gap: 0.5rem; pointer-events: none; }
+    .toast-message { background-color: #1f2937; color: white; padding: 10px 20px; border-radius: 50px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2); font-size: 0.9rem; font-weight: 600; opacity: 0; transform: translateY(20px); animation: toast-in 0.3s forwards, toast-out 0.3s forwards 3s; display: flex; items-center; gap: 8px; }
+    @keyframes toast-in { to { opacity: 1; transform: translateY(0); } }
+    @keyframes toast-out { to { opacity: 0; transform: translateY(20px); } }
     
-    /* Pages Transition */
-    #profile-page, #news-detail-page {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-color: var(--bg-primary); z-index: 90;
-      transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-      overflow-y: auto;
-    }
-    #profile-page.open, #news-detail-page.open { transform: translateX(0); }
-    #news-detail-page { z-index: 80; }
-    #profile-page-header .btn-close:hover, #back-to-feed-btn:hover { background-color: var(--hover-bg); }
-    
-    /* --- News Detail Page Enhancements --- */
-    #reading-progress-bar {
-      position: sticky; top: 0; left: 0; width: 100%; height: 4px;
-      background-color: var(--border-color); z-index: 10;
-    }
-    #reading-progress-bar-inner {
-      width: 0%; height: 100%; background-color: var(--blue-accent);
-      transition: width 0.1s linear;
-    }
-    .share-btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 40px; height: 40px; border-radius: 50%;
-      background-color: var(--hover-bg); color: var(--text-secondary);
-      transition: all 0.2s ease;
-    }
-    .share-btn:hover {
-      transform: scale(1.1);
-      color: white;
-    }
-    .share-btn.twitter:hover { background-color: #1DA1F2; }
-    .share-btn.facebook:hover { background-color: #1877F2; }
-    .share-btn.whatsapp:hover { background-color: #25D366; }
-    .share-btn.copy:hover { background-color: var(--text-secondary); }
-    /* --- END: News Detail Page Enhancements --- */
-
-
-    #detail-article-content p {
-      margin-bottom: 1.5rem; line-height: 1.8; font-size: 1.125rem;
-      color: var(--text-secondary);
-    }
-    html.dark #detail-article-content p { color: var(--text-secondary); }
-
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="font-sans">
-  <div id="root" class="min-h-screen max-md:pb-14">
-    <!-- Top Bar (Sticky) -->
+<body class="font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
+  <div id="root" class="min-h-screen max-md:pb-20">
+    
+    <!-- Top Bar -->
     <header class="gradient-bg text-white py-3 sticky top-0 z-30 shadow-lg">
       <div class="container mx-auto px-4 flex justify-between items-center h-10">
-        <!-- Hamburger Menu (Mobile/Tablet Only) -->
-        <button id="menu-toggle" class="md:hidden header-btn" aria-label="Toggle navigation panel">
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <a href="index.html" class="flex items-center space-x-2">
-          <img src="https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small" alt="NewsTally Favicon" class="w-8 h-8 rounded-full shadow-md">
-          <h1 class="text-2xl font-extrabold tracking-tight" data-lang-key="brandName">NewsTally</h1>
-        </a>
-        <div class="flex space-x-2 items-center">
-          <!-- Dark Mode Toggle -->
-          <button id="dark-mode-toggle" class="header-btn" aria-label="Toggle dark mode">
-              <i class="fas fa-moon"></i>
-          </button>
-          <!-- Search Toggle -->
-          <button id="search-toggle" class="header-btn" aria-label="Toggle search">
-            <i class="fas fa-search"></i>
-          </button>
-          <!-- User Authentication Container -->
-          <div id="user-auth-container" class="relative">
-              <button id="sign-in-button" class="header-btn hidden" aria-label="Sign in">
-                  <i class="fas fa-user-circle text-2xl"></i>
-              </button>
-              <button id="user-profile-button" class="p-1 rounded-full hidden transition-transform duration-300 hover:scale-110" aria-label="User profile">
-                  <img id="user-profile-photo" src="" alt="User profile photo" class="w-8 h-8 rounded-full border-2 border-white/50">
-              </button>
-              <div id="profile-menu" class="absolute hidden flex-col w-40 text-sm">
-                  <button id="sign-out-button" class="w-full text-left p-2 rounded-md transition-colors hover:bg-gray-100 dark:hover:bg-gray-700">
-                      Sign Out
-                  </button>
-              </div>
+        <button id="menu-toggle" class="md:hidden text-white p-2 hover:bg-white/10 rounded-full transition"><i class="fas fa-bars text-xl"></i></button>
+        
+        <a href="#" onclick="location.reload()" class="flex items-center space-x-2 group">
+          <div class="relative">
+             <img src="https://pbs.twimg.com/media/GqpcfVqWkAA-NTP?format=jpg&name=small" alt="Logo" class="w-9 h-9 rounded-full border-2 border-white group-hover:scale-105 transition">
+             <div class="absolute -bottom-1 -right-1 bg-green-400 w-3 h-3 rounded-full border-2 border-blue-600"></div>
           </div>
+          <h1 class="text-2xl font-extrabold tracking-tight group-hover:text-blue-100 transition">NewsTally</h1>
+        </a>
+
+        <div class="flex space-x-3 items-center">
+          <button id="dark-mode-toggle" class="w-9 h-9 rounded-full bg-black/10 hover:bg-white/20 transition flex items-center justify-center"><i class="fas fa-moon"></i></button>
+          <button id="sign-in-button" class="hidden bg-white text-blue-600 px-4 py-1.5 rounded-full text-sm font-extrabold shadow hover:shadow-lg hover:scale-105 transition">Sign In</button>
+          <button id="user-profile-button" class="hidden p-0.5 rounded-full hover:ring-2 ring-white/50 transition"><img id="user-profile-photo" src="" class="w-9 h-9 rounded-full border-2 border-white/20"></button>
         </div>
       </div>
     </header>
     
     <!-- Loading Bar -->
-    <div id="loading-bar" class="loading-bar hidden">
-        <div class="loading-bar-inner"></div>
-    </div>
+    <div id="loading-bar" class="fixed top-16 left-0 w-full h-1 z-50 hidden"><div class="h-full bg-blue-500 animate-[loading-animation_1.5s_infinite]"></div></div>
 
-    <!-- Navigation Menu (Sticky, below Top Bar) -->
-    <nav class="bg-white dark:bg-gray-800 shadow-md sticky top-[64px] z-20">
-      <div class="container mx-auto px-4 py-2 flex justify-center items-center">
-        <!-- Full Navigation Menu for Desktop -->
-        <div id="nav-menu" class="hidden md:block w-full">
-          <ul class="flex flex-row justify-center space-x-4 p-0">
-            <li><a href="live.html" class="block"><i class="fas fa-tower-broadcast mr-2"></i><span data-lang-key="liveNews">Live News</span></a></li>
-            <li><a href="latest.html" class="block"><i class="fas fa-newspaper mr-2"></i><span data-lang-key="latestNews">Latest News</span></a></li>
-            <li><a href="breaking.html" class="block"><i class="fas fa-bolt mr-2"></i><span data-lang-key="breakingNews">Breaking News</span></a></li>
-            <li><a href="politics.html" class="block"><i class="fas fa-landmark mr-2"></i><span data-lang-key="politics">Politics</span></a></li>
-            <li><a href="sports.html" class="block"><i class="fas fa-futbol mr-2"></i><span data-lang-key="sports">Sports</span></a></li>
-            <li><a href="tech.html" class="block"><i class="fas fa-microchip mr-2"></i><span data-lang-key="technology">Technology</span></a></li>
-            <li><a href="entertainment.html" class="block"><i class="fas fa-film mr-2"></i><span data-lang-key="entertainment">Entertainment</span></a></li>
-          </ul>
-        </div>
+    <!-- Desktop Nav -->
+    <nav class="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 sticky top-[64px] z-20 hidden md:block backdrop-blur-md bg-opacity-90 dark:bg-opacity-90">
+      <div class="container mx-auto px-4 py-3">
+        <ul class="flex justify-center space-x-8 text-sm font-semibold text-gray-500 dark:text-gray-400">
+          <li><button class="hover:text-blue-600 nav-category active transition-colors duration-300" data-view="home" data-category="All">Top Stories</button></li>
+          <li><button class="hover:text-blue-600 nav-category transition-colors duration-300" data-view="home" data-category="Politics">Politics</button></li>
+          <li><button class="hover:text-blue-600 nav-category transition-colors duration-300" data-view="home" data-category="Technology">Technology</button></li>
+          <li><button class="hover:text-blue-600 nav-category transition-colors duration-300" data-view="home" data-category="Business">Business</button></li>
+          <li><button class="text-purple-600 dark:text-purple-400 font-bold nav-category hover:text-purple-700 transition-colors duration-300 flex items-center gap-2" data-view="community"><i class="fas fa-users"></i> Community</button></li>
+        </ul>
       </div>
     </nav>
 
-    <!-- Sliding Navigation Panel (Mobile/Tablet) -->
-    <div id="nav-panel" class="md:hidden">
-      <div class="flex justify-between items-center p-4 border-b border-white/20">
-        <h2 class="text-white text-lg font-bold" data-lang-key="menu">Menu</h2>
-        <button id="close-panel" class="p-2" aria-label="Close navigation panel">
-          <i class="fas fa-times text-white text-xl"></i>
-        </button>
+    <!-- Mobile Sidebar -->
+    <div id="nav-panel">
+      <div class="flex justify-between items-center p-6 border-b border-white/10 bg-black/10">
+        <h2 class="text-white text-xl font-black tracking-wide">NewsTally</h2>
+        <button id="close-panel" class="p-2 text-white hover:bg-white/10 rounded-full transition"><i class="fas fa-times text-xl"></i></button>
       </div>
-      <ul class="flex flex-col p-2">
-        <li><a href="index.html" class="nav-active"><i class="fas fa-house w-6 text-center"></i><span data-lang-key="home">Home</span></a></li>
-        <li><a href="live.html"><i class="fas fa-tower-broadcast w-6 text-center"></i><span data-lang-key="liveNews">Live News</span></a></li>
-        <li><a href="latest.html"><i class="fas fa-newspaper w-6 text-center"></i><span data-lang-key="latestNews">Latest News</span></a></li>
-        <li><a href="breaking.html"><i class="fas fa-bolt w-6 text-center"></i><span data-lang-key="breakingNews">Breaking News</span></a></li>
-        <li><a href="politics.html"><i class="fas fa-landmark w-6 text-center"></i><span data-lang-key="politics">Politics</span></a></li>
-        <li><a href="sports.html"><i class="fas fa-futbol w-6 text-center"></i><span data-lang-key="sports">Sports</span></a></li>
-        <li><a href="tech.html"><i class="fas fa-microchip w-6 text-center"></i><span data-lang-key="technology">Technology</span></a></li>
-        <li><a href="entertainment.html"><i class="fas fa-film w-6 text-center"></i><span data-lang-key="entertainment">Entertainment</span></a></li>
-        <li><a href="#" id="settings-link"><i class="fas fa-gear w-6 text-center"></i><span data-lang-key="settings">Settings</span></a></li>
+      <ul class="p-6 space-y-4 text-white font-medium">
+        <li><button class="flex items-center space-x-4 w-full text-left nav-category-mobile p-2 rounded hover:bg-white/10 transition" data-view="home" data-category="All"><i class="fas fa-home w-6 text-center"></i><span>Home</span></button></li>
+        <li><button class="flex items-center space-x-4 w-full text-left nav-category-mobile p-2 rounded hover:bg-white/10 transition text-purple-200" data-view="community"><i class="fas fa-users w-6 text-center"></i><span>Community Feed</span></button></li>
+        <li class="pt-4 border-t border-white/10 text-xs font-bold uppercase text-white/50 tracking-wider px-2">Categories</li>
+        <li><button class="flex items-center space-x-4 w-full text-left nav-category-mobile p-2 rounded hover:bg-white/10 transition" data-view="home" data-category="Politics"><i class="fas fa-landmark w-6 text-center"></i><span>Politics</span></button></li>
+        <li><button class="flex items-center space-x-4 w-full text-left nav-category-mobile p-2 rounded hover:bg-white/10 transition" data-view="home" data-category="Technology"><i class="fas fa-microchip w-6 text-center"></i><span>Technology</span></button></li>
+        <li><button class="flex items-center space-x-4 w-full text-left nav-category-mobile p-2 rounded hover:bg-white/10 transition" data-view="home" data-category="Business"><i class="fas fa-briefcase w-6 text-center"></i><span>Business</span></button></li>
       </ul>
     </div>
 
-    <!-- Search Results Dropdown -->
-    <div id="search-results" class="hidden mx-auto">
-      <input id="search-input" type="search" data-lang-placeholder="searchNews" placeholder="Search news..." aria-label="Search news articles" />
-      <div id="search-results-list"></div>
-    </div>
-    
-    <!-- Settings Modal -->
-    <div id="settings-modal">
-        <h3 class="text-xl font-bold mb-4" data-lang-key="settings">Settings</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4" data-lang-key="chooseLanguage">Choose Language:</p>
-        <div class="flex justify-center space-x-4">
-            <button id="lang-en" class="px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 transition hover:bg-gray-100 dark:hover:bg-gray-600">English</button>
-            <button id="lang-hi" class="px-4 py-2 rounded-full border border-gray-300 dark:border-gray-600 transition hover:bg-gray-100 dark:hover:bg-gray-600">हिन्दी</button>
-        </div>
-        <button id="close-settings" class="mt-6 text-sm text-gray-500 hover:text-gray-800 dark:hover:text-gray-300 transition" data-lang-key="close">Close</button>
-    </div>
-    <div class="modal-overlay"></div>
-
     <!-- Main Content Wrapper -->
-    <div id="main-content-wrapper">
-      <!-- Top Stories Section -->
-      <section class="container mx-auto px-4 pt-6">
-        <div class="mb-4">
-          <p class="text-sm text-gray-600 dark:text-gray-400">
-            <time id="current-date" datetime=""></time> | <time id="current-time" datetime=""></time>
-          </p>
-        </div>
-        <h2 class="text-3xl md:text-4xl font-extrabold mb-6 border-b-4 border-red-500 inline-block" data-lang-key="topStories">Top Stories</h2>
-        <div class="carousel">
-          <div id="carousel-content-wrapper" class="relative w-full carousel-content-wrapper">
-            <!-- Skeleton Loader for Carousel -->
-            <div class="skeleton w-full h-full absolute inset-0"></div>
-            <!-- Slides will be injected here by JS -->
-          </div>
-          <button id="prev-slide" class="absolute left-4 top-1/2 transform -translate-y-1/2 rounded-full p-3 shadow-md z-10" aria-label="Previous slide">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <button id="next-slide" class="absolute right-4 top-1/2 transform -translate-y-1/2 rounded-full p-3 shadow-md z-10" aria-label="Next slide">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-          <div class="carousel-dots" id="carousel-dots"></div>
-        </div>
-      </section>
-  
-      <!-- Main Content -->
-      <main class="container mx-auto px-4 py-10 flex flex-col lg:flex-row gap-8">
-        <!-- News Feed (70%) -->
-        <section class="lg:w-2/3">
-          <div id="category-scroll-nav" class="mb-6">
-            <!-- Categories will be rendered here by JS -->
-            <div class="skeleton w-24 h-9 rounded-full"></div>
-            <div class="skeleton w-28 h-9 rounded-full"></div>
-            <div class="skeleton w-20 h-9 rounded-full"></div>
-          </div>
-  
-          <h2 class="text-2xl font-extrabold mb-6" data-lang-key="latestNewsTitle">Latest News</h2>
-          <div id="news-feed" class="space-y-6">
-            <!-- Skeleton Loaders for news feed -->
-            <div class="news-card p-4 rounded-xl flex items-start space-x-4">
-              <div class="skeleton w-24 h-24 rounded-lg flex-shrink-0"></div>
-              <div class="flex-1 space-y-3 pt-2">
-                <div class="skeleton h-4 w-1/4 rounded"></div>
-                <div class="skeleton h-5 w-full rounded"></div>
-                <div class="skeleton h-4 w-3/4 rounded"></div>
+    <div id="main-content-wrapper" class="container mx-auto px-0 md:px-4 pb-12">
+      
+      <!-- HOME VIEW -->
+      <div id="view-home" class="block animate-[fadeIn_0.5s_ease-out]">
+          <!-- Carousel -->
+          <section class="pt-6 pb-8 px-4 md:px-0">
+             <div class="flex justify-between items-end mb-4">
+                <h2 class="text-2xl font-black text-gray-800 dark:text-white tracking-tight flex items-center gap-2"><i class="fas fa-bolt text-yellow-500"></i> Trending Now</h2>
+                <p class="text-xs font-mono text-gray-400" id="last-updated"></p>
+             </div>
+            <div class="carousel bg-gray-200 dark:bg-gray-700">
+              <div id="carousel-content-wrapper" class="relative w-full h-full">
+                <div class="skeleton w-full h-full absolute inset-0"></div>
               </div>
-            </div>
-             <div class="news-card p-4 rounded-xl flex items-start space-x-4">
-              <div class="skeleton w-24 h-24 rounded-lg flex-shrink-0"></div>
-              <div class="flex-1 space-y-3 pt-2">
-                <div class="skeleton h-4 w-1/4 rounded"></div>
-                <div class="skeleton h-5 w-full rounded"></div>
-                <div class="skeleton h-4 w-3/4 rounded"></div>
-              </div>
-            </div>
-             <div class="news-card p-4 rounded-xl flex items-start space-x-4">
-              <div class="skeleton w-24 h-24 rounded-lg flex-shrink-0"></div>
-              <div class="flex-1 space-y-3 pt-2">
-                <div class="skeleton h-4 w-1/4 rounded"></div>
-                <div class="skeleton h-5 w-full rounded"></div>
-                <div class="skeleton h-4 w-3/4 rounded"></div>
-              </div>
-            </div>
-          </div>
-          <div id="load-more" class="text-center mt-8">
-            <button id="load-more-btn" class="px-6 py-3 rounded-full shadow-lg flex items-center justify-center mx-auto" aria-label="Load more news">
-              <span id="load-more-text" data-lang-key="loadMore">Load More</span>
-              <i id="load-more-spinner" class="fas fa-spinner fa-spin hidden ml-2"></i>
-            </button>
-          </div>
-        </section>
-  
-        <!-- Sidebar (30%) -->
-        <aside class="lg:w-1/3 mt-8 lg:mt-0">
-          <section class="p-6 rounded-2xl shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-            <h3 class="text-xl font-bold mb-4" data-lang-key="topPlayers">Top 3 Players</h3>
-            <div id="top-players" class="space-y-2">
-              <!-- Skeleton Loaders for top players -->
-              <div class="player-card flex items-center space-x-4 p-3 rounded-lg">
-                <div class="skeleton w-12 h-12 rounded-full"></div>
-                <div class="flex-1 space-y-2">
-                  <div class="skeleton h-4 w-3/4 rounded"></div>
-                  <div class="skeleton h-3 w-1/2 rounded"></div>
-                </div>
-              </div>
-              <div class="player-card flex items-center space-x-4 p-3 rounded-lg">
-                <div class="skeleton w-12 h-12 rounded-full"></div>
-                <div class="flex-1 space-y-2">
-                  <div class="skeleton h-4 w-3/4 rounded"></div>
-                  <div class="skeleton h-3 w-1/2 rounded"></div>
-                </div>
-              </div>
-              <div class="player-card flex items-center space-x-4 p-3 rounded-lg">
-                <div class="skeleton w-12 h-12 rounded-full"></div>
-                <div class="flex-1 space-y-2">
-                  <div class="skeleton h-4 w-3/4 rounded"></div>
-                  <div class="skeleton h-3 w-1/2 rounded"></div>
-                </div>
-              </div>
+              <button id="prev-slide" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/40 transition"><i class="fas fa-chevron-left"></i></button>
+              <button id="next-slide" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md text-white p-3 rounded-full hover:bg-white/40 transition"><i class="fas fa-chevron-right"></i></button>
             </div>
           </section>
-        </aside>
-      </main>
-    </div>
-
-    <!-- News Detail View -->
-    <div id="news-detail-page">
-      <!-- Reading Progress Bar -->
-      <div id="reading-progress-bar"><div id="reading-progress-bar-inner"></div></div>
       
-      <div class="container mx-auto p-4">
-        <button id="back-to-feed-btn" class="flex items-center space-x-2 text-blue-600 dark:text-blue-400 mb-6 px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-md transition-colors">
-            <i class="fas fa-arrow-left"></i>
-            <span data-lang-key="backToFeed">Back to Feed</span>
-        </button>
-
-        <article class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-8">
-            <img id="detail-image" src="" alt="News Article Main Image" class="w-full h-48 md:h-96 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/900x400/e0e0e0/ffffff?text=Full+Article+Image';" />
-            
-            <div class="p-6 md:p-10">
-                <div class="flex justify-between items-center mb-4">
-                    <span id="detail-category-badge" class="category-badge text-white font-semibold"></span>
-                    <p id="detail-source-date" class="text-sm text-gray-500 dark:text-gray-400"></p>
-                </div>
-
-                <h1 id="detail-headline" class="text-3xl md:text-5xl font-extrabold mb-2 leading-tight"></h1>
-                <p id="detail-read-time" class="text-sm text-gray-500 dark:text-gray-400 mb-6"></p>
-
-                <!-- Social Share and TTS Buttons -->
-                <div class="flex items-center justify-between border-y border-gray-200 dark:border-gray-700 py-4 mb-8">
-                  <div class="flex items-center space-x-2">
-                    <button id="tts-button" class="px-4 py-2 rounded-full text-sm font-semibold bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition flex items-center gap-2">
-                      <i class="fas fa-play"></i>
-                      <span>Listen</span>
-                    </button>
-                  </div>
-                  <div class="flex items-center space-x-2">
-                    <span class="text-sm font-semibold text-gray-600 dark:text-gray-400 mr-2">Share:</span>
-                    <a href="#" id="share-twitter" target="_blank" class="share-btn twitter" aria-label="Share on Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" id="share-facebook" target="_blank" class="share-btn facebook" aria-label="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" id="share-whatsapp" target="_blank" class="share-btn whatsapp" aria-label="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                    <button id="share-copy" class="share-btn copy" aria-label="Copy link"><i class="fas fa-link"></i></button>
-                  </div>
-                </div>
-
-                <div id="detail-article-content" class="prose dark:prose-invert max-w-none">
-                    <!-- Full article text will be injected here. -->
-                </div>
-            </div>
-        </article>
-        
-        <!-- Related Articles Section -->
-        <section id="related-articles-section" class="mb-8">
-          <h2 class="text-2xl font-extrabold mb-6">Related Articles</h2>
-          <div id="related-articles-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Related articles will be injected here -->
-          </div>
-        </section>
-
+          <!-- Feed -->
+          <main class="px-4 md:px-0">
+              <div id="mobile-category-scroll" class="md:hidden flex overflow-x-auto gap-2 mb-6 pb-2 scrollbar-hide sticky top-16 z-10 bg-white/90 dark:bg-gray-800/90 backdrop-blur py-2 -mx-4 px-4 border-b dark:border-gray-700"></div>
+              <h2 class="text-2xl font-extrabold mb-6 flex items-center gap-2 dark:text-white border-l-4 border-blue-600 pl-3">
+                <span id="section-title">Latest News</span>
+              </h2>
+              <div id="news-feed" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                <!-- Skeletons -->
+                <div class="news-card h-80 rounded-xl p-4"><div class="skeleton w-full h-40 rounded-lg mb-4"></div><div class="skeleton h-4 w-3/4 mb-2"></div><div class="skeleton h-4 w-1/2"></div></div>
+                <div class="news-card h-80 rounded-xl p-4"><div class="skeleton w-full h-40 rounded-lg mb-4"></div><div class="skeleton h-4 w-3/4 mb-2"></div><div class="skeleton h-4 w-1/2"></div></div>
+                <div class="news-card h-80 rounded-xl p-4"><div class="skeleton w-full h-40 rounded-lg mb-4"></div><div class="skeleton h-4 w-3/4 mb-2"></div><div class="skeleton h-4 w-1/2"></div></div>
+              </div>
+              <div id="load-more" class="text-center mt-12">
+                <button id="load-more-btn" class="px-10 py-3 rounded-full shadow-xl bg-blue-600 text-white font-bold transition transform hover:scale-105 hover:shadow-blue-500/50 ring-2 ring-offset-2 ring-blue-600 dark:ring-offset-gray-900">Load More News</button>
+              </div>
+          </main>
       </div>
-    </div>
 
-    <!-- User Profile Page -->
-    <div id="profile-page">
-      <header id="profile-page-header" class="gradient-bg text-white py-4 px-4 sticky top-0">
-        <div class="container mx-auto flex items-center justify-between">
-          <h2 class="text-2xl font-bold">Profile</h2>
-          <button id="close-profile-btn" class="p-2 rounded-full hover:bg-white/20 transition" aria-label="Close profile">
-            <i class="fas fa-times text-lg"></i>
-          </button>
-        </div>
-      </header>
-      <div class="container mx-auto py-8 px-4">
-        <div id="profile-content" class="flex flex-col items-center text-center">
-          <img id="profile-photo-lg" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover border-4 border-white dark:border-gray-800 shadow-xl mb-4" src="" alt="User profile photo">
-          <h3 id="profile-name" class="text-2xl md:text-3xl font-bold mb-2"></h3>
-          <p id="profile-email" class="text-gray-600 dark:text-gray-400 mb-6"></p>
-
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 w-full max-w-sm border border-gray-200 dark:border-gray-700">
-            <div class="flex items-center space-x-3 mb-4 text-left">
-              <i class="fas fa-user-circle text-2xl text-blue-500"></i>
-              <div>
-                <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">Account Type</p>
-                <p>Google</p>
+      <!-- COMMUNITY VIEW -->
+      <div id="view-community" class="hidden container mx-auto px-4 py-6 max-w-2xl">
+          <div class="flex flex-col mb-8 bg-purple-100 dark:bg-purple-900/30 p-6 rounded-2xl">
+              <div class="flex items-center justify-between mb-4">
+                  <div>
+                      <h2 class="text-2xl font-black text-purple-700 dark:text-purple-400"><i class="fas fa-hashtag mr-2"></i>Community</h2>
+                      <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Connect and Discuss.</p>
+                  </div>
+                  <div class="bg-white dark:bg-gray-800 p-3 rounded-full shadow-sm text-purple-600"><i class="fas fa-users text-2xl"></i></div>
               </div>
-            </div>
-            <div class="flex items-center space-x-3 text-left">
-              <i class="fas fa-id-card text-2xl text-blue-500"></i>
-              <div>
-                <p class="text-sm font-semibold text-gray-500 dark:text-gray-400">User ID</p>
-                <p id="profile-user-id" class="break-all text-sm"></p>
+              
+              <!-- Search Bar (NEW) -->
+              <div class="relative w-full">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <i class="fas fa-search text-gray-400"></i>
+                  </div>
+                  <input type="text" id="user-search-input" class="w-full pl-10 p-3 rounded-xl border-0 shadow-sm focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 dark:text-white placeholder-gray-400" placeholder="Find users by @username...">
+                  
+                  <!-- Search Results Dropdown -->
+                  <div id="search-results" class="absolute top-full left-0 w-full mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-xl z-50 hidden overflow-hidden border dark:border-gray-700 max-h-60 overflow-y-auto">
+                      <!-- Results injected here -->
+                  </div>
               </div>
-            </div>
           </div>
           
-          <button id="profile-sign-out-btn" class="mt-8 px-6 py-3 rounded-full text-white bg-red-600 hover:bg-red-700 transition shadow-lg flex items-center space-x-2">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Sign Out</span>
-          </button>
+          <!-- Reposts Feed -->
+          <div id="community-feed" class="space-y-6">
+              <div class="text-center py-20">
+                 <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500 mb-4"></div>
+                 <p class="text-gray-500">Fetching latest reposts...</p>
+              </div>
+          </div>
+      </div>
+
+    </div>
+
+    <!-- News Detail Page -->
+    <div id="news-detail-page" class="bg-white dark:bg-gray-900">
+      <div id="reading-progress-bar" class="sticky top-0 left-0 w-full h-1.5 bg-gray-200 dark:bg-gray-800 z-50"><div id="reading-progress-bar-inner" class="h-full bg-gradient-to-r from-blue-600 to-purple-500 w-0 transition-all duration-100"></div></div>
+      
+      <div class="container mx-auto pb-20 max-w-4xl">
+        <div class="sticky top-0 p-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md z-40 flex justify-between items-center border-b dark:border-gray-800">
+            <button id="back-to-feed-btn" class="px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold flex items-center gap-2 transition">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <div class="flex gap-2">
+                <button id="detail-repost-btn" class="card-action-btn text-green-600" title="Repost"><i class="fas fa-retweet"></i></button>
+                <button id="detail-bookmark-btn" class="card-action-btn text-gray-500" title="Bookmark"><i class="far fa-heart"></i></button>
+            </div>
+        </div>
+
+        <article class="px-4 md:px-10 py-6 animate-[slideUpFade_0.4s_ease-out]">
+            <!-- Repost Context Banner -->
+            <div id="detail-repost-context" class="hidden mb-6 p-3 bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800 rounded-xl flex items-center gap-2 text-sm text-purple-700 dark:text-purple-300">
+                 <i class="fas fa-retweet"></i> You are viewing a community repost discussion.
+            </div>
+
+            <span id="detail-category-badge" class="inline-block bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-bold px-3 py-1 rounded-full text-xs uppercase tracking-wide mb-4">Category</span>
+            <h1 id="detail-headline" class="text-3xl md:text-5xl font-black mb-6 text-gray-900 dark:text-white leading-tight">Headline</h1>
+            
+            <div class="flex items-center gap-3 mb-8 text-sm text-gray-500 font-medium">
+                <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center"><i class="far fa-newspaper text-xl"></i></div>
+                <div>
+                    <p id="detail-source" class="text-gray-900 dark:text-white font-bold">Source Name</p>
+                    <p id="detail-date">Date Posted</p>
+                </div>
+            </div>
+
+            <img id="detail-image" src="" class="w-full rounded-2xl shadow-lg mb-10 object-cover max-h-[500px]"/>
+
+            <div class="flex gap-4 mb-8">
+                <button id="tts-button" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-gray-700 dark:text-gray-200 transition flex items-center justify-center gap-2"><i class="fas fa-play"></i> Listen to Story</button>
+                <button id="share-copy" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 font-bold text-gray-700 dark:text-gray-200 transition flex items-center justify-center gap-2"><i class="fas fa-link"></i> Copy Link</button>
+            </div>
+
+            <div id="detail-article-content" class="prose dark:prose-invert prose-lg max-w-none text-gray-700 dark:text-gray-300 leading-relaxed mb-16"></div>
+
+            <!-- COMMENTS SECTION -->
+            <div id="comments-section-wrapper">
+                <div class="border-t dark:border-gray-800 pt-10" id="comments-anchor">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2"><i class="far fa-comments"></i> Discussion</h3>
+                    <div class="flex gap-4 mb-8">
+                        <img id="comment-user-avatar" src="https://placehold.co/50?text=?" class="w-10 h-10 rounded-full border dark:border-gray-700">
+                        <div class="flex-1 relative">
+                            <textarea id="comment-input" rows="2" class="w-full bg-gray-50 dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-4 focus:ring-2 ring-blue-500 outline-none resize-none transition" placeholder="Share your thoughts..."></textarea>
+                            <button id="post-comment-btn" class="absolute bottom-3 right-3 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center transition disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-paper-plane text-xs"></i></button>
+                        </div>
+                    </div>
+                    <div id="comments-list" class="space-y-6"></div>
+                </div>
+            </div>
+            
+            <!-- No Comments Fallback -->
+            <div id="no-comments-fallback" class="hidden border-t dark:border-gray-800 pt-10 text-center">
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Start a Conversation</h3>
+                <p class="text-gray-500 mb-6">Comments are disabled on the main feed. Repost this story to the community to start a discussion!</p>
+                <button id="fallback-repost-btn" class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-full transition shadow-lg"><i class="fas fa-retweet mr-2"></i> Repost to Discuss</button>
+            </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- Public Profile Modal -->
+    <div id="public-profile-modal" class="bg-white dark:bg-gray-900 z-[90]">
+        <div class="sticky top-0 z-20 flex items-center justify-between p-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b dark:border-gray-800">
+             <h3 class="font-bold text-lg dark:text-white">Profile</h3>
+             <button onclick="$('#public-profile-modal').classList.remove('open')" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center dark:text-white hover:bg-gray-200 transition"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="container mx-auto max-w-lg p-6">
+            <div id="public-profile-content" class="text-center animate-[slideUpFade_0.3s_ease-out]"></div>
+        </div>
+    </div>
+
+    <!-- Username Setup Modal -->
+    <div id="username-modal">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-2xl w-11/12 max-w-md text-center relative transform transition-all">
+            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-user-tag"></i></div>
+            <h3 class="text-2xl font-black mb-2 dark:text-white">Choose a Handle</h3>
+            <p class="text-gray-500 mb-6">Create a unique username to join the discussion.</p>
+            <div class="relative">
+                <span class="absolute left-4 top-3.5 text-gray-400 font-bold">@</span>
+                <input type="text" id="new-username-input" placeholder="username" class="w-full pl-10 p-3 border rounded-xl mb-4 bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-2 ring-blue-500 outline-none font-bold text-lg">
+            </div>
+            <button id="save-username-btn" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3.5 rounded-xl font-bold hover:shadow-lg hover:scale-[1.02] transition">Create Identity</button>
+            <button onclick="$('#username-modal').classList.remove('open')" class="mt-4 text-gray-400 text-sm hover:text-gray-600">Maybe Later</button>
+        </div>
+    </div>
+
+    <!-- My Profile Page -->
+    <div id="profile-page">
+      <div class="container mx-auto p-4 max-w-2xl">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black dark:text-white">My Profile</h2>
+            <!-- FIXED: Close button reliably goes back -->
+            <button onclick="closeProfileModal()" class="p-2 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        
+        <div class="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-sm border dark:border-gray-700 mb-6 flex items-center gap-6">
+            <img id="profile-photo-lg" class="w-20 h-20 rounded-full border-4 border-gray-100 dark:border-gray-700">
+            <div>
+                <h3 id="profile-name" class="text-xl font-bold dark:text-white"></h3>
+                <p id="profile-username-display" class="text-blue-600 font-mono font-semibold mb-2">@username</p>
+                <div class="flex gap-4 text-sm text-gray-500 dark:text-gray-400 mb-3">
+                    <span class="font-bold text-gray-900 dark:text-white" id="my-following-count">0</span> Following
+                </div>
+            </div>
+        </div>
+        <button onclick="auth.signOut(); closeProfileModal();" class="w-full mb-8 border border-red-200 text-red-500 py-2 rounded-xl font-bold hover:bg-red-50 dark:hover:bg-red-900/20 transition">Sign Out</button>
+
+        <div class="flex border-b dark:border-gray-700 mb-4 overflow-x-auto">
+            <div class="profile-tab active" data-target="tab-bookmarks"><i class="fas fa-bookmark mr-1"></i>Bookmarks</div>
+            <div class="profile-tab" data-target="tab-history"><i class="fas fa-history mr-1"></i>History</div>
+            <div class="profile-tab" data-target="tab-reposts"><i class="fas fa-retweet mr-1"></i>Reposts</div>
+        </div>
+        
+        <!-- Bookmarks -->
+        <div id="tab-bookmarks" class="profile-content-section active">
+            <div id="bookmarks-list" class="dark:text-gray-300 space-y-3"></div>
+        </div>
+        
+        <!-- History (NEW) -->
+        <div id="tab-history" class="profile-content-section">
+            <div id="history-list" class="space-y-3 dark:text-gray-300">
+                <div class="text-center text-gray-400 italic p-4">No reading history yet.</div>
+            </div>
+        </div>
+
+        <!-- My Reposts (NEW) -->
+        <div id="tab-reposts" class="profile-content-section">
+            <div id="my-reposts-list" class="space-y-4">
+                 <div class="text-center text-gray-400 italic p-4">You haven't reposted anything yet.</div>
+            </div>
         </div>
       </div>
     </div>
     
-    <!-- Bottom Navigation for Mobile and Tablet -->
-    <nav class="bottom-nav">
-      <a href="index.html" class="nav-active">
-        <i class="fas fa-house"></i>
-        <span data-lang-key="home">Home</span>
-      </a>
-      <a href="live.html">
-        <i class="fas fa-tower-broadcast"></i>
-        <span data-lang-key="live">Live</span>
-      </a>
-      <a href="quick.html">
-        <i class="fas fa-bolt"></i>
-        <span data-lang-key="quick">Quick</span>
-      </a>
-      <a href="trending.html">
-        <i class="fas fa-fire"></i>
-        <span data-lang-key="trending">Trending</span>
-      </a>
-      <a href="cricket.html">
-        <i class="fas fa-baseball-ball"></i>
-        <span data-lang-key="cricket">Cricket</span>
-      </a>
+    <!-- Mobile Bottom Bar -->
+    <nav class="md:hidden fixed bottom-0 w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur border-t dark:border-gray-800 flex justify-around py-3 z-40 pb-safe shadow-[0_-5px_10px_rgba(0,0,0,0.02)]">
+      <button onclick="switchView('home')" class="flex flex-col items-center text-blue-600 transition-colors duration-300 gap-1 nav-btn-mobile active" id="mb-home"><i class="fas fa-home text-xl mb-0.5"></i><span class="text-[10px] font-bold">Home</span></button>
+      <button onclick="switchView('community')" class="flex flex-col items-center text-gray-400 hover:text-purple-500 transition-colors duration-300 gap-1 nav-btn-mobile" id="mb-comm"><i class="fas fa-users text-xl mb-0.5"></i><span class="text-[10px] font-bold">Community</span></button>
+      <button id="mobile-profile-trigger" class="flex flex-col items-center text-gray-400 hover:text-gray-600 transition-colors duration-300 gap-1"><i class="fas fa-user text-xl mb-0.5"></i><span class="text-[10px] font-bold">You</span></button>
     </nav>
 
-    <!-- Footer -->
-    <footer class="gradient-bg text-white py-10">
-      <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
-          <h3 class="text-xl font-bold mb-4" data-lang-key="aboutNewsTally">About NewsTally</h3>
-          <p class="text-gray-200" data-lang-key="aboutText">Your one-stop destination for the latest news across all categories.</p>
-        </div>
-        <div>
-          <h3 class="text-xl font-bold mb-4" data-lang-key="quickLinks">Quick Links</h3>
-          <ul class="space-y-3">
-            <li><a href="index.html" class="hover:underline text-gray-200 hover:text-white transition" data-lang-key="home">Home</a></li>
-            <li><a href="#" class="hover:underline text-gray-200 hover:text-white transition" data-lang-key="aboutUs">About Us</a></li>
-          </ul>
-        </div>
-        <div>
-          <h3 class="text-xl font-bold mb-4" data-lang-key="followUs">Follow Us</h3>
-          <div class="flex space-x-4 text-xl">
-            <a href="https://www.facebook.com/newstally" class="hover:text-blue-200 transition" aria-label="Follow NewsTally on Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://www.twitter.com/newstally" class="hover:text-blue-200 transition" aria-label="Follow NewsTally on Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="https://www.youtube.com/newstally" class="hover:text-blue-200 transition" aria-label="Follow NewsTally on YouTube"><i class="fab fa-youtube"></i></a>
-            <a href="https://www.instagram.com/newstally" class="hover:text-blue-200 transition" aria-label="Follow NewsTally on Instagram"><i class="fab fa-instagram"></i></a>
-          </div>
-        </div>
-      </div>
-      <div class="text-center mt-8 border-t border-white/20 pt-6">
-        <p class="text-gray-300">© 2025 NewsTally. All rights reserved.</p>
-      </div>
-    </footer>
+    <!-- Toast -->
+    <div id="toast-container"></div>
   </div>
 
-  <script>
-    // --- Configuration and Constants ---
-    const API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
+  <!-- Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc, updateDoc, getDoc, deleteDoc, onSnapshot, arrayUnion, arrayRemove, collection, addDoc, query, orderBy, limit, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+    // CONFIGURATION
+    const GOOGLE_SHEETS_API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
     const SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
-    const NEWS_SHEET_NAME = 'Sheet1';
-    const PLAYER_SHEET_NAME = 'Sheet2';
+    const APP_ID = 'newstally-social';
     
-    let allNews = [];
-    let topStories = [];
-    let topPlayers = [];
-    let currentSlide = 0;
-    let filteredNews = [];
-    let categories = [];
-    let displayedNewsCount = 0;
-    const NEWS_PER_CHUNK = 10;
-    const TOP_STORY_CAROUSEL_INTERVAL = 5000;
-    let carouselAutoScrollInterval;
-    const MAX_RETRIES = 3;
-    const RETRY_DELAY = 2000;
-    const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes cache
-
-    const categoryColors = {
-      'Top Story': 'bg-blue-600', 'Top': 'bg-green-600', 'Politics': 'bg-red-600',
-      'Sports': 'bg-yellow-500', 'Technology': 'bg-purple-600', 'Entertainment': 'bg-pink-600',
-      'Cricket': 'bg-teal-600', 'General': 'bg-gray-600'
+    const firebaseConfig = { 
+        apiKey: "AIzaSyA4zw5cZqxLwzkTy2e5NiHz-tGKqk1KGdI", 
+        authDomain: "newstally-df03c.firebaseapp.com", 
+        projectId: "newstally-df03c", 
+        storageBucket: "newstally-df03c.appspot.com", 
+        messagingSenderId: "506893212961", 
+        appId: "1:506893212961:web:63882290195da992207260" 
     };
 
-    const translations = {
-        en: { brandName: 'NewsTally', liveNews: 'Live News', latestNews: 'Latest News', breakingNews: 'Breaking News', politics: 'Politics', sports: 'Sports', technology: 'Technology', entertainment: 'Entertainment', menu: 'Menu', home: 'Home', settings: 'Settings', searchNews: 'Search news...', topStories: 'Top Stories', topStoryCategory: 'Top Story', latestNewsTitle: 'Latest News', loadMore: 'Load More', loading: 'Loading...', noNewsFound: 'No news found for this category.', noNewsError: 'Failed to load news.', topPlayers: 'Top 3 Players', noPlayersFound: 'No top players available.', aboutNewsTally: 'About NewsTally', aboutText: 'Your one-stop destination for the latest news across all categories.', quickLinks: 'Quick Links', aboutUs: 'About Us', followUs: 'Follow Us', chooseLanguage: 'Choose Language:', close: 'Close', backToFeed: 'Back to Feed', readOriginal: 'Read Original Source' },
-        hi: { brandName: 'न्यूज़टैली', liveNews: 'लाइव समाचार', latestNews: 'ताज़ा समाचार', breakingNews: 'ब्रेकिंग न्यूज़', politics: 'राजनीति', sports: 'खेल', technology: 'टेक्नोलॉजी', entertainment: 'मनोरंजन', menu: 'मेनू', home: 'होम', settings: 'सेटिंग्स', searchNews: 'समाचार खोजें...', topStories: 'शीर्ष समाचार', topStoryCategory: 'शीर्ष समाचार', latestNewsTitle: 'ताज़ा समाचार', loadMore: 'और लोड करें', loading: 'लोड हो रहा है...', noNewsFound: 'इस श्रेणी के लिए कोई समाचार नहीं मिला।', noNewsError: 'समाचार लोड करने में विफल रहा।', topPlayers: 'शीर्ष 3 खिलाड़ी', noPlayersFound: 'कोई शीर्ष खिलाड़ी उपलब्ध नहीं हैं।', aboutNewsTally: 'न्यूज़टैली के बारे में', aboutText: 'सभी श्रेणियों में नवीनतम समाचारों के लिए आपका एकमात्र गंतव्य।', quickLinks: 'त्वरित लिंक', aboutUs: 'हमारे बारे में', followUs: 'हमारा अनुसरण करें', chooseLanguage: 'भाषा चुनें:', close: 'बंद करें', backToFeed: 'फ़ीड पर वापस जाएं', readOriginal: 'मूल स्रोत पढ़ें' }
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    // GLOBAL STATE
+    let state = {
+        allNews: [],
+        filteredNews: [],
+        bookmarks: [],
+        history: [], // NEW: Reading history
+        following: new Set(),
+        user: null,
+        username: null,
+        category: 'All',
+        limit: 12,
+        currentOpenTargetId: null
+    };
+
+    // Helper Functions
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => document.querySelectorAll(sel);
+    const showToast = (msg, icon = 'fas fa-check-circle') => {
+        const d = document.createElement('div'); d.className='toast-message'; 
+        d.innerHTML=`<i class="${icon} text-green-400"></i> ${msg}`;
+        $('#toast-container').appendChild(d); setTimeout(()=>d.remove(),3500);
     };
     
-    // --- Utility and Caching Functions ---
-    const updateUI = lang => {
-      document.querySelectorAll('[data-lang-key]').forEach(el => {
-        const key = el.getAttribute('data-lang-key');
-        if (translations[lang]?.[key]) el.textContent = translations[lang][key];
-      });
-      document.querySelectorAll('[data-lang-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-lang-placeholder');
-        if (translations[lang]?.[key]) el.placeholder = translations[lang][key];
-      });
-    };
-    
-    const setCachedData = (key, data) => {
-      const cacheEntry = { timestamp: new Date().getTime(), data };
-      try { sessionStorage.setItem(key, JSON.stringify(cacheEntry)); } catch (e) { console.error("Failed to save to sessionStorage:", e); }
-    };
+    const getArticleId = (headline) => btoa(encodeURIComponent(headline)).replace(/=/g, '');
 
-    const getCachedData = (key) => {
-      try {
-        const cacheEntry = JSON.parse(sessionStorage.getItem(key));
-        if (!cacheEntry) return null;
-        const isCacheValid = (new Date().getTime() - cacheEntry.timestamp) < CACHE_DURATION_MS;
-        return isCacheValid ? cacheEntry.data : null;
-      } catch (e) { console.error("Failed to read from sessionStorage:", e); return null; }
-    };
+    // --- PATH HELPERS ---
+    const getUserRef = (uid) => doc(db, 'users', uid); 
+    const getPublicRepostsCol = () => collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts');
+    const getCommentsCol = () => collection(db, 'artifacts', APP_ID, 'public', 'data', 'comments');
+    const getFollowingRef = (myUid, targetUid) => doc(db, 'users', myUid, 'following', targetUid);
 
-    async function fetchWithRetry(url, retries = MAX_RETRIES) {
-      for (let i = 0; i < retries; i++) {
+    // --- LOAD NEWS ---
+    async function loadNews() {
+        $('#loading-bar').classList.remove('hidden');
+        const timestamp = new Date().getTime();
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${GOOGLE_SHEETS_API_KEY}&t=${timestamp}`;
+
         try {
-          const response = await fetch(url);
-          if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-          const data = await response.json();
-          if (!data?.values?.length) throw new Error('Invalid or empty data received');
-          return data;
-        } catch (error) {
-          console.error(`Attempt ${i + 1} failed for ${url}: ${error.message}`);
-          if (i === retries - 1) throw error;
-          await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
-        }
-      }
-    }
-    
-    const startLoading = () => document.getElementById('loading-bar').classList.remove('hidden');
-    const stopLoading = () => document.getElementById('loading-bar').classList.add('hidden');
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`API Error: ${res.status}`);
+            const json = await res.json();
+            
+            if (!json.values || json.values.length < 2) throw new Error("No Data");
 
-    // --- Data Fetching and Processing ---
-    async function fetchDataAndRender() {
-        startLoading();
-        
-        const cachedNews = getCachedData('newsCache');
-        const cachedPlayers = getCachedData('playersCache');
+            state.allNews = json.values.slice(1).map(r => ({
+                headline: r[1] || 'Untitled News', 
+                source: r[2] || 'NewsTally', 
+                date: r[3] || new Date().toLocaleDateString(), 
+                description: r[4] || 'No description available.', 
+                category: r[6] || 'General', 
+                image: (r[7] && r[7].startsWith('http')) ? r[7] : `https://placehold.co/600x400/2563eb/ffffff?text=News`
+            })).reverse();
+            
+            renderCarousel();
+            filterNews('All');
+            $('#last-updated').innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
-        if (cachedNews && cachedPlayers) {
-            console.log("Loading data from cache.");
-            allNews = cachedNews;
-            topPlayers = cachedPlayers;
-            processAllData();
-            stopLoading();
-            return;
-        }
-
-        console.log("Fetching fresh data from API.");
-        const newsPromise = fetchAllNews();
-        const playersPromise = fetchTopPlayers();
-
-        await Promise.allSettled([newsPromise, playersPromise]);
-        
-        if (allNews.length > 0 && topPlayers.length > 0) {
-            processAllData();
-        }
-        stopLoading();
-    }
-
-    async function fetchAllNews() {
-        try {
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${NEWS_SHEET_NAME}?key=${API_KEY}`;
-            const data = await fetchWithRetry(url);
-            const rows = data.values;
-            allNews = rows.slice(1).map(row => ({
-                rank: parseInt(row[0]) || 0, headline: row[1]?.trim() || 'No Headline', source: row[2]?.trim() || 'Unknown', 
-                date: row[3]?.trim() || new Date().toISOString().split('T')[0], description: row[4]?.trim() || 'No description.',
-                link: row[5]?.trim() || '#', category: row[6]?.trim() || 'General', 
-                image: row[7]?.trim() || `https://placehold.co/400x300/e0e0e0/ffffff?text=Image+Not+Available&font=inter`
-            })).reverse(); // Show newest first
-            setCachedData('newsCache', allNews);
-        } catch (error) {
-            console.error('Error fetching news:', error);
-            document.getElementById('news-feed').innerHTML = `<p class="text-center py-8">${translations[localStorage.getItem('language') || 'en'].noNewsError}</p>`;
+        } catch(e) { 
+            console.error("News Load Error:", e); 
+            showToast("Could not refresh news", "fas fa-exclamation-triangle");
+        } finally {
+            $('#loading-bar').classList.add('hidden');
         }
     }
 
-    async function fetchTopPlayers() {
-        try {
-            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${PLAYER_SHEET_NAME}?key=${API_KEY}`;
-            const data = await fetchWithRetry(url);
-            topPlayers = data.values.slice(1).map(row => ({
-                rank: parseInt(row[0]) || 0, playerName: row[1]?.trim() || 'Unknown Player',
-                image: row[3]?.trim() || `https://placehold.co/150x150/e0e0e0/ffffff?text=Player&font=inter`
-            })).filter(p => p.image && !p.image.includes('placehold.co')).sort((a, b) => b.rank - a.rank).slice(0, 3);
-            setCachedData('playersCache', topPlayers);
-        } catch (error) {
-            console.error('Error fetching top players:', error);
-            document.getElementById('top-players').innerHTML = `<p class="text-sm text-center">${translations[localStorage.getItem('language') || 'en'].noPlayersFound}</p>`;
+    // --- VIEW NAVIGATION ---
+    window.switchView = (viewName) => {
+        $('#view-home').classList.add('hidden');
+        $('#view-community').classList.add('hidden');
+        $(`#view-${viewName}`).classList.remove('hidden');
+        
+        $$('.nav-btn-mobile').forEach(b => b.classList.remove('text-blue-600', 'active', 'text-gray-400'));
+        $$('.nav-btn-mobile').forEach(b => b.classList.add('text-gray-400'));
+        
+        if(viewName==='home') {
+            $('#mb-home').classList.add('text-blue-600', 'active');
+            $('#mb-home').classList.remove('text-gray-400');
         }
-    }
-
-    function processAllData() {
-        topStories = allNews.filter(item => item.category.toLowerCase() === 'top story' && item.image && !item.image.includes('placehold.co')).sort((a, b) => b.rank - a.rank).slice(0, 5);
-        
-        filteredNews = allNews.filter(item => item.category.toLowerCase() !== 'top story');
-        categories = ['All', ...new Set(allNews.map(item => item.category).filter(c => c.toLowerCase() !== 'top story'))];
-        
-        displayedNewsCount = 0;
-        
-        setupCarousel();
-        setupCategoryNav();
-        displayTopPlayers();
-        renderNews(false);
-    }
-    
-    // --- UI Rendering ---
-    function displayTopPlayers() {
-      const topPlayersDiv = document.getElementById('top-players');
-      topPlayersDiv.innerHTML = topPlayers.length > 0 ? topPlayers.map(item => `
-        <div class="player-card flex items-center space-x-4 p-3 rounded-lg">
-            <a href="${item.link || '#'}" target="_blank" class="flex items-center space-x-4 w-full">
-                <img src="${item.image}" alt="${item.playerName} Profile Image" class="player-image w-12 h-12" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/150x150/e0e0e0/ffffff?text=Player&font=inter';">
-                <div class="flex-1">
-                    <h4 class="font-semibold transition-colors">${item.playerName}</h4>
-                    <p class="text-xs text-gray-600 dark:text-gray-400">Rank: ${item.rank}</p>
-                </div>
-            </a>
-        </div>`).join('') : `<p class="text-sm text-center">${translations[localStorage.getItem('language') || 'en'].noPlayersFound}</p>`;
-    }
-
-    function setupCarousel() {
-      const carouselWrapper = document.getElementById('carousel-content-wrapper');
-      if (carouselAutoScrollInterval) clearInterval(carouselAutoScrollInterval);
-      if (topStories.length === 0) {
-        carouselWrapper.innerHTML = `<div class="w-full h-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-500 rounded-2xl">No Top Stories Available</div>`;
-        return;
-      }
-      carouselWrapper.innerHTML = topStories.map((story, index) => `
-        <div class="carousel-slide ${index === 0 ? 'active' : ''}" data-slide-index="${index}">
-            <img src="${story.image}" alt="${story.headline}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/800x450/e0e0e0/ffffff?text=Image+Error&font=inter';">
-            <div class="carousel-text-container">
-                <span class="category-badge ${categoryColors[story.category] || categoryColors['General']} text-white text-xs font-bold py-1 px-3 rounded-full mb-2 inline-block">${story.category}</span>
-                <h3 class="text-xl md:text-2xl font-bold leading-tight">${story.headline}</h3>
-                <p class="text-sm opacity-80 mt-2">${story.source} • ${story.date}</p>
-            </div>
-        </div>`).join('');
-        
-      document.getElementById('carousel-dots').innerHTML = topStories.map((_, index) => `<div class="carousel-dot ${index === 0 ? 'active' : ''}" data-dot-index="${index}"></div>`).join('');
-      
-      carouselWrapper.querySelectorAll('.carousel-slide').forEach(slide => slide.addEventListener('click', () => openNewsDetail(topStories[slide.dataset.slideIndex])));
-      document.querySelectorAll('.carousel-dot').forEach(dot => dot.addEventListener('click', () => { currentSlide = parseInt(dot.dataset.dotIndex); updateCarouselSlide(); resetCarouselAutoScroll(); }));
-      
-      updateCarouselSlide();
-      startCarouselAutoScroll();
-    }
-
-    function updateCarouselSlide() {
-        if (topStories.length === 0) return;
-        document.querySelectorAll('.carousel-slide').forEach((slide, index) => slide.classList.toggle('active', index === currentSlide));
-        document.querySelectorAll('.carousel-dot').forEach((dot, index) => dot.classList.toggle('active', index === currentSlide));
-    }
-    
-    const startCarouselAutoScroll = () => { carouselAutoScrollInterval = setInterval(() => { currentSlide = (currentSlide + 1) % topStories.length; updateCarouselSlide(); }, TOP_STORY_CAROUSEL_INTERVAL); };
-    const resetCarouselAutoScroll = () => { clearInterval(carouselAutoScrollInterval); startCarouselAutoScroll(); };
-    
-    document.getElementById('prev-slide').addEventListener('click', () => { currentSlide = (currentSlide - 1 + topStories.length) % topStories.length; updateCarouselSlide(); resetCarouselAutoScroll(); });
-    document.getElementById('next-slide').addEventListener('click', () => { currentSlide = (currentSlide + 1) % topStories.length; updateCarouselSlide(); resetCarouselAutoScroll(); });
-    
-    function renderNews(append = false) {
-      const newsFeed = document.getElementById('news-feed');
-      const startIndex = append ? displayedNewsCount : 0;
-      const endIndex = Math.min(startIndex + NEWS_PER_CHUNK, filteredNews.length);
-      const newsToDisplay = filteredNews.slice(startIndex, endIndex);
-      
-      const newsHTML = newsToDisplay.map(item => `
-        <article class="news-card p-4 rounded-xl flex items-start space-x-4" data-headline-encoded="${encodeURIComponent(item.headline)}">
-          <img src="${item.image}" alt="${item.headline}" class="w-24 h-24 object-cover rounded-lg flex-shrink-0" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/96x96/e0e0e0/ffffff?text=No+Image&font=inter';">
-          <div class="flex-1">
-            <span class="category-badge text-white text-xs font-bold py-1 px-3 rounded-full ${categoryColors[item.category] || categoryColors['General']}">${item.category}</span>
-            <h3 class="text-lg font-semibold mt-2 hover:text-blue-600 dark:hover:text-blue-400 transition">
-              <a href="#" class="text-inherit">${item.headline}</a>
-            </h3>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">${item.source} • ${item.date}</p>
-          </div>
-        </article>`).join('');
-        
-      if (append) newsFeed.insertAdjacentHTML('beforeend', newsHTML); else newsFeed.innerHTML = newsHTML || `<p class="text-center py-8">${translations[localStorage.getItem('language') || 'en'].noNewsFound}</p>`;
-      
-      document.querySelectorAll('.news-card:not(.loaded)').forEach((card, index) => { setTimeout(() => card.classList.add('loaded'), index * 100); });
-      displayedNewsCount = endIndex;
-      
-      document.querySelectorAll('.news-card').forEach(card => card.addEventListener('click', (e) => {
-          e.preventDefault();
-          const encodedHeadline = card.closest('[data-headline-encoded]').dataset.headlineEncoded;
-          const item = allNews.find(n => encodeURIComponent(n.headline) === encodedHeadline);
-          if (item) openNewsDetail(item);
-      }));
-
-      document.getElementById('load-more').style.display = displayedNewsCount >= filteredNews.length ? 'none' : 'block';
-    }
-    
-    // --- News Detail View Logic ---
-    const mainContentWrapper = document.getElementById('main-content-wrapper');
-    const detailPage = document.getElementById('news-detail-page');
-    const progressBar = document.getElementById('reading-progress-bar-inner');
-    const ttsButton = document.getElementById('tts-button');
-
-    const updateReadingProgress = () => {
-        const { scrollTop, scrollHeight, clientHeight } = detailPage;
-        if (scrollHeight <= clientHeight) {
-          progressBar.style.width = '100%';
-          return;
+        if(viewName==='community') {
+            $('#mb-comm').classList.add('text-purple-600', 'active');
+            $('#mb-comm').classList.remove('text-gray-400');
+            loadCommunityFeed();
         }
-        const scrollPercent = (scrollTop / (scrollHeight - clientHeight)) * 100;
-        progressBar.style.width = `${scrollPercent}%`;
+        window.scrollTo(0,0);
     };
-    
-    const openNewsDetail = (item) => {
-        mainContentWrapper.style.display = 'none'; // BUG FIX
-        document.body.style.overflow = 'hidden';
-        detailPage.addEventListener('scroll', updateReadingProgress, { passive: true });
 
-        // --- Populate Content ---
-        document.getElementById('detail-headline').textContent = item.headline;
-        document.getElementById('detail-image').src = item.image;
-        document.getElementById('detail-source-date').textContent = `${item.source} • ${item.date}`;
-        
-        const categoryBadge = document.getElementById('detail-category-badge');
-        categoryBadge.textContent = item.category;
-        categoryBadge.className = `category-badge text-white font-semibold ${categoryColors[item.category] || categoryColors['General']}`;
-        
-        const articleContent = item.description.split('\n\n').map(p => `<p>${p}</p>`).join('');
-        const articleContentEl = document.getElementById('detail-article-content');
-        articleContentEl.innerHTML = articleContent;
-
-        // --- New Features ---
-        const words = item.description.trim().split(/\s+/).length;
-        const readTime = Math.ceil(words / 225);
-        document.getElementById('detail-read-time').textContent = `~ ${readTime} min read`;
-
-        setupShareButtons(item.link, item.headline);
-        setupTTS(item.headline + ". " + item.description);
-        renderRelatedArticles(item.category, item.headline);
-        
-        // --- Show Page ---
-        detailPage.classList.add('open');
-        detailPage.scrollTop = 0;
-        updateReadingProgress();
-    }
-
-    const closeNewsDetail = () => {
-        speechSynthesis.cancel();
-        
-        detailPage.classList.remove('open');
-        document.body.style.overflow = 'auto';
-        detailPage.removeEventListener('scroll', updateReadingProgress);
-        progressBar.style.width = '0%';
-        
-        // BUG FIX: Re-show main content after transition
-        setTimeout(() => {
-            mainContentWrapper.style.display = 'block';
-        }, 400); // Must match CSS transition duration
-    }
-    
-    // --- News Detail Feature Implementations ---
-    function setupShareButtons(url, title) {
-        const encodedUrl = encodeURIComponent(url);
-        const encodedTitle = encodeURIComponent(title);
-        document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`;
-        document.getElementById('share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
-        document.getElementById('share-whatsapp').href = `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`;
-        
-        const copyBtn = document.getElementById('share-copy');
-        copyBtn.onclick = () => {
-            navigator.clipboard.writeText(url).then(() => {
-                const icon = copyBtn.querySelector('i');
-                icon.classList.replace('fa-link', 'fa-check');
-                setTimeout(() => icon.classList.replace('fa-check', 'fa-link'), 2000);
-            });
-        };
-    }
-    
-    function setupTTS(textToRead) {
-        const icon = ttsButton.querySelector('i');
-        const span = ttsButton.querySelector('span');
-
-        const resetTTSButton = () => {
-            icon.classList.replace('fa-stop', 'fa-play');
-            span.textContent = 'Listen';
-        };
-
-        ttsButton.onclick = () => {
-            if (speechSynthesis.speaking) {
-                speechSynthesis.cancel();
-            } else {
-                const utterance = new SpeechSynthesisUtterance(textToRead);
-                utterance.onstart = () => {
-                    icon.classList.replace('fa-play', 'fa-stop');
-                    span.textContent = 'Stop';
-                };
-                utterance.onend = resetTTSButton;
-                utterance.onerror = resetTTSButton;
-                speechSynthesis.speak(utterance);
-            }
-        };
-    }
-    
-    function renderRelatedArticles(currentCategory, currentHeadline) {
-        const grid = document.getElementById('related-articles-grid');
-        const related = allNews
-            .filter(n => n.category === currentCategory && n.headline !== currentHeadline)
-            .slice(0, 3);
-
-        const section = document.getElementById('related-articles-section');
-        if (related.length === 0) {
-            section.style.display = 'none';
-            return;
-        }
-
-        section.style.display = 'block';
-        grid.innerHTML = related.map(item => `
-          <div class="news-card loaded p-4 rounded-xl" data-headline-encoded="${encodeURIComponent(item.headline)}">
-            <img src="${item.image}" alt="${item.headline}" class="w-full h-40 object-cover rounded-lg mb-4" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/300x150/e0e0e0/ffffff?text=No+Image&font=inter';">
-            <span class="category-badge text-white text-xs font-bold py-1 px-3 rounded-full ${categoryColors[item.category] || categoryColors['General']}">${item.category}</span>
-            <h3 class="text-md font-semibold mt-2 hover:text-blue-600 dark:hover:text-blue-400 transition">${item.headline}</h3>
-          </div>
-        `).join('');
-
-        grid.querySelectorAll('.news-card').forEach(card => card.addEventListener('click', (e) => {
-            e.preventDefault();
-            speechSynthesis.cancel();
-            const encodedHeadline = card.dataset.headlineEncoded;
-            const newItem = allNews.find(n => encodeURIComponent(n.headline) === encodedHeadline);
-            if (newItem) openNewsDetail(newItem);
-        }));
-    }
-
-    // --- General Setup and Event Listeners ---
-    function setupLoadMore() {
-      const btn = document.getElementById('load-more-btn'), text = document.getElementById('load-more-text'), spinner = document.getElementById('load-more-spinner');
-      btn.addEventListener('click', async () => {
-        text.textContent = translations[localStorage.getItem('language') || 'en'].loading;
-        spinner.classList.remove('hidden'); btn.disabled = true;
-        await new Promise(resolve => setTimeout(resolve, 500));
-        renderNews(true);
-        text.textContent = translations[localStorage.getItem('language') || 'en'].loadMore;
-        spinner.classList.add('hidden'); btn.disabled = false;
-      });
-    }
-    
-    function setupCategoryNav() {
-      const nav = document.getElementById('category-scroll-nav');
-      nav.innerHTML = categories.map(cat => `<button class="category-btn" data-category="${cat}">${cat}</button>`).join('');
-      const buttons = nav.querySelectorAll('.category-btn');
-      nav.querySelector('[data-category="All"]')?.classList.add('active');
-      buttons.forEach(button => {
-        button.addEventListener('click', (e) => {
-          const category = e.target.dataset.category;
-          buttons.forEach(btn => btn.classList.remove('active'));
-          e.target.classList.add('active');
-          filteredNews = category === 'All' ? allNews.filter(n => n.category.toLowerCase() !== 'top story') : allNews.filter(item => item.category === category);
-          displayedNewsCount = 0;
-          renderNews();
+    window.filterCategory = (cat) => {
+        state.category = cat;
+        switchView('home');
+        filterNews(cat);
+        $$('.nav-category').forEach(b => {
+            if(b.dataset.category === cat) b.classList.add('text-blue-600'); else b.classList.remove('text-blue-600');
         });
-      });
-    }
+        $('#nav-panel').classList.remove('open');
+    };
     
-    function setupDarkModeToggle() {
-      const toggle = document.getElementById('dark-mode-toggle'), html = document.documentElement;
-      const icon = toggle.querySelector('i');
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        html.classList.add('dark'); icon.classList.replace('fa-moon', 'fa-sun');
-      }
-      toggle.addEventListener('click', () => {
-        html.classList.toggle('dark');
-        if (html.classList.contains('dark')) { localStorage.setItem('theme', 'dark'); icon.classList.replace('fa-moon', 'fa-sun'); } 
-        else { localStorage.setItem('theme', 'light'); icon.classList.replace('fa-sun', 'fa-moon'); }
-      });
+    function filterNews(cat) {
+        state.filteredNews = cat === 'All' ? state.allNews : state.allNews.filter(n => n.category === cat);
+        state.limit = 12;
+        renderFeed();
     }
 
-    function setupEventListeners() {
-      document.getElementById('back-to-feed-btn').addEventListener('click', closeNewsDetail);
-      document.getElementById('menu-toggle').addEventListener('click', () => document.getElementById('nav-panel').classList.add('open'));
-      document.getElementById('close-panel').addEventListener('click', () => document.getElementById('nav-panel').classList.remove('open'));
-
-      const settingsModal = document.getElementById('settings-modal'), overlay = document.querySelector('.modal-overlay');
-      const openSettings = (e) => { e.preventDefault(); settingsModal.classList.add('open'); overlay.classList.add('open'); document.getElementById('nav-panel').classList.remove('open'); };
-      const closeSettings = () => { settingsModal.classList.remove('open'); overlay.classList.remove('open'); };
-      document.getElementById('settings-link').addEventListener('click', openSettings);
-      document.getElementById('close-settings').addEventListener('click', closeSettings);
-      overlay.addEventListener('click', closeSettings);
-
-      document.getElementById('lang-en').addEventListener('click', () => { localStorage.setItem('language', 'en'); updateUI('en'); closeSettings(); });
-      document.getElementById('lang-hi').addEventListener('click', () => { localStorage.setItem('language', 'hi'); updateUI('hi'); closeSettings(); });
-      
-      const updateDateTime = () => {
-        const now = new Date();
-        document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-        document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-      };
-      updateDateTime(); setInterval(updateDateTime, 60000); // Update every minute
+    // --- RENDERING ---
+    function renderCarousel() {
+        const top = state.allNews.filter(n => n.category === 'Top Story').slice(0, 5);
+        const container = $('#carousel-content-wrapper');
+        if(!top.length) { container.innerHTML = `<div class="flex items-center justify-center h-full text-gray-500">No Top Stories</div>`; return; }
+        
+        container.innerHTML = top.map((n,i) => `
+            <div class="carousel-slide ${i===0?'active':''} cursor-pointer" onclick="window.openDetail('${encodeURIComponent(n.headline)}', null)">
+                <img src="${n.image}" onerror="this.src='https://placehold.co/800x400?text=Top+Story'">
+                <div class="carousel-text-container">
+                    <span class="bg-blue-600 px-3 py-1 text-xs rounded-full uppercase tracking-wider font-bold shadow-sm mb-3 inline-block text-white border border-white/20 backdrop-blur-sm">${n.category}</span>
+                    <h3 class="text-2xl md:text-4xl font-black leading-tight drop-shadow-lg">${n.headline}</h3>
+                </div>
+            </div>
+        `).join('');
+        
+        if(window.carouselInterval) clearInterval(window.carouselInterval);
+        window.carouselInterval = setInterval(() => {
+            const c = $('.carousel-slide.active');
+            if(c) { (c.nextElementSibling || container.firstElementChild).classList.add('active'); c.classList.remove('active'); }
+        }, 6000);
     }
+
+    function renderFeed() {
+        const list = state.filteredNews.slice(0, state.limit);
+        const feed = $('#news-feed');
+        if(list.length === 0) { feed.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500 italic">No stories found.</div>`; return; }
+
+        feed.innerHTML = list.map(n => `
+            <article class="news-card rounded-2xl overflow-hidden bg-white dark:bg-gray-800 group cursor-pointer" onclick="window.openDetail('${encodeURIComponent(n.headline)}', null)">
+                <div class="h-48 overflow-hidden relative">
+                    <img src="${n.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" onerror="this.src='https://placehold.co/600x400?text=News'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+                    <span class="absolute bottom-3 left-3 bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs font-bold px-2 py-1 rounded">${n.category}</span>
+                </div>
+                <div class="p-5 relative flex-1 flex flex-col">
+                    <button class="card-action-btn absolute -top-6 right-4 z-10" onclick="event.stopPropagation(); window.openDetail('${encodeURIComponent(n.headline)}', null)">
+                        <i class="fas fa-arrow-right transform group-hover:translate-x-1 transition"></i>
+                    </button>
+                    <h3 class="font-bold text-lg leading-snug mb-3 text-gray-900 dark:text-white line-clamp-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">${n.headline}</h3>
+                    <div class="mt-auto pt-4 text-xs font-medium text-gray-400 flex justify-between items-center border-t dark:border-gray-700">
+                        <span class="flex items-center gap-1.5"><img src="https://ui-avatars.com/api/?name=${n.source}&background=random&size=16" class="rounded-full w-4 h-4"> ${n.source}</span>
+                        <span>${n.date}</span>
+                    </div>
+                </div>
+            </article>
+        `).join('');
+        setTimeout(() => $$('.news-card').forEach(c => c.classList.add('loaded')), 50);
+        $('#load-more').style.display = state.limit >= state.filteredNews.length ? 'none' : 'block';
+    }
+    $('#load-more-btn').onclick = () => { state.limit += 12; renderFeed(); };
+
+    // --- DETAIL VIEW & HISTORY ---
+    window.openDetail = async (encHl, repostId = null) => {
+        const n = state.allNews.find(x => x.headline === decodeURIComponent(encHl));
+        if(!n) return;
+        
+        // Populate UI
+        $('#detail-headline').innerText = n.headline;
+        $('#detail-image').src = n.image;
+        $('#detail-category-badge').innerText = n.category;
+        $('#detail-source').innerText = n.source;
+        $('#detail-date').innerText = n.date;
+        $('#detail-article-content').innerHTML = n.description.split('\n').filter(p=>p.trim()).map(p=>`<p class="mb-5">${p}</p>`).join('');
+        
+        // User Avatar in comments
+        if(state.user) $('#comment-user-avatar').src = state.user.photoURL || 'https://placehold.co/50?text=U';
+
+        // Buttons
+        $('#detail-bookmark-btn').onclick = () => toggleBookmark(n);
+        $('#detail-repost-btn').onclick = () => initiateRepost(n);
+        $('#fallback-repost-btn').onclick = () => initiateRepost(n);
+        $('#tts-button').onclick = () => speakText(n.description);
+        $('#share-copy').onclick = () => { navigator.clipboard.writeText(window.location.href); showToast("Link copied!"); };
+        
+        updateBookmarkIcon(n.headline);
+        
+        // --- HISTORY LOGIC (NEW) ---
+        // If logged in, add to history
+        if(state.user) {
+            const historyItem = { headline: n.headline, image: n.image, category: n.category, timestamp: new Date().toISOString() };
+            // Avoid duplicates in local UI immediately (optimization)
+            if(!state.history.some(h => h.headline === n.headline)) {
+                try {
+                    await updateDoc(getUserRef(state.user.uid), { history: arrayUnion(historyItem) });
+                } catch(e) { console.log("History update silent fail", e); }
+            }
+        }
+
+        // --- COMMENTS LOGIC ---
+        if (repostId) {
+            state.currentOpenTargetId = repostId;
+            $('#comments-section-wrapper').classList.remove('hidden');
+            $('#no-comments-fallback').classList.add('hidden');
+            $('#detail-repost-context').classList.remove('hidden');
+            
+            $('#post-comment-btn').onclick = () => postComment(repostId);
+            $('#comment-input').onkeydown = (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); postComment(repostId); } };
+            loadComments(repostId);
+        } else {
+            state.currentOpenTargetId = null;
+            $('#comments-section-wrapper').classList.add('hidden');
+            $('#no-comments-fallback').classList.remove('hidden');
+            $('#detail-repost-context').classList.add('hidden');
+            $('#comments-list').innerHTML = '';
+        }
+
+        $('#news-detail-page').classList.add('open');
+    };
+
+    $('#back-to-feed-btn').onclick = () => { $('#news-detail-page').classList.remove('open'); window.speechSynthesis.cancel(); };
+
+    function speakText(text) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // --- SEARCH USERS (NEW) ---
+    const searchInput = $('#user-search-input');
+    const searchResults = $('#search-results');
     
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedLanguage = localStorage.getItem('language') || 'en';
-      updateUI(savedLanguage);
-      setupDarkModeToggle();
-      fetchDataAndRender();
-      setupLoadMore();
-      setupEventListeners();
+    searchInput.addEventListener('input', async (e) => {
+        const term = e.target.value.trim().toLowerCase();
+        if(term.length < 2) { searchResults.classList.add('hidden'); return; }
+
+        // Search Firestore for username (Prefix search)
+        // Note: 'username' field in DB should ideally be lowercase for this to work perfectly.
+        const q = query(collection(db, 'users'), 
+            where('username', '>=', term), 
+            where('username', '<=', term + '\uf8ff'),
+            limit(5)
+        );
+
+        try {
+            const snap = await getDocs(q);
+            if(snap.empty) {
+                searchResults.innerHTML = `<div class="p-3 text-gray-500 text-sm text-center">No users found.</div>`;
+            } else {
+                searchResults.innerHTML = snap.docs.map(d => {
+                    const u = d.data();
+                    return `
+                        <div class="flex items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700 last:border-0 transition" onclick="window.openPublicProfile('${d.id}'); $('#search-results').classList.add('hidden');">
+                            <img src="${u.photoURL || 'https://placehold.co/40'}" class="w-8 h-8 rounded-full mr-3">
+                            <div>
+                                <p class="text-sm font-bold dark:text-white">${u.displayName}</p>
+                                <p class="text-xs text-blue-500">@${u.username}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            searchResults.classList.remove('hidden');
+        } catch(e) { console.error("Search error", e); }
     });
 
-    // --- Firebase Initialization and Auth ---
-    const firebaseConfig = { apiKey: "AIzaSyA4zw5cZqxLwzkTy2e5NiHz-tGKqk1KGdI", authDomain: "newstally-df03c.firebaseapp.com", projectId: "newstally-df03c", storageBucket: "newstally-df03c.appspot.com", messagingSenderId: "506893212961", appId: "1:506893212961:web:63882290195da992207260" };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth(), db = firebase.firestore();
-    
-    const profilePage = document.getElementById('profile-page'), signInBtn = document.getElementById('sign-in-button'), userProfileBtn = document.getElementById('user-profile-button');
-
-    const showProfilePage = () => {
-        const user = auth.currentUser;
-        if (!user) return;
-        document.getElementById('profile-name').textContent = user.displayName;
-        document.getElementById('profile-email').textContent = user.email;
-        document.getElementById('profile-photo-lg').src = user.photoURL;
-        document.getElementById('profile-user-id').textContent = user.uid;
-        document.body.style.overflow = 'hidden';
-        profilePage.classList.add('open');
-    }
-
-    const hideProfilePage = () => {
-      profilePage.classList.remove('open');
-      document.body.style.overflow = 'auto';
-    }
-
-    const signInWithGoogle = () => {
-      auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => console.error('Sign-in error:', e));
-    }
-
-    const signOut = () => {
-      auth.signOut().catch(e => console.error('Sign-out error:', e));
-    }
-
-    auth.onAuthStateChanged(user => {
-      signInBtn.classList.toggle('hidden', !!user);
-      userProfileBtn.classList.toggle('hidden', !user);
-      if (user) {
-        document.getElementById('user-profile-photo').src = user.photoURL;
-      } else {
-        hideProfilePage();
-      }
+    // Hide search on click outside
+    document.addEventListener('click', (e) => {
+        if(!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.classList.add('hidden');
+        }
     });
 
-    signInBtn.addEventListener('click', signInWithGoogle);
-    userProfileBtn.addEventListener('click', showProfilePage);
+    // --- COMMENTS ---
+    let commentsUnsub = null;
+    function loadComments(targetId) {
+        if(commentsUnsub) commentsUnsub();
+        $('#comments-list').innerHTML = '<div class="text-center text-gray-400 py-4"><i class="fas fa-spinner fa-spin"></i> Loading thoughts...</div>';
+        const q = query(getCommentsCol(), where('targetId', '==', targetId), orderBy('timestamp', 'desc'), limit(50));
+        
+        commentsUnsub = onSnapshot(q, (snap) => {
+            const list = $('#comments-list');
+            if(snap.empty) { list.innerHTML = '<div class="text-center text-gray-400 py-6 bg-gray-50 dark:bg-gray-800 rounded-xl">No comments yet.</div>'; return; }
+            
+            list.innerHTML = snap.docs.map(doc => {
+                const c = doc.data();
+                const isMe = state.user && c.userId === state.user.uid;
+                const time = new Date(c.timestamp).toLocaleDateString();
+                return `
+                <div class="flex gap-3 animate-[slideUpFade_0.3s_ease-out]">
+                    <img src="${c.userAvatar}" class="w-10 h-10 rounded-full border cursor-pointer" onclick="window.openPublicProfile('${c.userId}')">
+                    <div class="flex-1">
+                        <div class="flex items-baseline justify-between mb-1">
+                            <span class="font-bold text-sm dark:text-white cursor-pointer hover:underline" onclick="window.openPublicProfile('${c.userId}')">@${c.username}</span>
+                            <span class="text-xs text-gray-400">${time}</span>
+                        </div>
+                        <div class="comment-bubble bg-gray-100 dark:bg-gray-800 dark:text-gray-200 text-sm leading-relaxed ${isMe ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800' : ''}">${c.text}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        });
+    }
 
-    document.getElementById('close-profile-btn').addEventListener('click', hideProfilePage);
-    document.getElementById('profile-sign-out-btn').addEventListener('click', signOut);
+    async function postComment(targetId) {
+        const input = $('#comment-input');
+        const text = input.value.trim();
+        if(!state.user) { showToast("Please sign in", "fas fa-user-lock"); signInWithPopup(auth, provider); return; }
+        if(!state.username) { $('#username-modal').classList.add('open'); return; }
+        if(!text) return;
+
+        try {
+            input.value = '';
+            await addDoc(getCommentsCol(), {
+                targetId: targetId, text: text, userId: state.user.uid,
+                username: state.username, userAvatar: state.user.photoURL, timestamp: new Date().toISOString()
+            });
+        } catch(e) { console.error(e); showToast("Failed to post", "fas fa-times-circle"); }
+    }
+
+    // --- PROFILES ---
+    window.openPublicProfile = async (uid) => {
+        $('#public-profile-modal').classList.add('open');
+        const content = $('#public-profile-content');
+        content.innerHTML = `<div class="animate-pulse flex flex-col items-center"><div class="w-24 h-24 bg-gray-200 rounded-full mb-4"></div><div class="h-6 w-32 bg-gray-200 rounded"></div></div>`;
+
+        try {
+            const userSnap = await getDoc(getUserRef(uid));
+            if(!userSnap.exists()) { content.innerHTML = "User not found"; return; }
+            
+            const u = userSnap.data();
+            const isMe = state.user && state.user.uid === uid;
+            const isFollowing = state.following.has(uid);
+            
+            content.innerHTML = `
+                <img src="${u.photoURL || 'https://placehold.co/100'}" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white shadow-md">
+                <h2 class="text-2xl font-black dark:text-white">${u.displayName || 'User'}</h2>
+                <p class="text-blue-500 font-bold mb-6">@${u.username || 'anonymous'}</p>
+                ${!isMe ? `
+                <button id="follow-btn-modal" onclick="window.toggleFollow('${uid}')" class="btn-follow px-8 py-2 rounded-full font-bold shadow-lg transition ${isFollowing ? 'bg-white border border-gray-300 text-gray-700' : 'bg-black text-white'}">
+                    ${isFollowing ? 'Following' : 'Follow'}
+                </button>` : `<span class="bg-gray-100 px-4 py-1 rounded-full text-xs font-bold text-gray-500">That's You!</span>`}
+                <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-sm text-blue-800 dark:text-blue-200">
+                    <i class="fas fa-info-circle mr-1"></i> Stats hidden in demo.
+                </div>
+            `;
+        } catch(e) { content.innerHTML = "Error loading profile"; }
+    };
+
+    window.toggleFollow = async (targetUid) => {
+        if(!state.user) { signInWithPopup(auth, provider); return; }
+        const btn = $('#follow-btn-modal');
+        const isFollowing = state.following.has(targetUid);
+        
+        if(btn) {
+            if(isFollowing) { btn.innerText = "Follow"; btn.className = "btn-follow px-8 py-2 rounded-full font-bold shadow-lg transition bg-black text-white"; } 
+            else { btn.innerText = "Following"; btn.className = "btn-follow px-8 py-2 rounded-full font-bold shadow-lg transition bg-white border border-gray-300 text-gray-700"; }
+        }
+
+        try {
+            const ref = getFollowingRef(state.user.uid, targetUid);
+            if(isFollowing) { await deleteDoc(ref); state.following.delete(targetUid); showToast("Unfollowed"); } 
+            else { await setDoc(ref, { timestamp: new Date().toISOString() }); state.following.add(targetUid); showToast("Following!"); }
+            updateProfileStats();
+        } catch(e) { showToast("Action failed", "fas fa-times"); }
+    };
+
+    // --- REPOST & COMMUNITY FEED ---
+    async function initiateRepost(newsItem) {
+        if(!state.user) { showToast("Login to repost", "fas fa-lock"); signInWithPopup(auth, provider); return; }
+        if(!state.username) { $('#username-modal').classList.add('open'); window.pendingRepostItem = newsItem; return; }
+        postToCommunity(newsItem);
+    }
+
+    async function postToCommunity(item) {
+        try {
+            await addDoc(getPublicRepostsCol(), {
+                headline: item.headline, image: item.image, source: item.source,
+                repostedBy: { uid: state.user.uid, username: state.username, avatar: state.user.photoURL },
+                likes: [], shareCount: 0, timestamp: new Date().toISOString()
+            });
+            showToast("Posted to Community!", "fas fa-rocket");
+            switchView('community'); 
+        } catch(e) { showToast("Repost failed", "fas fa-times"); }
+    }
+
+    // Community Feed
+    let communityUnsub = null;
+    function loadCommunityFeed() {
+        if(communityUnsub) return; 
+        const q = query(getPublicRepostsCol(), orderBy('timestamp', 'desc'), limit(20));
+        communityUnsub = onSnapshot(q, (snap) => {
+            const feedContainer = $('#community-feed');
+            if(snap.empty) { feedContainer.innerHTML = '<div class="text-center py-10 text-gray-400">No reposts yet.</div>'; return; }
+            
+            feedContainer.innerHTML = snap.docs.map(doc => {
+                const d = doc.data();
+                const isLiked = state.user && d.likes && d.likes.includes(state.user.uid);
+                const likeCount = d.likes ? d.likes.length : 0;
+                return `
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-5 border border-gray-100 dark:border-gray-700 animate-[slideUpFade_0.4s_ease-out]">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3 cursor-pointer group" onclick="window.openPublicProfile('${d.repostedBy.uid}')">
+                            <img src="${d.repostedBy.avatar||'https://placehold.co/40?text=U'}" class="w-10 h-10 rounded-full border-2 border-transparent group-hover:border-purple-400 transition">
+                            <div><p class="text-sm font-bold dark:text-white group-hover:text-purple-500 transition">@${d.repostedBy.username}</p></div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden cursor-pointer border dark:border-gray-700 hover:ring-2 ring-purple-100 dark:ring-purple-900 transition" onclick="window.openDetail('${encodeURIComponent(d.headline)}', '${doc.id}')">
+                        <div class="flex h-28">
+                             <img src="${d.image}" class="w-28 h-full object-cover" onerror="this.src='https://placehold.co/100?text=News'">
+                             <div class="p-4 flex-1 flex flex-col justify-center">
+                                <h4 class="font-bold text-sm md:text-base line-clamp-2 dark:text-white leading-snug mb-2">${d.headline}</h4>
+                                <p class="text-xs text-gray-500"><i class="far fa-newspaper"></i> ${d.source}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center mt-5 px-2">
+                        <div class="flex gap-6">
+                            <button onclick="window.toggleLike('${doc.id}')" class="flex items-center gap-2 text-sm font-medium transition ${isLiked ? 'text-red-500' : 'text-gray-500 hover:text-red-500'}">
+                                <i class="${isLiked ? 'fas' : 'far'} fa-heart text-lg"></i> ${likeCount}
+                            </button>
+                            <button onclick="window.openDetail('${encodeURIComponent(d.headline)}', '${doc.id}')" class="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-blue-500 transition">
+                                <i class="far fa-comment text-lg"></i> Discuss
+                            </button>
+                        </div>
+                        <button onclick="showToast('Link Copied')" class="text-gray-400 hover:text-green-500 transition"><i class="fas fa-share text-lg"></i></button>
+                    </div>
+                </div>`;
+            }).join('');
+        });
+    }
+
+    window.toggleLike = async (docId) => {
+        if(!state.user) { signInWithPopup(auth, provider); return; }
+        const ref = doc(getPublicRepostsCol(), docId);
+        const snap = await getDoc(ref);
+        if(!snap.exists()) return;
+        const likes = snap.data().likes || [];
+        if(likes.includes(state.user.uid)) await updateDoc(ref, { likes: arrayRemove(state.user.uid) });
+        else await updateDoc(ref, { likes: arrayUnion(state.user.uid) });
+    };
+
+    // --- USER ACTIONS & PROFILE LOGIC ---
+    window.closeProfileModal = () => { $('#profile-page').classList.remove('open'); };
+
+    async function toggleBookmark(item) {
+        if(!state.user) return signInWithPopup(auth, provider);
+        const ref = getUserRef(state.user.uid);
+        const isB = state.bookmarks.some(b=>b.headline===item.headline);
+        if(isB) {
+            const old = state.bookmarks.find(b=>b.headline===item.headline);
+            await updateDoc(ref, { bookmarks: arrayRemove(old) });
+            showToast("Bookmark Removed");
+        } else {
+            await setDoc(ref, { bookmarks: arrayUnion({ headline: item.headline, image: item.image, category: item.category }) }, { merge: true });
+            showToast("Bookmark Saved");
+        }
+    }
+    function updateBookmarkIcon(hl) {
+        const isB = state.bookmarks.some(b=>b.headline===hl);
+        const icon = $('#detail-bookmark-btn i');
+        if(icon) icon.className = isB ? 'fas fa-heart text-lg text-red-500' : 'far fa-heart text-lg';
+    }
+
+    // --- LOAD MY REPOSTS (NEW) ---
+    async function loadMyReposts() {
+        if(!state.user) return;
+        const list = $('#my-reposts-list');
+        list.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin"></i></div>';
+        
+        const q = query(getPublicRepostsCol(), where('repostedBy.uid', '==', state.user.uid), orderBy('timestamp', 'desc'));
+        const snap = await getDocs(q);
+        
+        if(snap.empty) { list.innerHTML = '<div class="text-center text-gray-400 italic p-4">You haven\'t reposted anything yet.</div>'; return; }
+
+        list.innerHTML = snap.docs.map(doc => {
+            const d = doc.data();
+            return `
+                <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-xl cursor-pointer" onclick="window.openDetail('${encodeURIComponent(d.headline)}', '${doc.id}'); closeProfileModal();">
+                    <img src="${d.image}" class="w-12 h-12 rounded-lg object-cover">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold truncate dark:text-white">${d.headline}</p>
+                        <p class="text-xs text-gray-400">${new Date(d.timestamp).toLocaleDateString()}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // --- AUTH STATE ---
+    onAuthStateChanged(auth, async (user) => {
+        state.user = user;
+        if(user) {
+            $('#sign-in-button').classList.add('hidden');
+            $('#user-profile-button').classList.remove('hidden');
+            $('#user-profile-photo').src = user.photoURL;
+            $('#profile-name').innerText = user.displayName;
+            $('#profile-photo-lg').src = user.photoURL;
+
+            const userRef = getUserRef(user.uid);
+            await setDoc(userRef, { displayName: user.displayName, photoURL: user.photoURL, email: user.email }, { merge: true });
+
+            onSnapshot(userRef, (doc) => {
+                if(doc.exists()) {
+                    const data = doc.data();
+                    state.bookmarks = data.bookmarks || [];
+                    state.history = data.history || [];
+                    state.username = data.username || null;
+                    if(state.username) $('#profile-username-display').innerText = '@'+state.username;
+                    
+                    // Render Profile Lists
+                    const renderList = (items, elId) => {
+                        $(elId).innerHTML = items.slice().reverse().map(b=>`<div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-xl cursor-pointer" onclick="window.openDetail('${encodeURIComponent(b.headline)}', null); closeProfileModal();"><img src="${b.image}" class="w-12 h-12 rounded-lg object-cover"><span class="text-sm font-bold truncate flex-1">${b.headline}</span></div>`).join('');
+                    };
+                    renderList(state.bookmarks, '#bookmarks-list');
+                    renderList(state.history, '#history-list');
+                }
+            });
+
+            onSnapshot(collection(db, 'users', user.uid, 'following'), (snap) => {
+                state.following = new Set(snap.docs.map(d => d.id));
+                updateProfileStats();
+            });
+        } else {
+            $('#sign-in-button').classList.remove('hidden');
+            $('#user-profile-button').classList.add('hidden');
+            state.bookmarks = []; state.history = []; state.following = new Set();
+        }
+    });
+    
+    function updateProfileStats() { $('#my-following-count').innerText = state.following.size; }
+
+    $('#save-username-btn').onclick = async () => {
+        const val = $('#new-username-input').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+        if(val.length < 3) { showToast("Username too short"); return; }
+        try {
+            await setDoc(getUserRef(state.user.uid), { username: val }, { merge: true });
+            state.username = val;
+            $('#username-modal').classList.remove('open');
+            showToast("Identity Created!", "fas fa-check");
+            if(window.pendingRepostItem) postToCommunity(window.pendingRepostItem);
+        } catch(e) { showToast("Error saving username"); }
+    };
+
+    $('#dark-mode-toggle').onclick = () => {
+        $('html').classList.toggle('dark');
+        $('#dark-mode-toggle i').className = $('html').classList.contains('dark') ? 'fas fa-sun text-yellow-400' : 'fas fa-moon';
+    };
+    $('#sign-in-button').onclick = () => signInWithPopup(auth, provider);
+    $('#user-profile-button').onclick = () => $('#profile-page').classList.add('open');
+    $('#mobile-profile-trigger').onclick = () => state.user ? $('#profile-page').classList.add('open') : signInWithPopup(auth, provider);
+    
+    $$('.profile-tab').forEach(t => t.onclick = () => {
+        $$('.profile-tab').forEach(x => x.classList.remove('active'));
+        $$('.profile-content-section').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        $(`#${t.dataset.target}`).classList.add('active');
+        if(t.dataset.target === 'tab-reposts') loadMyReposts();
+    });
+
+    // Menu
+    $('#menu-toggle').onclick = () => $('#nav-panel').classList.add('open');
+    $('#close-panel').onclick = () => $('#nav-panel').classList.remove('open');
+    $$('.nav-category, .nav-category-mobile').forEach(b => b.onclick = () => {
+        if(b.dataset.view === 'community') switchView('community');
+        else window.filterCategory(b.dataset.category);
+        $('#nav-panel').classList.remove('open');
+    });
+
+    $('#news-detail-page').onscroll = () => {
+        const el = $('#news-detail-page');
+        const percent = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+        $('#reading-progress-bar-inner').style.width = percent + '%';
+    };
+
+    loadNews();
   </script>
 </body>
 </html>
-
