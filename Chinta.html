@@ -39,6 +39,7 @@
 
     /* Carousel Stability Fixes */
     .carousel-wrapper { position: relative; height: 400px; overflow: hidden; border-radius: 16px; background: #e5e5e5; }
+    html.dark .carousel-wrapper { background: #1a1a1a; }
     .carousel-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.6s ease-in-out; z-index: 1; pointer-events: none; }
     .carousel-slide.active { opacity: 1; z-index: 2; pointer-events: auto; }
     .carousel-overlay { background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%); }
@@ -101,6 +102,53 @@
     }
     .profile-grid { display: none; }
     .profile-grid.active { display: grid; }
+    
+    /* Profile Sub-Filters */
+    .profile-sub-filter {
+        flex: 1; text-align: center; padding: 8px 12px;
+        font-medium; text-sm; border-radius: 8px;
+        background-color: var(--bg-app);
+        border: 1px solid var(--border);
+        color: #8e8e8e;
+    }
+    .profile-sub-filter.active {
+        background-color: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+    
+    /* Category Filter Bar */
+    #category-filter-bar {
+      display: flex; overflow-x: auto; padding: 16px 0;
+      scrollbar-width: none; /* Firefox */
+    }
+    #category-filter-bar::-webkit-scrollbar { display: none; /* Safari/Chrome */ }
+    .category-filter-btn {
+        background-color: #f3f4f6; /* bg-gray-100 */
+        color: #374151; /* text-gray-700 */
+    }
+    html.dark .category-filter-btn {
+        background-color: #1f2937; /* dark:bg-gray-800 */
+        color: #d1d5db; /* dark:text-gray-300 */
+    }
+    .category-filter-btn.active {
+        background-color: #2563eb; /* bg-blue-600 */
+        color: white;
+    }
+    html.dark .category-filter-btn.active {
+        background-color: #60a5fa; /* dark:bg-blue-500 */
+    }
+    
+    /* Community Feed Tabs */
+    .community-tab {
+        flex: 1; text-align: center; padding: 12px 0; font-medium;
+        color: #8e8e8e; border-bottom: 2px solid var(--border);
+    }
+    .community-tab.active {
+        color: var(--text-main);
+        border-bottom: 2px solid var(--text-main);
+    }
+
   </style>
 </head>
 <body class="pb-16 md:pb-0">
@@ -113,10 +161,8 @@
     </div>
 
     <nav class="hidden md:flex items-center gap-8 font-medium text-sm text-gray-500 dark:text-gray-400">
-      <button onclick="switchView('home')" class="nav-link hover:text-blue-600 transition active-nav" data-target="home">Top Stories</button>
-      <button onclick="filterCategory('Politics')" class="nav-link hover:text-blue-600 transition">Politics</button>
-      <button onclick="filterCategory('Technology')" class="nav-link hover:text-blue-600 transition">Tech</button>
-      <button onclick="switchView('community')" class="nav-link hover:text-purple-500 transition font-semibold flex items-center gap-2" data-target="community"><i class="fas fa-fire"></i> Community</button>
+       <button onclick="switchView('home')" class="nav-link hover:text-blue-600 transition active-nav" data-target="home">News</button>
+       <button onclick="switchView('community')" class="nav-link hover:text-purple-500 transition font-semibold flex items-center gap-2" data-target="community"><i class="fas fa-fire"></i> Community</button>
     </nav>
 
     <div class="flex items-center gap-4">
@@ -146,14 +192,20 @@
         </div>
       </div>
 
+      <div id="category-filter-bar" class="px-4 md:px-0 space-x-2">
+        <div class="px-4 py-2 rounded-full skeleton h-9 w-20"></div>
+      </div>
+
       <div class="px-4 md:px-0">
-        <div class="flex items-center justify-between mb-6 border-l-4 border-blue-600 pl-3">
+        <div class="flex items-center justify-between my-6 border-l-4 border-blue-600 pl-3">
            <h2 class="text-2xl font-bold">Latest Headlines</h2>
            <span id="category-label" class="text-sm font-mono text-gray-500 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">All</span>
         </div>
+        
         <div id="news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div class="h-80 rounded-xl bg-gray-100 dark:bg-gray-800 skeleton"></div>
+          <div class="h-80 rounded-xl bg-gray-100 dark:bg-gray-800 skeleton news-skeleton"></div>
         </div>
+        
         <div class="text-center mt-10 mb-10">
           <button id="load-more-btn" class="px-8 py-3 bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-full font-semibold shadow-sm hover:shadow-md transition text-sm">Load More</button>
         </div>
@@ -167,8 +219,14 @@
         <button onclick="openCreatePostModal()" class="text-blue-500 font-semibold text-sm md:hidden">Create</button>
       </div>
 
-      <!-- SEARCH BAR (Re-added) -->
-      <div class="px-4 mb-4">
+      <!-- New: Community Feed Tabs -->
+      <div class="flex sticky top-14 bg-[var(--bg-app)] z-30">
+          <button class="community-tab active" onclick="switchCommunityFeed(this, 'global')">Global</button>
+          <button class="community-tab" onclick="switchCommunityFeed(this, 'following')">Following</button>
+      </div>
+
+      <!-- SEARCH BAR -->
+      <div class="px-4 mb-4 mt-4">
         <div class="relative">
             <input type="text" id="user-search-input" class="w-full pl-10 p-3 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-800 dark:text-white placeholder-gray-400 text-sm" placeholder="Find users by @username...">
             <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
@@ -177,7 +235,6 @@
       </div>
 
       <div id="community-feed" class="space-y-0 md:space-y-4 pb-20">
-        <!-- Skeletons -->
         <div class="insta-card p-4 space-y-4">
            <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton"></div><div class="h-4 w-32 skeleton"></div></div>
            <div class="aspect-square w-full skeleton rounded"></div>
@@ -203,6 +260,7 @@
 
   <!-- 1. NEWS DETAIL PAGE -->
   <div id="news-detail-page" class="page-layer bg-white dark:bg-black">
+    <!-- ... (no changes) ... -->
     <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
       <button onclick="closePage('news-detail-page')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
       <div class="flex gap-4 text-xl text-gray-600 dark:text-gray-300">
@@ -221,40 +279,58 @@
     </div>
   </div>
 
-  <!-- 2. PROFILE PAGE -->
+  <!-- 2. MY PROFILE PAGE -->
   <div id="profile-page" class="page-layer bg-white dark:bg-black">
     <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
-      <h2 class="font-bold text-lg">Profile</h2>
+      <h2 id="p-title" class="font-bold text-lg">Profile</h2>
       <button onclick="closePage('profile-page')" class="text-2xl"><i class="fas fa-times"></i></button>
     </div>
     <div class="max-w-2xl mx-auto p-4">
-      <div class="flex items-center gap-6 mb-8">
+      <div class="flex items-center gap-6 mb-6">
         <img id="p-avatar" src="" class="w-20 h-20 rounded-full border-2 border-gray-200 p-1">
         <div class="flex-1">
           <h2 id="p-name" class="text-xl font-bold">Name</h2>
-          <p id="p-username" class="text-sm text-gray-500 mb-3">@username</p>
-          <button onclick="doLogout()" class="text-xs bg-gray-100 dark:bg-gray-800 border dark:border-gray-700 px-4 py-2 rounded font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition">Sign Out</button>
+          <div class="flex items-center gap-2">
+            <p id="p-username" class="text-sm text-gray-500">@username</p>
+            <button id="p-edit-username-btn" onclick="editUsername()" class="text-xs text-blue-500 hover:underline" title="Edit username"><i class="fas fa-pen"></i></button>
+          </div>
+          <!-- Follow button (hidden for own profile) -->
+          <button id="p-follow-btn" class="hidden mt-3 w-full bg-blue-500 text-white font-bold py-2 rounded-lg text-sm"></button>
+          <button id="p-logout-btn" onclick="doLogout()" class="mt-3 text-xs bg-gray-100 dark:bg-gray-800 border dark:border-gray-700 px-4 py-2 rounded font-semibold hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition">Sign Out</button>
         </div>
       </div>
+      
+      <!-- Follower Stats -->
+      <div class="flex justify-around text-center mb-6 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div><span id="p-posts-count" class="font-bold text-lg">0</span><p class="text-sm text-gray-500">Posts</p></div>
+          <div><span id="p-followers-count" class="font-bold text-lg">0</span><p class="text-sm text-gray-500">Followers</p></div>
+          <div><span id="p-following-count" class="font-bold text-lg">0</span><p class="text-sm text-gray-500">Following</p></div>
+      </div>
 
-      <div class="flex mb-4">
+      <div id="p-tabs-container" class="flex mb-4">
         <button id="tab-btn-reposts" class="profile-tab active" onclick="switchProfileTab('reposts')"><i class="fas fa-th mr-2"></i>Posts</button>
         <button id="tab-btn-bookmarks" class="profile-tab" onclick="switchProfileTab('bookmarks')"><i class="far fa-bookmark mr-2"></i>Saved</button>
       </div>
+      
+      <div id="p-reposts-filters" class="flex gap-2 mb-4">
+          <button class="profile-sub-filter active" data-filter="all">All</button>
+          <button class="profile-sub-filter" data-filter="my_posts">My Posts</button>
+          <button class="profile-sub-filter" data-filter="reposts">Reposts</button>
+      </div>
 
       <div id="p-reposts-grid" class="profile-grid active grid-cols-3 gap-1"></div>
-      <div id="p-bookmarks-list" class_name="profile-grid space-y-3"></div>
+      <div id="p-bookmarks-list" class="profile-grid space-y-3"></div> 
     </div>
   </div>
 
-  <!-- 3. CREATE POST MODAL (FIXED) -->
+  <!-- 3. CREATE POST MODAL -->
   <div id="create-modal" class="modal-layer bg-white dark:bg-black">
+    <!-- ... (no changes) ... -->
       <div class="p-3 border-b dark:border-gray-800 flex justify-between items-center">
         <button onclick="closeCreatePostModal()" class="text-gray-500 hover:text-black dark:hover:text-white text-lg"><i class="fas fa-times"></i></button>
         <h3 class="font-bold">New Post</h3>
         <button id="share-btn" class="text-blue-500 font-bold opacity-50" disabled>Share</button>
       </div>
-      
       <div class="p-4 flex-1 overflow-y-auto">
         <div id="drop-area" class="aspect-square bg-gray-100 dark:bg-gray-800 rounded-xl flex flex-col items-center justify-center cursor-pointer mb-4 border-2 border-dashed border-transparent hover:border-blue-500 transition relative overflow-hidden">
            <div id="upload-ui" class="text-center">
@@ -264,18 +340,18 @@
            <img id="preview-img" class="absolute inset-0 w-full h-full object-cover hidden">
            <input type="file" id="file-in" class="hidden" accept="image/*">
         </div>
-        
         <div class="flex gap-3">
           <img id="create-avatar" src="" class="w-8 h-8 rounded-full">
-          <textarea id="caption-in" class="flex-1 bg-transparent outline-none resize-none mt-1" rows="3" placeholder="Write a caption..."></textarea>
+          <!-- Caption input now supports hashtags -->
+          <textarea id="caption-in" class="flex-1 bg-transparent outline-none resize-none mt-1" rows="3" placeholder="Write a caption... (e.g. #news)"></textarea>
         </div>
-
         <div id="progress-bar" class="h-1 bg-blue-600 w-0 transition-all mt-4 hidden"></div>
       </div>
   </div>
 
-  <!-- 4. USERNAME MODAL (Re-added) -->
+  <!-- 4. USERNAME MODAL -->
   <div id="username-modal" class="overlay-modal">
+    <!-- ... (no changes) ... -->
       <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl w-11/12 max-w-sm text-center">
           <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-user-tag"></i></div>
           <h3 class="text-2xl font-bold mb-2 dark:text-white">Choose your @username</h3>
@@ -287,6 +363,37 @@
           <button id="save-username-btn" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition">Save & Continue</button>
       </div>
   </div>
+  
+  <!-- 5. NEW: COMMENTS PAGE -->
+  <div id="comments-page" class="page-layer bg-white dark:bg-black flex flex-col">
+    <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
+      <button onclick="closePage('comments-page')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
+      <h2 class="font-bold text-lg">Comments</h2>
+      <div class="w-8"></div>
+    </div>
+    <div id="comments-list" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <!-- Comments will be rendered here -->
+        <div class="text-center py-10 text-gray-400">Loading comments...</div>
+    </div>
+    <form id="comment-form" class="sticky bottom-0 p-3 bg-white dark:bg-black border-t dark:border-gray-800 flex gap-2">
+        <input id="comment-input" type="text" class="flex-1 p-3 border rounded-full bg-gray-100 dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Add a comment..." required>
+        <button type="submit" class="bg-blue-600 text-white px-5 rounded-full font-bold">Post</button>
+    </form>
+  </div>
+  
+  <!-- 6. NEW: HASHTAG FEED PAGE -->
+  <div id="hashtag-feed-page" class="page-layer bg-white dark:bg-black">
+    <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
+      <button onclick="closePage('hashtag-feed-page')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
+      <h2 id="hashtag-title" class="font-bold text-lg">#hashtag</h2>
+      <div class="w-8"></div>
+    </div>
+    <div id="hashtag-grid" class="max-w-2xl mx-auto p-4 grid grid-cols-3 gap-1">
+        <!-- Hashtag posts will be rendered here -->
+        <div class="aspect-square skeleton"></div>
+    </div>
+  </div>
+
 
   <!-- TOAST NOTIFICATION -->
   <div id="toast" class="fixed bottom-20 md:bottom-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-xl text-sm font-medium opacity-0 pointer-events-none transition-opacity z-[100] flex items-center gap-2">
@@ -297,8 +404,9 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc, updateDoc, getDoc, onSnapshot, arrayUnion, arrayRemove, collection, addDoc, query, limit, where, getDocs, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, updateDoc, getDoc, onSnapshot, arrayUnion, arrayRemove, collection, addDoc, query, limit, where, getDocs, increment, serverTimestamp, orderBy, writeBatch } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
+    // --- Firebase Config ---
     const firebaseConfig = { 
         apiKey: "AIzaSyA4zw5cZqxLwzkTy2e5NiHz-tGKqk1KGdI", 
         authDomain: "newstally-df03c.firebaseapp.com", 
@@ -308,6 +416,7 @@
         appId: "1:506893212961:web:63882290195da992207260" 
     };
 
+    // --- Firebase Init ---
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
@@ -315,16 +424,24 @@
     const APP_ID = 'newstally-social';
 
     // --- STATE ---
-    let currentUser = null;
+    let currentUser = null; // Auth user object
+    let currentUserDoc = null; // Firestore user document (includes following, etc.)
     let currentUsername = null;
     let newsData = [];
     let newsLimit = 9;
     let currentCategory = 'All';
-    let currentNewsItem = null; // For detail page
-    let userBookmarks = []; // For saved feature
-    let pendingRepostItem = null; // For username modal flow
+    let currentNewsItem = null; 
+    let userBookmarks = []; 
+    let pendingRepostItem = null; 
+    window.currentUserPosts = []; 
+    
+    // --- New State ---
+    let currentCommunityFeed = 'global'; // 'global' or 'following'
+    let currentPostIdForComments = null;
+    let commentsUnsub = null;
+    let communityFeedUnsub = null;
 
-    // --- AUTH ---
+    // --- AUTH (Updated) ---
     onAuthStateChanged(auth, async (user) => {
       currentUser = user;
       if(user) {
@@ -335,33 +452,48 @@
         const av = user.photoURL || 'https://via.placeholder.com/40';
         document.getElementById('header-avatar').src = av;
         document.getElementById('btm-avatar').src = av;
-        document.getElementById('p-avatar').src = av;
-        document.getElementById('p-name').innerText = user.displayName;
         document.getElementById('create-avatar').src = av;
 
         const userRef = doc(db, 'users', user.uid);
+        // Ensure base user doc exists
         await setDoc(userRef, { 
             displayName: user.displayName, 
             photoURL: user.photoURL, 
-            email: user.email 
+            email: user.email,
+            followersCount: increment(0), // Initialize fields if they don't exist
+            followingCount: increment(0)
         }, { merge: true });
 
+        // --- NEW: Listen to the full user document ---
         onSnapshot(userRef, (s) => {
             if(s.exists()) {
-                const data = s.data();
-                currentUsername = data.username;
-                userBookmarks = data.bookmarks || [];
+                currentUserDoc = s.data(); // Store the whole user doc
+                currentUsername = currentUserDoc.username;
+                userBookmarks = currentUserDoc.bookmarks || [];
                 
+                // Update UI elements that depend on this doc
+                document.getElementById('p-avatar').src = currentUserDoc.photoURL;
+                document.getElementById('p-name').innerText = currentUserDoc.displayName;
                 document.getElementById('p-username').innerText = '@' + (currentUsername || user.email.split('@')[0]);
+                document.getElementById('p-followers-count').innerText = currentUserDoc.followersCount || 0;
+                document.getElementById('p-following-count').innerText = currentUserDoc.followingCount || 0;
 
                 if(currentUsername && pendingRepostItem) {
                     repostCurrentNews(pendingRepostItem);
                     pendingRepostItem = null;
                 }
+                
+                // If community view is open and on "following", refresh the feed
+                if(currentCommunityFeed === 'following' && !document.getElementById('view-community').classList.contains('hidden')) {
+                    loadCommunityFeed();
+                }
             }
         });
       } else {
-        currentUser = null; currentUsername = null; userBookmarks = [];
+        currentUser = null; 
+        currentUserDoc = null; // Clear user doc
+        currentUsername = null; 
+        userBookmarks = [];
         document.getElementById('sign-in-btn').classList.remove('hidden');
         document.getElementById('user-actions').classList.add('hidden');
         document.getElementById('user-actions').classList.remove('flex');
@@ -370,24 +502,31 @@
     });
 
     window.doLogout = () => {
-        if(confirm("Are you sure you want to sign out?")) {
-            signOut(auth).then(() => {
-                showToast("Signed Out");
-                closePage('profile-page');
-            });
-        }
+        showToast("Signing out...");
+        signOut(auth).then(() => {
+            showToast("Signed Out");
+            closePage('profile-page');
+        });
     };
     document.getElementById('sign-in-btn').onclick = () => signInWithPopup(auth, provider);
 
-    // --- USERNAME MODAL (Re-added) ---
+    // --- USERNAME MODAL ---
+    window.editUsername = () => {
+        document.getElementById('new-username-input').value = currentUsername || '';
+        document.getElementById('username-modal').classList.add('open');
+    };
+    
     document.getElementById('save-username-btn').onclick = async () => {
         const input = document.getElementById('new-username-input');
         const newName = input.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
-        
         if(newName.length < 3) { showToast("Username must be 3+ characters"); return; }
         if(!currentUser) return;
-
         try {
+            const q = query(collection(db, 'users'), where('username', '==', newName), limit(1));
+            const snap = await getDocs(q);
+            if(!snap.empty && snap.docs[0].id !== currentUser.uid) {
+                showToast("Username already taken!"); return;
+            }
             await setDoc(doc(db, 'users', currentUser.uid), { username: newName }, { merge: true });
             showToast("Username saved!");
             document.getElementById('username-modal').classList.remove('open');
@@ -410,52 +549,80 @@
                 image: (r[7] && r[7].startsWith('http')) ? r[7] : `https://placehold.co/600x400?text=News`
             })).reverse();
             
+            const categories = ['All', ...new Set(newsData.map(n => n.category).filter(c => c))];
+            renderCategoryFilters(categories);
             renderCarousel();
             renderNewsGrid();
         } catch(e) { console.error("News Error", e); }
     }
-
+    
     function renderCarousel() {
         const top = newsData.filter(n => n.category === 'Top Story').slice(0, 5);
         const track = document.getElementById('carousel-track');
-        if(!top.length) return;
-        
+        if(!top.length) {
+            track.innerHTML = `<div class="w-full h-full flex items-center justify-center text-gray-500">No Top Stories found.</div>`;
+            return;
+        };
         track.innerHTML = top.map((n, i) => `
             <div class="carousel-slide ${i===0?'active':''}" data-idx="${i}">
                 <img src="${n.image}" class="w-full h-full object-cover">
                 <div class="carousel-overlay absolute inset-0 flex flex-col justify-end p-6 text-white">
-                    <span class="bg-blue-600 w-max px-2 py-1 text-xs font-bold uppercase rounded mb-2">${n.category}</span>
+                    <span class="bg-blue-600 w-max px-2 py-1 text-xs font-bold uppercase rounded mb-2">${n.source}</span>
                     <h2 class="text-2xl md:text-4xl font-black leading-tight drop-shadow-md cursor-pointer hover:underline" onclick="openNewsDetail('${encodeURIComponent(n.headline)}')">${n.headline}</h2>
                 </div>
             </div>
         `).join('');
+        let currentSlide = 0;
+        const slides = track.querySelectorAll('.carousel-slide');
+        const next = () => { currentSlide = (currentSlide + 1) % slides.length; updateSlides(); }
+        const prev = () => { currentSlide = (currentSlide - 1 + slides.length) % slides.length; updateSlides(); }
+        const updateSlides = () => slides.forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+        document.getElementById('next-slide').onclick = next;
+        document.getElementById('prev-slide').onclick = prev;
     }
-
+    
+    function renderCategoryFilters(categories) {
+        const bar = document.getElementById('category-filter-bar');
+        bar.innerHTML = categories.map(cat => `
+            <button class="category-filter-btn ${cat === 'All' ? 'active' : ''} px-4 py-2 rounded-full font-medium text-sm transition whitespace-nowrap" onclick="selectCategoryFilter(this, '${cat}')">
+                ${cat}
+            </button>
+        `).join('');
+    }
+    
+    window.selectCategoryFilter = (btn, cat) => {
+        document.querySelectorAll('.category-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterCategory(cat);
+    };
+    
     function renderNewsGrid() {
         const grid = document.getElementById('news-grid');
-        const filtered = currentCategory === 'All' ? newsData : newsData.filter(n => n.category === currentCategory);
+        const skeletons = grid.querySelectorAll('.news-skeleton');
+        if (skeletons.length > 0) grid.innerHTML = '';
         
-        const oldLimit = (grid.children.length > 0) ? grid.children.length : 0;
+        const filtered = currentCategory === 'All' 
+            ? newsData.filter(n => n.category !== 'Top Story') 
+            : newsData.filter(n => n.category === currentCategory);
+        
+        const oldLimit = grid.children.length;
         const visible = filtered.slice(0, newsLimit);
-
         document.getElementById('category-label').innerText = currentCategory;
         
-        if(oldLimit === 0) {
-            grid.innerHTML = visible.map(n => createNewsCardHTML(n, 0)).join('');
-        } else {
+        if(oldLimit === 0) grid.innerHTML = visible.map(n => createNewsCardHTML(n, 0)).join('');
+        else {
             const newItems = visible.slice(oldLimit);
-            const newHTML = newItems.map((n, i) => createNewsCardHTML(n, i * 50)).join('');
-            grid.insertAdjacentHTML('beforeend', newHTML);
+            grid.insertAdjacentHTML('beforeend', newItems.map((n, i) => createNewsCardHTML(n, i * 50)).join(''));
         }
-
-        document.getElementById('load-more-btn').style.display = newsLimit >= filtered.length ? 'none' : 'inline-block';
+        if (visible.length === 0) grid.innerHTML = `<div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-10 text-gray-400">No articles found for "${currentCategory}".</div>`;
+        document.getElementById('load-more-btn').style.display = (newsLimit >= filtered.length || visible.length === 0) ? 'none' : 'inline-block';
     }
 
     function createNewsCardHTML(n, delay) {
         return `
             <div class="group cursor-pointer animate-fade" style="animation-delay: ${delay}ms" onclick="openNewsDetail('${encodeURIComponent(n.headline)}')">
                 <div class="aspect-video overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800 relative mb-3">
-                    <img src="${n.image}" loading="lazy" class="w-full h-full object-cover transition duration-500 group-hover:scale-105 img-fade-in" onload="this.classList.add('img-loaded')">
+                    <img src="${n.image}" loading="lazy" class="w-full h-full object-cover transition duration-500 group-hover:scale-105 img-fade-in" onerror="this.src='https://placehold.co/600x400?text=Error'" onload="this.classList.add('img-loaded')">
                     <div class="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded backdrop-blur-sm font-medium">${n.source}</div>
                 </div>
                 <h3 class="font-bold text-lg leading-snug group-hover:text-blue-600 transition-colors">${n.headline}</h3>
@@ -465,11 +632,9 @@
     }
 
     window.filterCategory = (cat) => {
-        currentCategory = cat;
-        newsLimit = 9;
-        document.getElementById('news-grid').innerHTML = "";
-        switchView('home');
-        renderNewsGrid();
+        currentCategory = cat; newsLimit = 9; 
+        document.getElementById('news-grid').innerHTML = '';
+        switchView('home'); renderNewsGrid(); 
     };
     document.getElementById('load-more-btn').onclick = () => { newsLimit += 6; renderNewsGrid(); };
 
@@ -478,21 +643,17 @@
         const n = newsData.find(i => i.headline === decodeURIComponent(encTitle));
         if(!n) return;
         currentNewsItem = n;
-
         document.getElementById('nd-cat').innerText = n.category;
         document.getElementById('nd-title').innerText = n.headline;
         document.getElementById('nd-source').innerText = n.source;
         document.getElementById('nd-date').innerText = n.date;
         document.getElementById('nd-img').src = n.image;
         document.getElementById('nd-body').innerHTML = n.desc.split('\n').map(p => `<p class="mb-4">${p}</p>`).join('');
-        
         const btn = document.getElementById('detail-bookmark-btn');
         if(userBookmarks.some(b => b.headline === n.headline)) {
-            btn.innerHTML = '<i class="fas fa-bookmark"></i>';
-            btn.classList.add('text-yellow-500');
+            btn.innerHTML = '<i class="fas fa-bookmark"></i>'; btn.classList.add('text-yellow-500');
         } else {
-            btn.innerHTML = '<i class="far fa-bookmark"></i>';
-            btn.classList.remove('text-yellow-500');
+            btn.innerHTML = '<i class="far fa-bookmark"></i>'; btn.classList.remove('text-yellow-500');
         }
         document.getElementById('news-detail-page').classList.add('open');
     };
@@ -501,29 +662,26 @@
         const item = itemToRepost || currentNewsItem;
         if(!currentUser) { signInWithPopup(auth, provider); return; }
         if(!item) return;
-
         if(!currentUsername) {
             pendingRepostItem = item;
-            document.getElementById('username-modal').classList.add('open');
-            return;
+            document.getElementById('username-modal').classList.add('open'); return;
         }
-
         const id = btoa(encodeURIComponent(item.headline)).replace(/=/g,'');
         const ref = doc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), id);
         const snap = await getDoc(ref);
-
         if(snap.exists() && snap.data().reposters.includes(currentUser.uid)) {
             showToast("Already reposted!"); return;
         }
-
         const payload = {
             headline: item.headline, image: item.image, source: item.source,
             reposters: arrayUnion(currentUser.uid),
             repostCount: increment(1),
-            timestamp: new Date().toISOString(),
-            latestReposter: { username: currentUsername, uid: currentUser.uid, avatar: currentUser.photoURL }
+            timestamp: serverTimestamp(),
+            latestReposter: { username: currentUsername, uid: currentUser.uid, avatar: currentUser.photoURL },
+            isUserPost: false,
+            hashtags: [], // News articles don't have user hashtags
+            commentsCount: 0
         };
-        
         await setDoc(ref, payload, { merge: true });
         showToast("Reposted to Community!");
         closePage('news-detail-page');
@@ -533,68 +691,87 @@
     window.bookmarkCurrentNews = async () => {
         if(!currentUser) { signInWithPopup(auth, provider); return; }
         if(!currentNewsItem) return;
-
         const userRef = doc(db, 'users', currentUser.uid);
         const bookmark = { 
-            headline: currentNewsItem.headline, 
-            image: currentNewsItem.image, 
-            source: currentNewsItem.source 
+            headline: currentNewsItem.headline, image: currentNewsItem.image, 
+            source: currentNewsItem.source, category: currentNewsItem.category,
+            date: currentNewsItem.date
         };
         const btn = document.getElementById('detail-bookmark-btn');
-
-        // Check against the array of objects
         const isBookmarked = userBookmarks.some(b => b.headline === bookmark.headline);
-
         if(isBookmarked) {
-            // Find the *exact* object to remove
             const existingBookmark = userBookmarks.find(b => b.headline === bookmark.headline);
             await updateDoc(userRef, { bookmarks: arrayRemove(existingBookmark) });
-            btn.innerHTML = '<i class="far fa-bookmark"></i>';
-            btn.classList.remove('text-yellow-500');
+            btn.innerHTML = '<i class="far fa-bookmark"></i>'; btn.classList.remove('text-yellow-500');
             showToast("Bookmark removed");
         } else {
             await updateDoc(userRef, { bookmarks: arrayUnion(bookmark) });
-            btn.innerHTML = '<i class="fas fa-bookmark"></i>';
-            btn.classList.add('text-yellow-500');
+            btn.innerHTML = '<i class="fas fa-bookmark"></i>'; btn.classList.add('text-yellow-500');
             showToast("Bookmark Saved!");
         }
     };
 
-    // --- COMMUNITY FEED ---
-    let commUnsub = null;
-    window.loadCommunity = () => {
+    // --- COMMUNITY FEED (Updated) ---
+    window.switchCommunityFeed = (btn, feedType) => {
+        currentCommunityFeed = feedType;
+        document.querySelectorAll('.community-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        loadCommunityFeed();
+    };
+    
+    window.loadCommunityFeed = () => {
         const feed = document.getElementById('community-feed');
-        if(commUnsub) return;
+        if(communityFeedUnsub) communityFeedUnsub(); // Detach old listener
         
-        feed.innerHTML = [1,2].map(() => `
-            <div class="insta-card p-4 space-y-4">
-               <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton"></div><div class="h-4 w-32 skeleton"></div></div>
-               <div class="aspect-square w-full skeleton rounded"></div>
-            </div>
-        `).join('');
+        feed.innerHTML = `<div class="insta-card p-4 space-y-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton"></div><div class="h-4 w-32 skeleton"></div></div><div class="aspect-square w-full skeleton rounded"></div></div>`;
 
-        const q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), limit(50));
+        let q;
+        if(currentCommunityFeed === 'following') {
+            if(!currentUserDoc || !currentUserDoc.following || currentUserDoc.following.length === 0) {
+                feed.innerHTML = `<div class='text-center py-10 text-gray-400'>You're not following anyone. Follow users from the Global feed!</div>`;
+                return;
+            }
+            // Max 30 'in' query. For this app, it's fine.
+            q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), where('latestReposter.uid', 'in', currentUserDoc.following.slice(0, 30)), orderBy('timestamp', 'desc'), limit(50));
+        } else {
+            // Global feed
+            q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), orderBy('timestamp', 'desc'), limit(50));
+        }
         
-        commUnsub = onSnapshot(q, (snap) => {
-             if(snap.empty) { feed.innerHTML = "<div class='text-center py-10 text-gray-400'>No posts yet.</div>"; return; }
-             const docs = snap.docs.map(d => ({id: d.id, ...d.data()})).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+        communityFeedUnsub = onSnapshot(q, (snap) => {
+             if(snap.empty) {
+                 feed.innerHTML = `<div class='text-center py-10 text-gray-400'>No posts found.</div>`;
+                 return;
+             }
+             const docs = snap.docs.map(d => ({id: d.id, ...d.data()}));
              
              feed.innerHTML = docs.map(p => {
                  const isLiked = currentUser && p.likes && p.likes.includes(currentUser.uid);
                  const username = p.latestReposter?.username || p.source || 'User';
                  const avatar = p.latestReposter?.avatar || 'https://via.placeholder.com/40';
+                 const uid = p.latestReposter?.uid || null;
                  const isUserPost = p.isUserPost || false;
                  const caption = p.headline || '';
                  const subHeader = isUserPost ? '' : `<span class="text-xs text-gray-400 ml-2">Reposted News</span>`;
+                 
+                 // Follow Button Logic
+                 let followBtn = '';
+                 if (currentUser && uid && uid !== currentUser.uid) {
+                     const isFollowing = currentUserDoc?.following?.includes(uid);
+                     followBtn = `<button id="follow-btn-${p.id}" onclick="event.stopPropagation(); toggleFollow('${uid}')" 
+                                    class="text-xs font-bold ${isFollowing ? 'text-gray-500' : 'text-blue-500'}">
+                                    ${isFollowing ? 'Following' : 'Follow'}
+                                 </button>`;
+                 }
 
                  return `
                     <div class="insta-card animate-fade">
                         <div class="flex items-center justify-between p-3">
-                            <div class="flex items-center gap-3">
-                                <img src="${avatar}" class="w-9 h-9 rounded-full border object-cover p-0.5 cursor-pointer" onclick="openPublicProfile('${p.latestReposter?.uid}')">
+                            <div class="flex items-center gap-3 cursor-pointer" onclick="openPublicProfile('${uid}')">
+                                <img src="${avatar}" class="w-9 h-9 rounded-full border object-cover p-0.5">
                                 <div><div class="font-bold text-sm flex items-center">${username} ${subHeader}</div></div>
                             </div>
-                            <button class="text-gray-400"><i class="fas fa-ellipsis-h"></i></button>
+                            ${followBtn}
                         </div>
                         <div class="w-full bg-gray-100 dark:bg-black relative" ondblclick="toggleLike('${p.id}', true)">
                             <img src="${p.image}" class="w-full object-contain max-h-[500px] img-fade-in" onload="this.classList.add('img-loaded')">
@@ -607,30 +784,39 @@
                                 <button id="like-btn-${p.id}" onclick="toggleLike('${p.id}')" class="transition-transform active:scale-125 ${isLiked ? 'text-red-500' : 'text-gray-800 dark:text-white hover:text-gray-600'}">
                                     <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
                                 </button>
-                                <button class="text-gray-800 dark:text-white hover:text-gray-600"><i class="far fa-comment"></i></button>
+                                <!-- Comment button opens modal -->
+                                <button onclick="openComments('${p.id}')" class="text-gray-800 dark:text-white hover:text-gray-600"><i class="far fa-comment"></i></button>
                                 <button class="text-gray-800 dark:text-white hover:text-gray-600 ml-auto"><i class="far fa-bookmark"></i></button>
                             </div>
                             <div class="font-bold text-sm mb-1">${p.likes ? p.likes.length : 0} likes</div>
-                            <div>
-                                <span class="font-bold text-sm mr-2">${username}</span>
-                                <span class="text-sm text-gray-800 dark:text-gray-200">${caption}</span>
+                            <div class="text-sm text-gray-800 dark:text-gray-200">
+                                <span class="font-bold mr-2 cursor-pointer" onclick="openPublicProfile('${uid}')">${username}</span>
+                                <!-- Render caption with hashtags -->
+                                <span id="caption-${p.id}"></span>
+                            </div>
+                            <!-- View comments link -->
+                            <div class="text-sm text-gray-400 mt-1 cursor-pointer" onclick="openComments('${p.id}')">
+                                View all ${p.commentsCount || 0} comments
                             </div>
                         </div>
                     </div>
                  `;
              }).join('');
+             
+             // --- NEW: Post-render caption processing for hashtags ---
+             docs.forEach(p => {
+                 const captionEl = document.getElementById(`caption-${p.id}`);
+                 if (captionEl) captionEl.innerHTML = renderHashtags(p.headline);
+             });
          });
     };
 
     window.toggleLike = async (id, fromDblClick = false) => {
         if(!currentUser) { signInWithPopup(auth, provider); return; }
         const ref = doc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), id);
-        const snap = await getDoc(ref);
-        if(!snap.exists()) return;
-
+        const snap = await getDoc(ref); if(!snap.exists()) return;
         const btn = document.getElementById(`like-btn-${id}`);
         const likes = snap.data().likes || [];
-        
         if(likes.includes(currentUser.uid)) {
             if(fromDblClick) return;
             updateDoc(ref, { likes: arrayRemove(currentUser.uid) });
@@ -638,51 +824,15 @@
         } else {
             if(fromDblClick) {
                 const heartEl = document.getElementById(`heart-${id}`);
-                if(heartEl) {
-                    heartEl.style.opacity = 1;
-                    setTimeout(() => { heartEl.style.opacity = 0; }, 800);
-                }
+                if(heartEl) { heartEl.style.opacity = 1; setTimeout(() => { heartEl.style.opacity = 0; }, 800); }
             }
             if(btn) btn.classList.add('heart-anim');
             updateDoc(ref, { likes: arrayUnion(currentUser.uid) });
         }
     };
 
-    // --- CREATE POST (FIXED LOGIC) ---
-    const createModal = document.getElementById('create-modal');
-    const dropArea = document.getElementById('drop-area');
-    const fileIn = document.getElementById('file-in');
-    const previewImg = document.getElementById('preview-img');
+    // --- CREATE POST (Updated) ---
     const shareBtn = document.getElementById('share-btn');
-    let selectedFile = null;
-
-    window.openCreatePostModal = () => {
-        if(!currentUser) { signInWithPopup(auth, provider); return; }
-        if(!currentUsername) {
-            document.getElementById('username-modal').classList.add('open');
-            return;
-        }
-        // FIXED LOGIC: Just add 'open'.
-        createModal.classList.add('open'); 
-    };
-    window.closeCreatePostModal = () => {
-        // FIXED LOGIC: Just remove 'open'.
-        createModal.classList.remove('open'); 
-        resetCreateForm();
-    };
-
-    dropArea.onclick = () => fileIn.click();
-    fileIn.onchange = (e) => {
-        if(e.target.files[0]) {
-            selectedFile = e.target.files[0];
-            previewImg.src = URL.createObjectURL(selectedFile);
-            previewImg.classList.remove('hidden');
-            document.getElementById('upload-ui').classList.add('hidden');
-            shareBtn.disabled = false;
-            shareBtn.classList.remove('opacity-50');
-        }
-    };
-
     shareBtn.onclick = async () => {
         if(!selectedFile) return;
         shareBtn.disabled = true; shareBtn.innerText = "Posting...";
@@ -692,39 +842,61 @@
         try {
             const base64 = await compressImage(selectedFile);
             document.getElementById('progress-bar').style.width = "80%";
+            
+            // --- NEW: Parse hashtags ---
+            const caption = document.getElementById('caption-in').value;
+            const hashtags = (caption.match(/#\w+/g) || []).map(tag => tag.substring(1).toLowerCase());
 
             const docId = `post_${Date.now()}_${currentUser.uid.slice(0,4)}`;
             await setDoc(doc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), docId), {
-                headline: document.getElementById('caption-in').value,
+                headline: caption, // Using headline field for caption
+                hashtags: hashtags, // Save parsed hashtags
                 image: base64, source: 'Community',
-                reposters: [currentUser.uid],
-                repostCount: 1, likes: [],
-                timestamp: new Date().toISOString(),
+                reposters: [currentUser.uid], 
+                repostCount: 1, likes: [], commentsCount: 0,
+                timestamp: serverTimestamp(),
                 latestReposter: { username: currentUsername, uid: currentUser.uid, avatar: currentUser.photoURL },
-                isUserPost: true
+                isUserPost: true 
             });
 
             document.getElementById('progress-bar').style.width = "100%";
             showToast("Shared Successfully!");
             closeCreatePostModal();
             switchView('community');
-
         } catch(e) { console.error(e); showToast("Error posting"); }
     };
-
+    
+    // --- (Other create post functions: open, close, compress, reset - no changes) ---
+    const createModal = document.getElementById('create-modal');
+    const dropArea = document.getElementById('drop-area');
+    const fileIn = document.getElementById('file-in');
+    const previewImg = document.getElementById('preview-img');
+    let selectedFile = null;
+    window.openCreatePostModal = () => {
+        if(!currentUser) { signInWithPopup(auth, provider); return; }
+        if(!currentUsername) { document.getElementById('username-modal').classList.add('open'); return; }
+        createModal.classList.add('open'); 
+    };
+    window.closeCreatePostModal = () => { createModal.classList.remove('open'); resetCreateForm(); };
+    dropArea.onclick = () => fileIn.click();
+    fileIn.onchange = (e) => {
+        if(e.target.files[0]) {
+            selectedFile = e.target.files[0];
+            previewImg.src = URL.createObjectURL(selectedFile);
+            previewImg.classList.remove('hidden');
+            document.getElementById('upload-ui').classList.add('hidden');
+            shareBtn.disabled = false; shareBtn.classList.remove('opacity-50');
+        }
+    };
     function compressImage(file) {
         return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
+            const reader = new FileReader(); reader.readAsDataURL(file);
             reader.onload = (ev) => {
-                const img = new Image();
-                img.src = ev.target.result;
+                const img = new Image(); img.src = ev.target.result;
                 img.onload = () => {
-                    const cvs = document.createElement('canvas');
-                    const max = 800;
+                    const cvs = document.createElement('canvas'); const max = 800;
                     let w = img.width, h = img.height;
-                    if(w > h && w > max) { h *= max/w; w=max; }
-                    else if(h > max) { w *= max/h; h=max; }
+                    if(w > h && w > max) { h *= max/w; w=max; } else if(h > max) { w *= max/h; h=max; }
                     cvs.width = w; cvs.height = h;
                     cvs.getContext('2d').drawImage(img,0,0,w,h);
                     resolve(cvs.toDataURL('image/jpeg', 0.7));
@@ -742,67 +914,178 @@
         document.getElementById('progress-bar').classList.add('hidden');
     }
 
-    // --- PROFILE (Fixed Reposts & Bookmarks) ---
+    // --- PROFILE (Updated) ---
+    let currentProfileUid = null;
     window.openProfile = () => {
         if(!currentUser) { signInWithPopup(auth, provider); return; }
-        document.getElementById('profile-page').classList.add('open');
-        switchProfileTab('reposts');
+        // Opens *my* profile
+        renderProfilePage(currentUser.uid);
     };
+    
+    // --- NEW: Open Public Profile ---
+    window.openPublicProfile = (uid) => {
+        if (!uid) return;
+        if (currentUser && uid === currentUser.uid) {
+            openProfile(); // It's me, open my own profile page
+        } else {
+            renderProfilePage(uid); // Open profile page for a different user
+        }
+    };
+    
+    async function renderProfilePage(uid) {
+        currentProfileUid = uid; // Set context for who's profile we're on
+        document.getElementById('profile-page').classList.add('open');
+        
+        // Show loading state
+        document.getElementById('p-title').innerText = "Loading...";
+        document.getElementById('p-avatar').src = 'https://via.placeholder.com/80';
+        document.getElementById('p-name').innerText = '...';
+        document.getElementById('p-username').innerText = '...';
+        
+        // Get this user's doc
+        const userRef = doc(db, 'users', uid);
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) {
+            showToast("User not found");
+            closePage('profile-page');
+            return;
+        }
+        
+        const profileUserDoc = userSnap.data();
+        
+        // Update UI with this profile's data
+        document.getElementById('p-avatar').src = profileUserDoc.photoURL;
+        document.getElementById('p-name').innerText = profileUserDoc.displayName;
+        document.getElementById('p-username').innerText = `@${profileUserDoc.username || 'user'}`;
+        document.getElementById('p-followers-count').innerText = profileUserDoc.followersCount || 0;
+        document.getElementById('p-following-count').innerText = profileUserDoc.followingCount || 0;
+        
+        const followBtn = document.getElementById('p-follow-btn');
+        const logoutBtn = document.getElementById('p-logout-btn');
+        const editBtn = document.getElementById('p-edit-username-btn');
+        const tabs = document.getElementById('p-tabs-container');
+
+        if (currentUser && currentUser.uid === uid) {
+            // It's MY profile
+            document.getElementById('p-title').innerText = "My Profile";
+            followBtn.classList.add('hidden');
+            logoutBtn.classList.remove('hidden');
+            editBtn.classList.remove('hidden');
+            tabs.classList.remove('hidden'); // Show "Posts" and "Saved"
+            switchProfileTab('reposts'); // Default to my posts
+        } else {
+            // It's someone ELSE's profile
+            document.getElementById('p-title').innerText = "Profile";
+            logoutBtn.classList.add('hidden');
+            editBtn.classList.add('hidden');
+            tabs.classList.add('hidden'); // Hide "Saved" tab
+            
+            // Show and update follow button
+            if (currentUser) {
+                const isFollowing = currentUserDoc?.following?.includes(uid);
+                followBtn.classList.remove('hidden');
+                followBtn.innerText = isFollowing ? 'Following' : 'Follow';
+                followBtn.onclick = () => toggleFollow(uid);
+            } else {
+                followBtn.classList.remove('hidden');
+                followBtn.innerText = 'Follow';
+                followBtn.onclick = () => signInWithPopup(auth, provider);
+            }
+            
+            // Force view to their posts
+            switchProfileTab('reposts'); 
+        }
+    }
 
     window.switchProfileTab = (tab) => {
         document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
         document.getElementById(`tab-btn-${tab}`).classList.add('active');
         
+        const repostsGrid = document.getElementById('p-reposts-grid');
+        const bookmarksList = document.getElementById('p-bookmarks-list');
+        const repostFilters = document.getElementById('p-reposts-filters');
+
         document.querySelectorAll('.profile-grid').forEach(g => g.classList.remove('active'));
-        const grid = document.getElementById(tab === 'reposts' ? 'p-reposts-grid' : 'p-bookmarks-list');
-        grid.classList.add('active');
-        grid.innerHTML = `<div class="col-span-3 py-10 text-center"><div class="inline-block w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>`;
         
         if(tab === 'reposts') {
-            const q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), where('reposters', 'array-contains', currentUser.uid));
+            repostsGrid.classList.add('active');
+            repostFilters.classList.remove('hidden');
+            repostsGrid.innerHTML = `<div class="col-span-3 py-10 text-center"><div class="inline-block w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>`;
+            
+            // Load posts for the *currently viewed profile*
+            const q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), where('reposters', 'array-contains', currentProfileUid));
             getDocs(q).then(snap => {
-                if(snap.empty) { grid.innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400">No posts yet.</div>`; return; }
-                const docs = snap.docs.map(d => d.data()).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
-                grid.innerHTML = docs.map(d => `
-                    <div class="aspect-square bg-gray-100 relative group cursor-pointer border border-white dark:border-black">
-                        <img src="${d.image}" class="w-full h-full object-cover">
-                    </div>
-                `).join('');
+                const allDocs = snap.docs.map(d => d.data()).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
+                window.currentUserPosts = allDocs; 
+                document.getElementById('p-posts-count').innerText = allDocs.length;
+                renderProfilePosts('all'); // Default to all
             });
         } else if (tab === 'bookmarks') {
+            // This tab is only visible on my own profile
+            bookmarksList.classList.add('active');
+            repostFilters.classList.add('hidden');
+            bookmarksList.innerHTML = `<div class="col-span-3 py-10 text-center"><div class="inline-block w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>`;
+            
             if(userBookmarks.length === 0) {
-                grid.innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400">No saved posts.</div>`; return;
+                bookmarksList.innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400">No saved posts.</div>`; return;
             }
-            grid.innerHTML = userBookmarks.map(b => `
-                <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl cursor-pointer" onclick="openNewsDetail('${encodeURIComponent(b.headline)}'); closePage('profile-page');">
+            bookmarksList.innerHTML = userBookmarks.map(b => `
+                <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-xl cursor-pointer" onclick="openNewsDetail('${encodeURIComponent(b.headline)}');">
                     <img src="${b.image}" class="w-12 h-12 rounded-lg object-cover">
-                    <span class="text-sm font-bold truncate flex-1">${b.headline}</span>
+                    <div class="flex-1 overflow-hidden">
+                        <span class="text-sm font-bold truncate block">${b.headline}</span>
+                        <span class="text-xs text-gray-400">${b.source}</span>
+                    </div>
                 </div>
             `).join('');
         }
     };
+    
+    // Add click listeners to sub-filters
+    document.querySelectorAll('#p-reposts-filters .profile-sub-filter').forEach(btn => {
+        btn.onclick = () => renderProfilePosts(btn.dataset.filter);
+    });
 
-    // --- USER SEARCH ---
-    function debounce(fn, delay) {
-      let timer;
-      return (...args) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => fn(...args), delay);
-      };
+    window.renderProfilePosts = (filterType) => {
+        const grid = document.getElementById('p-reposts-grid');
+        if (!window.currentUserPosts) {
+            grid.innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400">Loading...</div>`; return;
+        }
+        document.querySelectorAll('.profile-sub-filter').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.profile-sub-filter[data-filter="${filterType}"]`).classList.add('active');
+
+        let filteredDocs = window.currentUserPosts;
+        if(filterType === 'my_posts') {
+            // Filter for posts where the *original* reposter (creator) is the current profile
+            filteredDocs = window.currentUserPosts.filter(d => d.isUserPost === true && d.latestReposter.uid === currentProfileUid);
+        } else if (filterType === 'reposts') {
+            filteredDocs = window.currentUserPosts.filter(d => !d.isUserPost);
+        }
+        
+        if(filteredDocs.length === 0) {
+            grid.innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400">No posts found.</div>`; return;
+        }
+        grid.innerHTML = filteredDocs.map(d => `
+            <div class="aspect-square bg-gray-100 relative group cursor-pointer border border-white dark:border-black">
+                <img src="${d.image}" class="w-full h-full object-cover">
+                ${d.isUserPost ? '<i class="fas fa-user absolute top-2 right-2 text-white text-xs bg-black/50 p-1.5 rounded-full" title="My Post"></i>' : '<i class="fas fa-retweet absolute top-2 right-2 text-white text-xs bg-black/50 p-1.5 rounded-full" title="Repost"></i>'}
+            </div>
+        `).join('');
     }
+
+    // --- NEW: USER SEARCH (Updated) ---
     const searchInput = document.getElementById('user-search-input');
     const searchResults = document.getElementById('search-results');
     searchInput.addEventListener('input', debounce(async (e) => {
         const term = e.target.value.trim().toLowerCase();
         if(term.length < 2) { searchResults.classList.add('hidden'); return; }
-        
         const q = query(collection(db, 'users'), where('username', '>=', term), where('username', '<=', term + '\uf8ff'), limit(5));
-        
         const snap = await getDocs(q);
         if(snap.empty) { searchResults.innerHTML = `<div class="p-3 text-gray-500 text-sm text-center">No users found.</div>`; } 
         else {
             searchResults.innerHTML = snap.docs.map(d => {
                 const u = d.data();
+                // --- UPDATED onclick to open public profile ---
                 return `<div class="flex items-center p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer border-b dark:border-gray-700 last:border-0 transition" onclick="openPublicProfile('${d.id}');">
                     <img src="${u.photoURL}" class="w-8 h-8 rounded-full mr-3">
                     <div>
@@ -820,9 +1103,136 @@
         }
     });
 
-    window.openPublicProfile = (uid) => {
-        showToast(`Opening profile for ${uid.slice(0,5)}...`);
-        searchResults.classList.add('hidden');
+    // --- NEW: FOLLOW LOGIC ---
+    window.toggleFollow = async (uidToFollow) => {
+        if(!currentUser) { signInWithPopup(auth, provider); return; }
+        if (currentUser.uid === uidToFollow) return; // Can't follow self
+
+        const myRef = doc(db, 'users', currentUser.uid);
+        const theirRef = doc(db, 'users', uidToFollow);
+        const isFollowing = currentUserDoc?.following?.includes(uidToFollow);
+        
+        const batch = writeBatch(db);
+        if (isFollowing) {
+            // Unfollow
+            batch.update(myRef, { following: arrayRemove(uidToFollow), followingCount: increment(-1) });
+            batch.update(theirRef, { followersCount: increment(-1) });
+            showToast("Unfollowed");
+        } else {
+            // Follow
+            batch.update(myRef, { following: arrayUnion(uidToFollow), followingCount: increment(1) });
+            batch.update(theirRef, { followersCount: increment(1) });
+            showToast("Followed");
+        }
+        await batch.commit();
+        
+        // Manually update button states on all visible parts of the UI
+        document.querySelectorAll(`button[onclick*="'${uidToFollow}'"]`).forEach(btn => {
+            btn.innerText = isFollowing ? 'Follow' : 'Following';
+            btn.classList.toggle('text-gray-500', !isFollowing);
+            btn.classList.toggle('text-blue-500', isFollowing);
+        });
+        document.getElementById('p-follow-btn').innerText = isFollowing ? 'Follow' : 'Following';
+    };
+
+    // --- NEW: COMMENTS LOGIC ---
+    window.openComments = (postId) => {
+        if (!postId) return;
+        currentPostIdForComments = postId;
+        document.getElementById('comments-page').classList.add('open');
+        const list = document.getElementById('comments-list');
+        list.innerHTML = `<div class="text-center py-10 text-gray-400">Loading...</div>`;
+        
+        if (commentsUnsub) commentsUnsub(); // Unsub from old post
+        
+        const commentsRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts', postId, 'comments');
+        const q = query(commentsRef, orderBy('timestamp', 'desc'));
+        
+        commentsUnsub = onSnapshot(q, (snap) => {
+            if (snap.empty) {
+                list.innerHTML = `<div class="text-center py-10 text-gray-400">No comments yet. Be the first!</div>`;
+                return;
+            }
+            list.innerHTML = snap.docs.map(doc => {
+                const c = doc.data();
+                return `
+                    <div class="flex gap-3">
+                        <img src="${c.userAvatar}" class="w-8 h-8 rounded-full mt-1 cursor-pointer" onclick="openPublicProfile('${c.userId}')">
+                        <div class="flex-1">
+                            <p class="text-sm">
+                                <span class="font-bold cursor-pointer" onclick="openPublicProfile('${c.userId}')">${c.username}</span>
+                                ${c.text}
+                            </p>
+                            <p class="text-xs text-gray-400 mt-1">${new Date(c.timestamp?.toDate()).toLocaleString()}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        });
+    };
+    
+    document.getElementById('comment-form').onsubmit = async (e) => {
+        e.preventDefault();
+        if(!currentUser) { signInWithPopup(auth, provider); return; }
+        const input = document.getElementById('comment-input');
+        const text = input.value.trim();
+        if (!text || !currentPostIdForComments) return;
+        
+        input.disabled = true;
+        try {
+            const commentsRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts', currentPostIdForComments, 'comments');
+            await addDoc(commentsRef, {
+                text: text,
+                userId: currentUser.uid,
+                username: currentUsername,
+                userAvatar: currentUser.photoURL,
+                timestamp: serverTimestamp()
+            });
+            
+            // Increment comments count
+            const postRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'reposts', currentPostIdForComments);
+            await updateDoc(postRef, { commentsCount: increment(1) });
+            
+            input.value = '';
+        } catch(e) { console.error(e); showToast("Error posting comment"); }
+        input.disabled = false;
+    };
+    
+    // --- NEW: HASHTAG LOGIC ---
+    window.renderHashtags = (text) => {
+        if (!text) return '';
+        // Escape HTML to prevent XSS
+        const safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        // Find and replace hashtags
+        return safeText.replace(/#(\w+)/g, (match, tag) => {
+            return `<a href="#" class="text-blue-500 hover:underline" 
+                       onclick="event.preventDefault(); event.stopPropagation(); openHashtagFeed('${tag}')">#${tag}</a>`;
+        });
+    };
+    
+    window.openHashtagFeed = (tag) => {
+        if (!tag) return;
+        document.getElementById('hashtag-feed-page').classList.add('open');
+        const grid = document.getElementById('hashtag-grid');
+        const title = document.getElementById('hashtag-title');
+        
+        title.innerText = `#${tag}`;
+        grid.innerHTML = `<div class="aspect-square skeleton"></div><div class="aspect-square skeleton"></div><div class="aspect-square skeleton"></div>`;
+        
+        const q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), where('hashtags', 'array-contains', tag.toLowerCase()), orderBy('timestamp', 'desc'));
+        
+        getDocs(q).then(snap => {
+            if (snap.empty) {
+                grid.innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400">No posts found for #${tag}</div>`;
+                return;
+            }
+            grid.innerHTML = snap.docs.map(d => {
+                const post = d.data();
+                return `<div class="aspect-square bg-gray-100 relative group cursor-pointer border border-white dark:border-black">
+                            <img src="${post.image}" class="w-full h-full object-cover">
+                        </div>`;
+            }).join('');
+        });
     };
 
     // --- UTILS ---
@@ -830,14 +1240,19 @@
         document.getElementById('view-home').classList.add('hidden');
         document.getElementById('view-community').classList.add('hidden');
         document.getElementById(`view-${v}`).classList.remove('hidden');
-        if(v === 'community') loadCommunity();
+        if(v === 'community') loadCommunityFeed();
         
-        document.querySelectorAll('.nav-link, .nav-icon').forEach(el => el.classList.remove('text-blue-600', 'text-purple-600', 'active'));
-        document.querySelector(`.nav-link[data-target="${v}"]`)?.classList.add('text-blue-600');
-        document.querySelector(`.nav-icon[onclick*="${v}"]`)?.classList.add(v === 'home' ? 'text-blue-600' : 'text-purple-600', 'active');
+        document.querySelectorAll('.nav-link, .nav-icon').forEach(el => el.classList.remove('text-blue-600', 'text-purple-500', 'active', 'active-nav'));
+        document.querySelector(`.nav-link[data-target="${v}"]`)?.classList.add(v === 'home' ? 'text-blue-600' : 'text-purple-500', 'active-nav');
+        document.querySelector(`.nav-icon[onclick*="${v}"]`)?.classList.add(v === 'home' ? 'text-blue-600' : 'text-purple-500', 'active');
     };
-    window.closePage = (id) => document.getElementById(id).classList.remove('open');
-
+    window.closePage = (id) => {
+        document.getElementById(id).classList.remove('open');
+        // Stop listeners when closing pages
+        if (id === 'comments-page' && commentsUnsub) {
+            commentsUnsub(); commentsUnsub = null;
+        }
+    };
     function showToast(msg) {
         const t = document.getElementById('toast');
         t.querySelector('span').innerText = msg;
@@ -850,7 +1265,13 @@
         localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     }
     if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+    
+    function debounce(fn, delay) {
+      let timer;
+      return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
+    }
 
+    // --- INITIAL LOAD ---
     fetchNews();
   </script>
 </body>
