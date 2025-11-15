@@ -58,15 +58,59 @@
     .modal-layer { transform: translateY(100%); }
     .modal-layer.open { transform: translateY(0); }
 
-    /* Overlay Modal (username) */
+    /* Overlay Modal (username, auth) */
     .overlay-modal {
         position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,0.6);
         display: flex; items-center; justify-center;
         opacity: 0; pointer-events: none; transition: opacity 0.2s ease-out;
     }
     .overlay-modal.open { opacity: 1; pointer-events: auto; }
-    .overlay-modal > div { transform: scale(0.95); transition: transform 0.2s ease-out; }
+    .overlay-modal > div { 
+        transform: scale(0.95); 
+        transition: transform 0.2s ease-out, height 0.2s ease-out; 
+    }
     .overlay-modal.open > div { transform: scale(1); }
+
+    /* --- NEW AUTH MODAL STYLES --- */
+    .auth-google-btn {
+        display: flex; align-items: center; justify-content: center; gap: 12px;
+        width: 100%; padding: 12px; border-radius: 12px; font-weight: 700;
+        background: white; color: #333; border: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: all 0.2s;
+    }
+    .auth-google-btn:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    html.dark .auth-google-btn {
+        background: #333; color: white; border-color: #555;
+    }
+    .auth-google-btn img { width: 20px; height: 20px; }
+    .auth-divider {
+        display: flex; align-items: center; text-align: center; color: #aaa;
+        font-size: 12px; font-weight: 600; text-transform: uppercase; margin: 24px 0;
+    }
+    .auth-divider::before, .auth-divider::after {
+        content: ''; flex: 1; border-bottom: 1px solid var(--border);
+    }
+    .auth-divider:not(:empty)::before { margin-right: .5em; }
+    .auth-divider:not(:empty)::after { margin-left: .5em; }
+    .auth-input {
+        width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--border);
+        background: var(--bg-app); font-size: 15px; font-weight: 500;
+        outline: none; transition: box-shadow 0.2s;
+    }
+    .auth-input:focus { box-shadow: 0 0 0 2px var(--primary); }
+    .auth-submit-btn {
+        width: 100%; padding: 14px; border-radius: 12px;
+        background: var(--primary); color: white;
+        font-size: 16px; font-weight: 700; transition: background 0.2s;
+    }
+    .auth-submit-btn:hover { background: #1d4ed8; }
+    html.dark .auth-submit-btn:hover { background: #7dd3fc; }
+    .auth-toggle-link {
+        color: var(--primary); font-weight: 600; cursor: pointer;
+    }
+    .auth-toggle-link:hover { text-decoration: underline; }
+    /* --- END AUTH MODAL STYLES --- */
+
 
     /* Shimmer / Skeleton */
     .skeleton { background: #e1e9ee; background-image: linear-gradient(90deg, #e1e9ee 0px, #f4f8fa 40px, #e1e9ee 80px); background-size: 600px; animation: shimmer 1.6s infinite linear; }
@@ -167,7 +211,8 @@
 
     <div class="flex items-center gap-4">
       <button id="dark-mode-toggle" class="w-8 h-8 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center transition"><i class="far fa-moon"></i></button>
-      <button id="sign-in-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-sm font-bold transition shadow-sm">Sign In</button>
+      <!-- Updated Sign In Button -->
+      <button id="sign-in-btn" onclick="openAuthModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-sm font-bold transition shadow-sm">Sign In</button>
       
       <div id="user-actions" class="hidden flex items-center gap-3">
         <button onclick="openCreatePostModal()" class="hidden md:flex w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 items-center justify-center text-xl"><i class="far fa-plus-square"></i></button>
@@ -260,7 +305,6 @@
 
   <!-- 1. NEWS DETAIL PAGE -->
   <div id="news-detail-page" class="page-layer bg-white dark:bg-black">
-    <!-- ... (no changes) ... -->
     <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
       <button onclick="closePage('news-detail-page')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
       <div class="flex gap-4 text-xl text-gray-600 dark:text-gray-300">
@@ -322,14 +366,12 @@
       </div>
 
       <div id="p-reposts-grid" class="profile-grid active grid-cols-3 gap-1"></div>
-      <!-- Updated class for Saved News UI -->
       <div id="p-bookmarks-list" class="profile-grid grid-cols-1 md:grid-cols-2 gap-4"></div> 
     </div>
   </div>
 
   <!-- 3. CREATE POST MODAL -->
   <div id="create-modal" class="modal-layer bg-white dark:bg-black">
-    <!-- ... (no changes) ... -->
       <div class="p-3 border-b dark:border-gray-800 flex justify-between items-center">
         <button onclick="closeCreatePostModal()" class="text-gray-500 hover:text-black dark:hover:text-white text-lg"><i class="fas fa-times"></i></button>
         <h3 class="font-bold">New Post</h3>
@@ -354,7 +396,6 @@
 
   <!-- 4. USERNAME MODAL -->
   <div id="username-modal" class="overlay-modal">
-    <!-- ... (no changes) ... -->
       <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl w-11/12 max-w-sm text-center">
           <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-user-tag"></i></div>
           <h3 class="text-2xl font-bold mb-2 dark:text-white">Choose your @username</h3>
@@ -369,7 +410,6 @@
   
   <!-- 5. COMMENTS PAGE -->
   <div id="comments-page" class="page-layer bg-white dark:bg-black flex flex-col">
-    <!-- ... (no changes) ... -->
     <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
       <button onclick="closePage('comments-page')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
       <h2 class="font-bold text-lg">Comments</h2>
@@ -386,7 +426,6 @@
   
   <!-- 6. HASHTAG FEED PAGE -->
   <div id="hashtag-feed-page" class="page-layer bg-white dark:bg-black">
-    <!-- ... (no changes) ... -->
     <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
       <button onclick="closePage('hashtag-feed-page')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
       <h2 id="hashtag-title" class="font-bold text-lg">#hashtag</h2>
@@ -397,7 +436,7 @@
     </div>
   </div>
 
-  <!-- 7. NEW: FOLLOW LIST MODAL -->
+  <!-- 7. FOLLOW LIST MODAL -->
   <div id="follow-list-modal" class="page-layer bg-white dark:bg-black flex flex-col">
     <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
       <button onclick="closePage('follow-list-modal')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
@@ -405,8 +444,53 @@
       <div class="w-8"></div>
     </div>
     <div id="follow-list-content" class="flex-1 overflow-y-auto p-2">
-        <!-- User list will be rendered here -->
         <div class="text-center py-10 text-gray-400">Loading...</div>
+    </div>
+  </div>
+
+  <!-- 8. NEW: AUTHENTICATION MODAL -->
+  <div id="auth-modal" class="overlay-modal">
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl w-11/12 max-w-sm relative">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white text-xl w-8 h-8 rounded-full flex items-center justify-center">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <!-- Sign In View -->
+      <div id="auth-view-signin">
+        <h3 class="text-3xl font-bold mb-6 text-center dark:text-white">Sign In</h3>
+        <button onclick="handleGoogleSignIn()" class="auth-google-btn">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google icon">
+          <span>Sign In with Google</span>
+        </button>
+        <div class="auth-divider">OR</div>
+        <form id="signin-form" onsubmit="handleEmailSignIn(event)" class="space-y-4">
+          <input id="signin-email" type="email" placeholder="Email" class="auth-input" required>
+          <input id="signin-password" type="password" placeholder="Password" class="auth-input" required>
+          <div id="auth-error-signin" class="text-red-500 text-sm text-center min-h-[20px]"></div>
+          <button type="submit" class="auth-submit-btn">Sign In</button>
+        </form>
+        <p class="text-sm text-center text-gray-500 mt-6">
+          Don't have an account? 
+          <span onclick="toggleAuthView('signup')" class="auth-toggle-link">Sign Up</span>
+        </p>
+      </div>
+
+      <!-- Sign Up View -->
+      <div id="auth-view-signup" class="hidden">
+        <h3 class="text-3xl font-bold mb-6 text-center dark:text-white">Create Account</h3>
+        <form id="signup-form" onsubmit="handleEmailSignUp(event)" class="space-y-4">
+          <input id="signup-name" type="text" placeholder="Full Name" class="auth-input" required>
+          <input id="signup-email" type="email" placeholder="Email" class="auth-input" required>
+          <input id="signup-password" type="password" placeholder="Password (6+ characters)" class="auth-input" minlength="6" required>
+          <div id="auth-error-signup" class="text-red-500 text-sm text-center min-h-[20px]"></div>
+          <button type="submit" class="auth-submit-btn">Create Account</button>
+        </form>
+        <p class="text-sm text-center text-gray-500 mt-6">
+          Already have an account? 
+          <span onclick="toggleAuthView('signin')" class="auth-toggle-link">Sign In</span>
+        </p>
+      </div>
+
     </div>
   </div>
 
@@ -419,8 +503,37 @@
   <!-- LOGIC -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-    import { getFirestore, doc, setDoc, updateDoc, getDoc, onSnapshot, arrayUnion, arrayRemove, collection, addDoc, query, limit, where, getDocs, increment, serverTimestamp, orderBy, writeBatch, documentId } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    import { 
+      getAuth, 
+      GoogleAuthProvider, 
+      signInWithPopup, 
+      signOut, 
+      onAuthStateChanged,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      updateProfile
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      setDoc, 
+      updateDoc, 
+      getDoc, 
+      onSnapshot, 
+      arrayUnion, 
+      arrayRemove, 
+      collection, 
+      addDoc, 
+      query, 
+      limit, 
+      where, 
+      getDocs, 
+      increment, 
+      serverTimestamp, 
+      orderBy, 
+      writeBatch, 
+      documentId 
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
     // --- Firebase Config ---
     const firebaseConfig = { 
@@ -457,7 +570,114 @@
     let communityFeedUnsub = null;
     let currentProfileUid = null; // UID of the profile page being viewed
 
-    // --- AUTH (Updated to initialize follow arrays) ---
+    // --- NEW AUTH MODAL LOGIC ---
+    const authModal = document.getElementById('auth-modal');
+    window.openAuthModal = () => {
+        authModal.classList.add('open');
+        toggleAuthView('signin'); // Default to signin view
+    };
+    window.closeAuthModal = () => authModal.classList.remove('open');
+    window.toggleAuthView = (view) => {
+        document.getElementById('auth-error-signin').innerText = '';
+        document.getElementById('auth-error-signup').innerText = '';
+        if (view === 'signup') {
+            document.getElementById('auth-view-signin').classList.add('hidden');
+            document.getElementById('auth-view-signup').classList.remove('hidden');
+        } else {
+            document.getElementById('auth-view-signin').classList.remove('hidden');
+            document.getElementById('auth-view-signup').classList.add('hidden');
+        }
+    };
+    
+    window.handleGoogleSignIn = async () => {
+        try {
+            await signInWithPopup(auth, provider);
+            closeAuthModal();
+            showToast("Signed in with Google!");
+        } catch (error) {
+            console.error(error);
+            document.getElementById('auth-error-signin').innerText = getFriendlyAuthError(error.code);
+        }
+    };
+
+    window.handleEmailSignUp = async (event) => {
+        event.preventDefault();
+        const name = document.getElementById('signup-name').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        const errorEl = document.getElementById('auth-error-signup');
+        
+        if (!name || !email || !password) {
+            errorEl.innerText = "Please fill in all fields."; return;
+        }
+        
+        try {
+            const { user } = await createUserWithEmailAndPassword(auth, email, password);
+            
+            // Update auth profile
+            await updateProfile(user, { displayName: name });
+            
+            // Create Firestore document
+            const userRef = doc(db, 'users', user.uid);
+            const defaultAvatar = `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=2563eb&textColor=ffffff&fontSize=40`;
+            const defaultUsername = email.split('@')[0].replace(/[^a-z0-9_]/g, '');
+
+            await setDoc(userRef, { 
+                displayName: name,
+                photoURL: defaultAvatar,
+                email: user.email,
+                username: defaultUsername,
+                followersCount: 0,
+                followingCount: 0,
+                followers: [],
+                following: [],
+                bookmarks: []
+            });
+            
+            closeAuthModal();
+            showToast("Welcome to NewsTally!");
+
+        } catch (error) {
+            console.error(error);
+            errorEl.innerText = getFriendlyAuthError(error.code);
+        }
+    };
+
+    window.handleEmailSignIn = async (event) => {
+        event.preventDefault();
+        const email = document.getElementById('signin-email').value;
+        const password = document.getElementById('signin-password').value;
+        const errorEl = document.getElementById('auth-error-signin');
+        
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            closeAuthModal();
+            showToast("Welcome back!");
+        } catch (error) {
+            console.error(error);
+            errorEl.innerText = getFriendlyAuthError(error.code);
+        }
+    };
+    
+    function getFriendlyAuthError(code) {
+        switch (code) {
+            case 'auth/invalid-email':
+                return "Please enter a valid email address.";
+            case 'auth/user-not-found':
+            case 'auth/wrong-password':
+                return "Incorrect email or password. Please try again.";
+            case 'auth/email-already-in-use':
+                return "This email is already registered. Please sign in.";
+            case 'auth/weak-password':
+                return "Password must be at least 6 characters long.";
+            case 'auth/network-request-failed':
+                return "Network error. Please check your connection.";
+            default:
+                return "An unexpected error occurred. Please try again.";
+        }
+    }
+
+    // --- AUTH (Updated to handle new/existing users from all providers) ---
     onAuthStateChanged(auth, async (user) => {
       currentUser = user;
       if(user) {
@@ -465,24 +685,40 @@
         document.getElementById('user-actions').classList.remove('hidden');
         document.getElementById('user-actions').classList.add('flex');
         
-        const av = user.photoURL || 'https://via.placeholder.com/40';
-        document.getElementById('header-avatar').src = av;
-        document.getElementById('btm-avatar').src = av;
-        document.getElementById('create-avatar').src = av;
-
         const userRef = doc(db, 'users', user.uid);
-        // Initialize fields if they don't exist
-        await setDoc(userRef, { 
-            displayName: user.displayName, 
-            photoURL: user.photoURL, 
-            email: user.email,
-            followersCount: increment(0),
-            followingCount: increment(0),
-            followers: arrayUnion(), // Ensures 'followers' field exists as an array
-            following: arrayUnion()  // Ensures 'following' field exists as an array
-        }, { merge: true });
+        const userSnap = await getDoc(userRef);
 
-        // Listen to the full user document
+        if (!userSnap.exists()) {
+            // New user from Google Sign-In (Email sign-up creates its own doc)
+            const name = user.displayName || 'Anonymous User';
+            const defaultAvatar = user.photoURL || `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(name)}&backgroundColor=2563eb&textColor=ffffff&fontSize=40`;
+            const defaultUsername = user.email.split('@')[0].replace(/[^a-z0-9_]/g, '');
+
+            await setDoc(userRef, { 
+                displayName: name,
+                photoURL: defaultAvatar,
+                email: user.email,
+                username: defaultUsername,
+                followersCount: 0,
+                followingCount: 0,
+                followers: [],
+                following: [],
+                bookmarks: []
+            });
+        } else {
+            // Existing user (Email or Google)
+            // If from Google, merge provider data in case photoURL/displayName updated
+            if (user.providerData.some(p => p.providerId === 'google.com')) {
+                await setDoc(userRef, {
+                    displayName: user.displayName,
+                    photoURL: user.photoURL,
+                    email: user.email
+                }, { merge: true });
+            }
+            // For email users, no merge is needed, their data is already in Firestore.
+        }
+
+        // Now, set up the snapshot listener (this is the existing logic)
         onSnapshot(userRef, (s) => {
             if(s.exists()) {
                 currentUserDoc = s.data(); // Store the whole user doc
@@ -490,8 +726,13 @@
                 userBookmarks = currentUserDoc.bookmarks || [];
                 
                 // Update UI elements that depend on *my* doc
+                const av = currentUserDoc.photoURL || 'https://via.placeholder.com/40';
+                document.getElementById('header-avatar').src = av;
+                document.getElementById('btm-avatar').src = av;
+                document.getElementById('create-avatar').src = av;
+                
                 if (currentProfileUid === currentUser.uid) {
-                    document.getElementById('p-avatar').src = currentUserDoc.photoURL;
+                    document.getElementById('p-avatar').src = av;
                     document.getElementById('p-name').innerText = currentUserDoc.displayName;
                     document.getElementById('p-username').innerText = '@' + (currentUsername || user.email.split('@')[0]);
                     document.getElementById('p-followers-count').innerText = currentUserDoc.followersCount || 0;
@@ -508,6 +749,7 @@
                 }
             }
         });
+
       } else {
         currentUser = null; currentUserDoc = null; currentUsername = null; userBookmarks = [];
         document.getElementById('sign-in-btn').classList.remove('hidden');
@@ -524,7 +766,7 @@
             closePage('profile-page');
         });
     };
-    document.getElementById('sign-in-btn').onclick = () => signInWithPopup(auth, provider);
+    // document.getElementById('sign-in-btn').onclick = () => signInWithPopup(auth, provider); // Replaced by openAuthModal()
 
     // --- USERNAME MODAL ---
     window.editUsername = () => {
@@ -532,7 +774,6 @@
         document.getElementById('username-modal').classList.add('open');
     };
     document.getElementById('save-username-btn').onclick = async () => {
-        // ... (no changes) ...
         const input = document.getElementById('new-username-input');
         const newName = input.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
         if(newName.length < 3) { showToast("Username must be 3+ characters"); return; }
@@ -550,7 +791,6 @@
     };
 
     // --- NEWS LOGIC ---
-    // ... (no changes) ...
     const SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
     const API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
     async function fetchNews() {
@@ -645,7 +885,6 @@
 
     // --- NEWS DETAIL & BOOKMARKS ---
     window.openNewsDetail = (encTitle) => {
-        // ... (no changes) ...
         const n = newsData.find(i => i.headline === decodeURIComponent(encTitle));
         if(!n) return;
         currentNewsItem = n;
@@ -664,9 +903,8 @@
         document.getElementById('news-detail-page').classList.add('open');
     };
     window.repostCurrentNews = async (itemToRepost = null) => {
-        // ... (no changes) ...
         const item = itemToRepost || currentNewsItem;
-        if(!currentUser) { signInWithPopup(auth, provider); return; }
+        if(!currentUser) { openAuthModal(); return; }
         if(!item) return;
         if(!currentUsername) {
             pendingRepostItem = item;
@@ -683,7 +921,7 @@
             reposters: arrayUnion(currentUser.uid),
             repostCount: increment(1),
             timestamp: serverTimestamp(),
-            latestReposter: { username: currentUsername, uid: currentUser.uid, avatar: currentUser.photoURL },
+            latestReposter: { username: currentUsername, uid: currentUser.uid, avatar: currentUserDoc.photoURL },
             isUserPost: false,
             hashtags: [], commentsCount: 0
         };
@@ -693,8 +931,7 @@
         switchView('community');
     };
     window.bookmarkCurrentNews = async () => {
-        // ... (no changes, already saves date) ...
-        if(!currentUser) { signInWithPopup(auth, provider); return; }
+        if(!currentUser) { openAuthModal(); return; }
         if(!currentNewsItem) return;
         const userRef = doc(db, 'users', currentUser.uid);
         const bookmark = { 
@@ -718,14 +955,12 @@
 
     // --- COMMUNITY FEED ---
     window.switchCommunityFeed = (btn, feedType) => {
-        // ... (no changes) ...
         currentCommunityFeed = feedType;
         document.querySelectorAll('.community-tab').forEach(t => t.classList.remove('active'));
         btn.classList.add('active');
         loadCommunityFeed();
     };
     window.loadCommunityFeed = () => {
-        // ... (no changes) ...
         const feed = document.getElementById('community-feed');
         if(communityFeedUnsub) communityFeedUnsub(); 
         feed.innerHTML = `<div class="insta-card p-4 space-y-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton"></div><div class="h-4 w-32 skeleton"></div></div><div class="aspect-square w-full skeleton rounded"></div></div>`;
@@ -805,8 +1040,7 @@
          });
     };
     window.toggleLike = async (id, fromDblClick = false) => {
-        // ... (no changes) ...
-        if(!currentUser) { signInWithPopup(auth, provider); return; }
+        if(!currentUser) { openAuthModal(); return; }
         const ref = doc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), id);
         const snap = await getDoc(ref); if(!snap.exists()) return;
         const btn = document.getElementById(`like-btn-${id}`);
@@ -828,7 +1062,6 @@
     // --- CREATE POST ---
     const shareBtn = document.getElementById('share-btn');
     shareBtn.onclick = async () => {
-        // ... (no changes) ...
         if(!selectedFile) return;
         shareBtn.disabled = true; shareBtn.innerText = "Posting...";
         document.getElementById('progress-bar').classList.remove('hidden');
@@ -843,7 +1076,7 @@
                 headline: caption, hashtags: hashtags, image: base64, source: 'Community',
                 reposters: [currentUser.uid], repostCount: 1, likes: [], commentsCount: 0,
                 timestamp: serverTimestamp(),
-                latestReposter: { username: currentUsername, uid: currentUser.uid, avatar: currentUser.photoURL },
+                latestReposter: { username: currentUsername, uid: currentUser.uid, avatar: currentUserDoc.photoURL },
                 isUserPost: true 
             });
             document.getElementById('progress-bar').style.width = "100%";
@@ -858,7 +1091,7 @@
     const previewImg = document.getElementById('preview-img');
     let selectedFile = null;
     window.openCreatePostModal = () => {
-        if(!currentUser) { signInWithPopup(auth, provider); return; }
+        if(!currentUser) { openAuthModal(); return; }
         if(!currentUsername) { document.getElementById('username-modal').classList.add('open'); return; }
         createModal.classList.add('open'); 
     };
@@ -874,7 +1107,6 @@
         }
     };
     function compressImage(file) {
-        // ... (no changes) ...
         return new Promise((resolve) => {
             const reader = new FileReader(); reader.readAsDataURL(file);
             reader.onload = (ev) => {
@@ -891,7 +1123,6 @@
         });
     }
     function resetCreateForm() {
-        // ... (no changes) ...
         selectedFile = null;
         previewImg.src = ""; previewImg.classList.add('hidden');
         document.getElementById('upload-ui').classList.remove('hidden');
@@ -903,7 +1134,7 @@
 
     // --- PROFILE ---
     window.openProfile = () => {
-        if(!currentUser) { signInWithPopup(auth, provider); return; }
+        if(!currentUser) { openAuthModal(); return; }
         renderProfilePage(currentUser.uid); // Open *my* profile
     };
     window.openPublicProfile = (uid) => {
@@ -961,13 +1192,12 @@
             } else {
                 followBtn.classList.remove('hidden');
                 followBtn.innerText = 'Follow';
-                followBtn.onclick = () => signInWithPopup(auth, provider);
+                followBtn.onclick = () => openAuthModal();
             }
             switchProfileTab('reposts'); 
         }
     }
     window.switchProfileTab = (tab) => {
-        // ... (Updated for Saved News UI) ...
         document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
         document.getElementById(`tab-btn-${tab}`).classList.add('active');
         
@@ -990,7 +1220,6 @@
                 renderProfilePosts('all'); 
             });
         } else if (tab === 'bookmarks') {
-            // --- NEW UI FOR SAVED NEWS ---
             bookmarksList.classList.add('active');
             repostFilters.classList.add('hidden');
             bookmarksList.innerHTML = `<div class="col-span-1 md:col-span-2 py-10 text-center"><div class="inline-block w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>`;
@@ -998,7 +1227,6 @@
             if(userBookmarks.length === 0) {
                 bookmarksList.innerHTML = `<div class="col-span-1 md:col-span-2 text-center py-10 text-gray-400">Aapne koi post save nahi ki hai.</div>`; return;
             }
-            // Render new card grid
             bookmarksList.innerHTML = userBookmarks.map(b => `
                 <div class="group cursor-pointer bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 overflow-hidden" 
                      onclick="openNewsDetail('${encodeURIComponent(b.headline)}'); closePage('profile-page');">
@@ -1018,7 +1246,6 @@
         btn.onclick = () => renderProfilePosts(btn.dataset.filter);
     });
     window.renderProfilePosts = (filterType) => {
-        // ... (no changes) ...
         const grid = document.getElementById('p-reposts-grid');
         if (!window.currentUserPosts) {
             grid.innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400">Loading...</div>`; return;
@@ -1046,7 +1273,6 @@
     const searchInput = document.getElementById('user-search-input');
     const searchResults = document.getElementById('search-results');
     searchInput.addEventListener('input', debounce(async (e) => {
-        // ... (no changes) ...
         const term = e.target.value.trim().toLowerCase();
         if(term.length < 2) { searchResults.classList.add('hidden'); return; }
         const q = query(collection(db, 'users'), where('username', '>=', term), where('username', '<=', term + '\uf8ff'), limit(5));
@@ -1072,9 +1298,9 @@
         }
     });
 
-    // --- NEW: FOLLOW LOGIC (Updated) ---
+    // --- FOLLOW LOGIC (Updated) ---
     window.toggleFollow = async (uidToFollow) => {
-        if(!currentUser) { signInWithPopup(auth, provider); return; }
+        if(!currentUser) { openAuthModal(); return; }
         if (currentUser.uid === uidToFollow) return; 
 
         const myRef = doc(db, 'users', currentUser.uid);
@@ -1113,7 +1339,7 @@
         });
     };
     
-    // --- NEW: FOLLOW LIST MODAL LOGIC ---
+    // --- FOLLOW LIST MODAL LOGIC ---
     window.openFollowList = async (listType) => {
         if (listType === 'posts') return; // Posts count is not clickable
         if (!currentProfileUid) return;
@@ -1161,7 +1387,7 @@
         } else if (currentUser && currentUser.uid === uid) {
             followBtn = `<span class="text-xs font-medium text-gray-400">This is you</span>`;
         } else if (!currentUser) {
-            followBtn = `<button onclick="signInWithPopup(auth, provider)" 
+            followBtn = `<button onclick="openAuthModal()" 
                             class="text-xs font-bold py-1 px-3 rounded-full bg-blue-500 text-white">
                             Follow
                          </button>`;
@@ -1183,7 +1409,6 @@
 
     // --- COMMENTS LOGIC ---
     window.openComments = (postId) => {
-        // ... (no changes) ...
         if (!postId) return;
         currentPostIdForComments = postId;
         document.getElementById('comments-page').classList.add('open');
@@ -1215,9 +1440,8 @@
         });
     };
     document.getElementById('comment-form').onsubmit = async (e) => {
-        // ... (no changes) ...
         e.preventDefault();
-        if(!currentUser) { signInWithPopup(auth, provider); return; }
+        if(!currentUser) { openAuthModal(); return; }
         const input = document.getElementById('comment-input');
         const text = input.value.trim();
         if (!text || !currentPostIdForComments) return;
@@ -1228,7 +1452,7 @@
                 text: text,
                 userId: currentUser.uid,
                 username: currentUsername,
-                userAvatar: currentUser.photoURL,
+                userAvatar: currentUserDoc.photoURL,
                 timestamp: serverTimestamp()
             });
             const postRef = doc(db, 'artifacts', APP_ID, 'public', 'data', 'reposts', currentPostIdForComments);
@@ -1240,7 +1464,6 @@
     
     // --- HASHTAG LOGIC ---
     window.renderHashtags = (text) => {
-        // ... (no changes) ...
         if (!text) return '';
         const safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
         return safeText.replace(/#(\w+)/g, (match, tag) => {
@@ -1249,7 +1472,6 @@
         });
     };
     window.openHashtagFeed = (tag) => {
-        // ... (no changes) ...
         if (!tag) return;
         document.getElementById('hashtag-feed-page').classList.add('open');
         const grid = document.getElementById('hashtag-grid');
@@ -1259,7 +1481,7 @@
         const q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), where('hashtags', 'array-contains', tag.toLowerCase()), orderBy('timestamp', 'desc'));
         getDocs(q).then(snap => {
             if (snap.empty) {
-                grid.innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400">No posts found for #${tag}</div>`;
+                grid.innerHTML = `<div classcol-span-3 text-center py-10 text-gray-400">No posts found for #${tag}</div>`;
                 return;
             }
             grid.innerHTML = snap.docs.map(d => {
@@ -1273,7 +1495,6 @@
 
     // --- UTILS ---
     window.switchView = (v) => {
-        // ... (no changes) ...
         document.getElementById('view-home').classList.add('hidden');
         document.getElementById('view-community').classList.add('hidden');
         document.getElementById(`view-${v}`).classList.remove('hidden');
@@ -1310,5 +1531,4 @@
   </script>
 </body>
 </html>
-
 
