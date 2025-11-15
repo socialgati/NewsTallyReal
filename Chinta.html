@@ -31,6 +31,8 @@
     }
     @media (max-width: 768px) {
       .insta-card { border-left: none; border-right: none; border-radius: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+      /* NEW: Make post detail card borderless on mobile */
+      #post-detail-page .insta-card { border: none; border-radius: 0; box-shadow: none; }
     }
 
     /* Smooth Image Loading */
@@ -191,7 +193,7 @@
         border-bottom: 2px solid var(--text-main);
     }
     
-    /* NEW: Notification Badge */
+    /* Notification Badge */
     .notify-badge {
         position: absolute;
         top: -3px; right: -4px;
@@ -204,7 +206,7 @@
         top: -1px; right: 18px;
     }
     
-    /* NEW: Notification Page */
+    /* Notification Page */
     #notifications-list .notif-post-img {
         width: 44px; height: 44px;
         object-cover: cover;
@@ -234,7 +236,6 @@
       
       <div id="user-actions" class="hidden flex items-center gap-3">
         <button onclick="openCreatePostModal()" class="hidden md:flex w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 items-center justify-center text-xl"><i class="far fa-plus-square"></i></button>
-        <!-- NEW: Notifications Button -->
         <button id="nav-notify-btn" onclick="openNotificationsPage()" class="hidden md:flex w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 items-center justify-center text-xl relative">
           <i class="far fa-heart"></i>
           <span id="notify-badge-header" class="notify-badge hidden"></span>
@@ -251,7 +252,6 @@
     
     <!-- VIEW: HOME (News) -->
     <div id="view-home" class="animate-fade">
-      <!-- ... (no changes in this view) ... -->
       <div class="px-4 md:px-0 mb-8">
         <div class="carousel-wrapper shadow-lg">
           <div id="carousel-track" class="w-full h-full relative">
@@ -280,7 +280,6 @@
 
     <!-- VIEW: COMMUNITY (Instagram Style) -->
     <div id="view-community" class="hidden max-w-lg mx-auto px-0 md:px-4">
-      <!-- ... (no changes in this view) ... -->
       <div class="flex items-center justify-between px-4 py-4 mb-2">
         <h2 class="text-xl font-bold tracking-tight">Community Feed</h2>
         <button onclick="openCreatePostModal()" class="text-blue-500 font-semibold text-sm md:hidden">Create</button>
@@ -313,7 +312,6 @@
     <button onclick="switchView('home')" class="nav-icon active text-blue-600 flex flex-col items-center gap-1"><i class="fas fa-home text-xl"></i></button>
     <button onclick="switchView('community')" class="nav-icon text-gray-400 hover:text-purple-500 flex flex-col items-center gap-1"><i class="fas fa-compass text-xl"></i></button>
     
-    <!-- NEW: Notifications Button (Mobile) -->
     <button onclick="openNotificationsPage()" class="nav-icon text-gray-400 hover:text-gray-900 dark:hover:text-white flex flex-col items-center gap-1 relative">
       <i class="far fa-heart text-xl"></i>
       <span id="notify-badge-mobile" class="notify-badge hidden"></span>
@@ -328,7 +326,6 @@
 
   <!-- 1. NEWS DETAIL PAGE -->
   <div id="news-detail-page" class="page-layer bg-white dark:bg-black">
-    <!-- ... (no changes) ... -->
     <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
       <button onclick="closePage('news-detail-page')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
       <div class="flex gap-4 text-xl text-gray-600 dark:text-gray-300">
@@ -349,7 +346,6 @@
 
   <!-- 2. MY PROFILE PAGE -->
   <div id="profile-page" class="page-layer bg-white dark:bg-black">
-    <!-- ... (no changes) ... -->
     <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
       <h2 id="p-title" class="font-bold text-lg">Profile</h2>
       <button onclick="closePage('profile-page')" class="text-2xl"><i class="fas fa-times"></i></button>
@@ -392,7 +388,6 @@
 
   <!-- 3. CREATE POST MODAL -->
   <div id="create-modal" class="modal-layer bg-white dark:bg-black">
-    <!-- ... (no changes) ... -->
       <div class="p-3 border-b dark:border-gray-800 flex justify-between items-center">
         <button onclick="closeCreatePostModal()" class="text-gray-500 hover:text-black dark:hover:text-white text-lg"><i class="fas fa-times"></i></button>
         <h3 class="font-bold">New Post</h3>
@@ -417,7 +412,6 @@
 
   <!-- 4. USERNAME MODAL -->
   <div id="username-modal" class="overlay-modal">
-    <!-- ... (no changes) ... -->
       <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl w-11/12 max-w-sm text-center">
           <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-user-tag"></i></div>
           <h3 class="text-2xl font-bold mb-2 dark:text-white">Choose your @username</h3>
@@ -432,7 +426,6 @@
   
   <!-- 5. COMMENTS PAGE -->
   <div id="comments-page" class="page-layer bg-white dark:bg-black flex flex-col">
-    <!-- ... (no changes) ... -->
     <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
       <button onclick="closePage('comments-page')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
       <h2 class="font-bold text-lg">Comments</h2>
@@ -449,7 +442,6 @@
   
   <!-- 6. HASHTAG FEED PAGE -->
   <div id="hashtag-feed-page" class="page-layer bg-white dark:bg-black">
-    <!-- ... (no changes) ... -->
     <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
       <button onclick="closePage('hashtag-feed-page')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
       <h2 id="hashtag-title" class="font-bold text-lg">#hashtag</h2>
@@ -462,7 +454,6 @@
 
   <!-- 7. FOLLOW LIST MODAL -->
   <div id="follow-list-modal" class="page-layer bg-white dark:bg-black flex flex-col">
-    <!-- ... (no changes) ... -->
     <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
       <button onclick="closePage('follow-list-modal')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
       <h2 id="follow-list-title" class="font-bold text-lg">...</h2>
@@ -475,7 +466,6 @@
 
   <!-- 8. AUTHENTICATION MODAL -->
   <div id="auth-modal" class="overlay-modal">
-    <!-- ... (no changes) ... -->
     <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl w-11/12 max-w-sm relative">
       <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white text-xl w-8 h-8 rounded-full flex items-center justify-center">
         <i class="fas fa-times"></i>
@@ -515,7 +505,7 @@
     </div>
   </div>
   
-  <!-- 9. NEW: NOTIFICATIONS PAGE -->
+  <!-- 9. NOTIFICATIONS PAGE -->
   <div id="notifications-page" class="page-layer bg-white dark:bg-black flex flex-col">
     <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
       <button onclick="closePage('notifications-page')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
@@ -524,6 +514,23 @@
     </div>
     <div id="notifications-list" class="flex-1 overflow-y-auto">
         <div class="text-center py-10 text-gray-400">Loading...</div>
+    </div>
+  </div>
+
+  <!-- 10. NEW: POST DETAIL PAGE (Profile grid post viewer) -->
+  <div id="post-detail-page" class="page-layer bg-white dark:bg-black flex flex-col">
+    <div class="sticky top-0 flex items-center justify-between p-4 bg-white/90 dark:bg-black/90 backdrop-blur z-20 border-b dark:border-gray-800">
+      <button onclick="closePage('post-detail-page')" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"><i class="fas fa-arrow-left"></i></button>
+      <h2 class="font-bold text-lg">Post</h2>
+      <!-- Action button (Delete/Remove Repost) -->
+      <button id="post-detail-action-btn" class="hidden text-sm font-bold text-red-500 px-2 py-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/50">Delete</button>
+    </div>
+    <!-- Yahan poora post card render hoga -->
+    <div id="post-detail-content" class="max-w-lg mx-auto w-full">
+        <div class="insta-card p-4 space-y-4">
+           <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton"></div><div class="h-4 w-32 skeleton"></div></div>
+           <div class="aspect-square w-full skeleton rounded"></div>
+        </div>
     </div>
   </div>
 
@@ -565,7 +572,8 @@
       serverTimestamp, 
       orderBy, 
       writeBatch, 
-      documentId 
+      documentId,
+      deleteDoc // NEW: Import deleteDoc
     } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
     // --- Firebase Config ---
@@ -768,7 +776,7 @@
             }
         });
 
-        // --- NEW: Listen for unread notifications ---
+        // Listen for unread notifications
         if (unreadNotifsUnsub) unreadNotifsUnsub(); // Stop previous listener
         const notifQuery = query(collection(db, 'users', user.uid, 'notifications'), where('read', '==', false), limit(1));
         unreadNotifsUnsub = onSnapshot(notifQuery, (snap) => {
@@ -790,7 +798,7 @@
         document.getElementById('user-actions').classList.remove('flex');
         document.getElementById('btm-avatar').src = 'https://via.placeholder.com/30';
         
-        // --- NEW: Clear notification listener on logout ---
+        // Clear notification listener on logout
         if (unreadNotifsUnsub) unreadNotifsUnsub();
         document.getElementById('notify-badge-header').classList.add('hidden');
         document.getElementById('notify-badge-mobile').classList.add('hidden');
@@ -812,7 +820,6 @@
         document.getElementById('username-modal').classList.add('open');
     };
     document.getElementById('save-username-btn').onclick = async () => {
-        // ... (no changes) ...
         const input = document.getElementById('new-username-input');
         const newName = input.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
         if(newName.length < 3) { showToast("Username must be 3+ characters"); return; }
@@ -830,7 +837,6 @@
     };
 
     // --- NEWS LOGIC ---
-    // ... (no changes) ...
     const SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
     const API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
     async function fetchNews() {
@@ -925,7 +931,6 @@
 
     // --- NEWS DETAIL & BOOKMARKS ---
     window.openNewsDetail = (encTitle) => {
-        // ... (no changes) ...
         const n = newsData.find(i => i.headline === decodeURIComponent(encTitle));
         if(!n) return;
         currentNewsItem = n;
@@ -944,7 +949,6 @@
         document.getElementById('news-detail-page').classList.add('open');
     };
     window.repostCurrentNews = async (itemToRepost = null) => {
-        // ... (no changes) ...
         const item = itemToRepost || currentNewsItem;
         if(!currentUser) { openAuthModal(); return; }
         if(!item) return;
@@ -973,7 +977,6 @@
         switchView('community');
     };
     window.bookmarkCurrentNews = async () => {
-        // ... (no changes) ...
         if(!currentUser) { openAuthModal(); return; }
         if(!currentNewsItem) return;
         const userRef = doc(db, 'users', currentUser.uid);
@@ -996,94 +999,124 @@
         }
     };
 
-    // --- COMMUNITY FEED ---
+    // --- COMMUNITY FEED (UPDATED - NO INDEX REQUIRED) ---
     window.switchCommunityFeed = (btn, feedType) => {
-        // ... (no changes) ...
         currentCommunityFeed = feedType;
         document.querySelectorAll('.community-tab').forEach(t => t.classList.remove('active'));
         btn.classList.add('active');
         loadCommunityFeed();
     };
+    
     window.loadCommunityFeed = () => {
-        // ... (no changes) ...
         const feed = document.getElementById('community-feed');
         if(communityFeedUnsub) communityFeedUnsub(); 
         feed.innerHTML = `<div class="insta-card p-4 space-y-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton"></div><div class="h-4 w-32 skeleton"></div></div><div class="aspect-square w-full skeleton rounded"></div></div>`;
-        let q;
-        if(currentCommunityFeed === 'following') {
-            if(!currentUserDoc || !currentUserDoc.following || currentUserDoc.following.length === 0) {
-                feed.innerHTML = `<div class='text-center py-10 text-gray-400'>Aap abhi kisi ko follow nahi kar rahe hain. Global feed se users ko follow karein!</div>`;
-                return;
-            }
-            const followingList = currentUserDoc.following.slice(0, 30);
-            q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), where('latestReposter.uid', 'in', followingList), orderBy('timestamp', 'desc'), limit(50));
-        } else {
-            // --- CONFIRMED: Feed is sorted by timestamp descending ---
-            q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), orderBy('timestamp', 'desc'), limit(50));
-        }
+        
+        const basePostsCollection = collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts');
+        
+        // --- NEW NO-INDEX QUERY ---
+        // Hum bas sabse naye posts fetch kar rahe hain.
+        // Hum 200 fetch karte hain taaki filter karne ke baad bhi posts bachein.
+        const q = query(basePostsCollection, 
+            orderBy('timestamp', 'desc'), 
+            limit(200) // 200 posts fetch karein
+        );
+        
         communityFeedUnsub = onSnapshot(q, (snap) => {
-             if(snap.empty) {
+             // 1. Saare posts ko data me convert karein
+             const allPosts = snap.docs.map(d => ({id: d.id, ...d.data()}));
+             
+             // 2. Client-side filtering: Purana ya bekar data (bina timestamp/user) hatao
+             let validPosts = allPosts.filter(p => p.timestamp && p.latestReposter?.uid);
+             
+             let finalDocs = [];
+             
+             if(currentCommunityFeed === 'following') {
+                if(!currentUserDoc || !currentUserDoc.following || currentUserDoc.following.length === 0) {
+                    feed.innerHTML = `<div class='text-center py-10 text-gray-400'>Aap abhi kisi ko follow nahi kar rahe hain. Global feed se users ko follow karein!</div>`;
+                    return;
+                }
+                const followingList = currentUserDoc.following;
+                
+                // 3. Client-side filtering: Sirf "following" users ke posts rakho
+                finalDocs = validPosts.filter(p => followingList.includes(p.latestReposter.uid));
+                
+             } else {
+                // "Global" feed ke liye, sabhi valid posts dikhao
+                finalDocs = validPosts;
+             }
+             
+             // 4. Render karo
+             if(finalDocs.length === 0) {
                  feed.innerHTML = `<div class='text-center py-10 text-gray-400'>No posts found.</div>`;
                  return;
              }
-             const docs = snap.docs.map(d => ({id: d.id, ...d.data()}));
-             feed.innerHTML = docs.map(p => {
-                 const isLiked = currentUser && p.likes && p.likes.includes(currentUser.uid);
-                 const username = p.latestReposter?.username || p.source || 'User';
-                 const avatar = p.latestReposter?.avatar || 'https://via.placeholder.com/40';
-                 const uid = p.latestReposter?.uid || null;
-                 const isUserPost = p.isUserPost || false;
-                 const caption = p.headline || '';
-                 const subHeader = isUserPost ? '' : `<span class="text-xs text-gray-400 ml-2">Reposted News</span>`;
-                 let followBtn = '';
-                 if (currentUser && uid && uid !== currentUser.uid) {
-                     const isFollowing = currentUserDoc?.following?.includes(uid);
-                     followBtn = `<button id="follow-btn-${p.id}" onclick="event.stopPropagation(); toggleFollow('${uid}')" 
-                                    class="text-xs font-bold transition-all duration-200 ${isFollowing ? 'text-gray-500' : 'text-blue-500'}">
-                                    ${isFollowing ? 'Following' : 'Follow'}
-                                 </button>`;
-                 }
-                 return `
-                    <div class="insta-card animate-fade">
-                        <div class="flex items-center justify-between p-3">
-                            <div class="flex items-center gap-3 cursor-pointer" onclick="openPublicProfile('${uid}')">
-                                <img src="${avatar}" class="w-9 h-9 rounded-full border object-cover p-0.5">
-                                <div><div class="font-bold text-sm flex items-center">${username} ${subHeader}</div></div>
-                            </div>
-                            ${followBtn}
-                        </div>
-                        <div class="w-full bg-gray-100 dark:bg-black relative" ondblclick="toggleLike('${p.id}', true)">
-                            <img src="${p.image}" class="w-full object-contain max-h-[500px] img-fade-in" onload="this.classList.add('img-loaded')">
-                            <div id="heart-${p.id}" class="absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
-                                <i class="fas fa-heart text-white text-6xl drop-shadow-lg heart-anim"></i>
-                            </div>
-                        </div>
-                        <div class="p-3">
-                            <div class="flex items-center gap-4 text-2xl mb-2">
-                                <button id="like-btn-${p.id}" onclick="toggleLike('${p.id}')" class="transition-transform active:scale-125 ${isLiked ? 'text-red-500' : 'text-gray-800 dark:text-white hover:text-gray-600'}">
-                                    <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
-                                </button>
-                                <button onclick="openComments('${p.id}')" class="text-gray-800 dark:text-white hover:text-gray-600"><i class="far fa-comment"></i></button>
-                                <button class="text-gray-800 dark:text-white hover:text-gray-600 ml-auto"><i class="far fa-bookmark"></i></button>
-                            </div>
-                            <div class="font-bold text-sm mb-1">${p.likes ? p.likes.length : 0} likes</div>
-                            <div class="text-sm text-gray-800 dark:text-gray-200">
-                                <span class="font-bold mr-2 cursor-pointer" onclick="openPublicProfile('${uid}')">${username}</span>
-                                <span id="caption-${p.id}"></span>
-                            </div>
-                            <div class="text-sm text-gray-400 mt-1 cursor-pointer" onclick="openComments('${p.id}')">
-                                View all ${p.commentsCount || 0} comments
-                            </div>
-                        </div>
-                    </div>
-                 `;
-             }).join('');
-             docs.forEach(p => {
+             
+             feed.innerHTML = finalDocs.map(p => renderPostCardHTML(p)).join('');
+             finalDocs.forEach(p => {
                  const captionEl = document.getElementById(`caption-${p.id}`);
                  if (captionEl) captionEl.innerHTML = renderHashtags(p.headline);
              });
+         }, (error) => {
+            console.error("Community Feed Error: ", error);
+            feed.innerHTML = `<div class='text-center py-10 text-gray-400'>Error loading feed.</div>`;
          });
     };
+
+    // --- NEW: Reusable function to render post card ---
+    function renderPostCardHTML(p) {
+        const isLiked = currentUser && p.likes && p.likes.includes(currentUser.uid);
+        const username = p.latestReposter?.username || p.source || 'User';
+        const avatar = p.latestReposter?.avatar || 'https://via.placeholder.com/40';
+        const uid = p.latestReposter?.uid || null;
+        const isUserPost = p.isUserPost || false;
+        const caption = p.headline || '';
+        const subHeader = isUserPost ? '' : `<span class="text-xs text-gray-400 ml-2">Reposted News</span>`;
+        let followBtn = '';
+        
+        if (currentUser && uid && uid !== currentUser.uid) {
+            const isFollowing = currentUserDoc?.following?.includes(uid);
+            followBtn = `<button id="follow-btn-${p.id}" onclick="event.stopPropagation(); toggleFollow('${uid}')" 
+                            class="text-xs font-bold transition-all duration-200 ${isFollowing ? 'text-gray-500' : 'text-blue-500'}">
+                            ${isFollowing ? 'Following' : 'Follow'}
+                         </button>`;
+        }
+        
+        return `
+           <div class="insta-card animate-fade">
+               <div class="flex items-center justify-between p-3">
+                   <div class="flex items-center gap-3 cursor-pointer" onclick="openPublicProfile('${uid}')">
+                       <img src="${avatar}" class="w-9 h-9 rounded-full border object-cover p-0.5">
+                       <div><div class="font-bold text-sm flex items-center">${username} ${subHeader}</div></div>
+                   </div>
+                   ${followBtn}
+               </div>
+               <div class="w-full bg-gray-100 dark:bg-black relative" ondblclick="toggleLike('${p.id}', true)">
+                   <img src="${p.image}" class="w-full object-contain max-h-[500px] img-fade-in" onload="this.classList.add('img-loaded')">
+                   <div id="heart-${p.id}" class="absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+                       <i class="fas fa-heart text-white text-6xl drop-shadow-lg heart-anim"></i>
+                   </div>
+               </div>
+               <div class="p-3">
+                   <div class="flex items-center gap-4 text-2xl mb-2">
+                       <button id="like-btn-${p.id}" onclick="toggleLike('${p.id}')" class="transition-transform active:scale-125 ${isLiked ? 'text-red-500' : 'text-gray-800 dark:text-white hover:text-gray-600'}">
+                           <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
+                       </button>
+                       <button onclick="openComments('${p.id}')" class="text-gray-800 dark:text-white hover:text-gray-600"><i class="far fa-comment"></i></button>
+                       <button class="text-gray-800 dark:text-white hover:text-gray-600 ml-auto"><i class="far fa-bookmark"></i></button>
+                   </div>
+                   <div class="font-bold text-sm mb-1">${p.likes ? p.likes.length : 0} likes</div>
+                   <div class="text-sm text-gray-800 dark:text-gray-200">
+                       <span class="font-bold mr-2 cursor-pointer" onclick="openPublicProfile('${uid}')">${username}</span>
+                       <span id="caption-${p.id}">${renderHashtags(caption)}</span>
+                   </div>
+                   <div class="text-sm text-gray-400 mt-1 cursor-pointer" onclick="openComments('${p.id}')">
+                       View all ${p.commentsCount || 0} comments
+                   </div>
+               </div>
+           </div>
+        `;
+    }
     
     window.toggleLike = async (id, fromDblClick = false) => {
         if(!currentUser) { openAuthModal(); return; }
@@ -1107,9 +1140,9 @@
             if(btn) btn.classList.add('heart-anim');
             await updateDoc(ref, { likes: arrayUnion(currentUser.uid) });
             
-            // --- NEW: Send Notification ---
+            // Send Notification
             const ownerUid = postDoc.latestReposter.uid;
-            if (ownerUid !== currentUser.uid) { // Don't notify self
+            if (ownerUid && ownerUid !== currentUser.uid) { // Don't notify self
                 const notifRef = doc(collection(db, 'users', ownerUid, 'notifications'));
                 await setDoc(notifRef, {
                     type: 'like',
@@ -1126,7 +1159,6 @@
     };
 
     // --- CREATE POST ---
-    // ... (no changes) ...
     const shareBtn = document.getElementById('share-btn');
     shareBtn.onclick = async () => {
         if(!selectedFile) return;
@@ -1200,7 +1232,6 @@
     }
 
     // --- PROFILE ---
-    // ... (no changes) ...
     window.openProfile = () => {
         if(!currentUser) { openAuthModal(); return; }
         renderProfilePage(currentUser.uid); // Open *my* profile
@@ -1282,7 +1313,8 @@
             
             const q = query(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), where('reposters', 'array-contains', currentProfileUid));
             getDocs(q).then(snap => {
-                const allDocs = snap.docs.map(d => d.data()).sort((a,b) => b.timestamp.toDate() - a.timestamp.toDate());
+                // --- UPDATE: Store post ID to enable clicking ---
+                const allDocs = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.timestamp?.toDate() || 0) - (a.timestamp?.toDate() || 0));
                 window.currentUserPosts = allDocs; 
                 document.getElementById('p-posts-count').innerText = allDocs.length;
                 renderProfilePosts('all'); 
@@ -1330,7 +1362,8 @@
             grid.innerHTML = `<div class="col-span-3 text-center py-10 text-gray-400">No posts found.</div>`; return;
         }
         grid.innerHTML = filteredDocs.map(d => `
-            <div class="aspect-square bg-gray-100 relative group cursor-pointer border border-white dark:border-black">
+            <!-- Call new function to open post detail -->
+            <div class="aspect-square bg-gray-100 relative group cursor-pointer border border-white dark:border-black" onclick="openPostDetail('${d.id}')">
                 <img src="${d.image}" class="w-full h-full object-cover">
                 ${d.isUserPost ? '<i class="fas fa-user absolute top-2 right-2 text-white text-xs bg-black/50 p-1.5 rounded-full" title="My Post"></i>' : '<i class="fas fa-retweet absolute top-2 right-2 text-white text-xs bg-black/50 p-1.5 rounded-full" title="Repost"></i>'}
             </div>
@@ -1338,7 +1371,6 @@
     };
 
     // --- USER SEARCH ---
-    // ... (no changes) ...
     const searchInput = document.getElementById('user-search-input');
     const searchResults = document.getElementById('search-results');
     searchInput.addEventListener('input', debounce(async (e) => {
@@ -1440,7 +1472,6 @@
 
     // --- FOLLOW LIST MODAL LOGIC ---
     window.openFollowList = async (listType) => {
-        // ... (no changes) ...
         if (listType === 'posts') return;
         if (!currentProfileUid) return;
 
@@ -1476,7 +1507,6 @@
     };
     
     function renderUserListItem(user, uid) {
-        // ... (no changes) ...
         let followBtn = '';
         if (currentUser && currentUser.uid !== uid) {
             const isFollowing = currentUserDoc?.following?.includes(uid);
@@ -1509,7 +1539,6 @@
 
     // --- COMMENTS LOGIC ---
     window.openComments = (postId) => {
-        // ... (no changes) ...
         if (!postId) return;
         currentPostIdForComments = postId;
         document.getElementById('comments-page').classList.add('open');
@@ -1565,12 +1594,12 @@
             // 2. Increment comment count
             await updateDoc(postRef, { commentsCount: increment(1) });
             
-            // 3. NEW: Send Notification
+            // 3. Send Notification
             const postSnap = await getDoc(postRef);
             const postDoc = postSnap.data();
             const ownerUid = postDoc.latestReposter.uid;
             
-            if (ownerUid !== currentUser.uid) { // Don't notify self
+            if (ownerUid && ownerUid !== currentUser.uid) { // Don't notify self
                 const notifRef = doc(collection(db, 'users', ownerUid, 'notifications'));
                 await setDoc(notifRef, {
                     type: 'comment',
@@ -1591,7 +1620,6 @@
     };
     
     // --- HASHTAG LOGIC ---
-    // ... (no changes) ...
     window.renderHashtags = (text) => {
         if (!text) return '';
         const safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -1622,7 +1650,7 @@
         });
     };
     
-    // --- NEW: NOTIFICATIONS PAGE LOGIC ---
+    // --- NOTIFICATIONS PAGE LOGIC ---
     window.openNotificationsPage = async () => {
         if(!currentUser) { openAuthModal(); return; }
         
@@ -1707,10 +1735,105 @@
             }
         }
     }
+    
+    // --- NEW: POST DETAIL PAGE FUNCTIONS ---
+    
+    /**
+     * Post detail modal kholta hai
+     */
+    window.openPostDetail = async (postId) => {
+        if (!postId) return;
+        document.getElementById('post-detail-page').classList.add('open');
+        const contentEl = document.getElementById('post-detail-content');
+        const actionBtn = document.getElementById('post-detail-action-btn');
+        
+        // Skeleton loading dikhayein
+        contentEl.innerHTML = `<div class="insta-card p-4 space-y-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton"></div><div class="h-4 w-32 skeleton"></div></div><div class="aspect-square w-full skeleton rounded"></div></div>`;
+        actionBtn.classList.add('hidden');
+        actionBtn.onclick = null;
+        
+        try {
+            // Poora post document fetch karein
+            const ref = doc(db, 'artifacts', APP_ID, 'public', 'data', 'reposts', postId);
+            const snap = await getDoc(ref);
+            if (!snap.exists()) {
+                contentEl.innerHTML = `<div class="text-center py-10 text-gray-400">Post not found.</div>`; return;
+            }
+            
+            const post = { id: snap.id, ...snap.data() };
+            
+            // Post ko render karein
+            contentEl.innerHTML = renderPostCardHTML(post);
+            
+            // Action button ko configure karein
+            if (currentUser) {
+                if (post.isUserPost && post.latestReposter.uid === currentUser.uid) {
+                    actionBtn.innerText = "Delete";
+                    actionBtn.onclick = () => handleDeletePost(post.id);
+                    actionBtn.classList.remove('hidden');
+                } else if (!post.isUserPost && post.reposters.includes(currentUser.uid)) {
+                    actionBtn.innerText = "Remove Repost";
+                    actionBtn.onclick = () => handleUnrepost(post.id);
+                    actionBtn.classList.remove('hidden');
+                }
+            }
+            
+        } catch (e) {
+            console.error("Error opening post detail:", e);
+            contentEl.innerHTML = `<div class="text-center py-10 text-gray-400">Error loading post.</div>`;
+        }
+    };
+
+    /**
+     * User-created post delete karne ka logic
+     */
+    window.handleDeletePost = async (postId) => {
+        try {
+            // Security check ke liye doc re-fetch karein
+            const ref = doc(db, 'artifacts', APP_ID, 'public', 'data', 'reposts', postId);
+            const snap = await getDoc(ref);
+            if (!snap.exists()) return;
+            
+            const post = snap.data();
+            
+            // Owner check
+            if (currentUser && post.isUserPost && post.latestReposter.uid === currentUser.uid) {
+                await deleteDoc(ref);
+                showToast("Post deleted");
+                closePage('post-detail-page');
+                switchProfileTab('reposts'); // Profile grid refresh karein
+            } else {
+                showToast("You do not have permission to delete this.");
+            }
+        } catch (e) {
+            console.error("Error deleting post:", e);
+            showToast("Error deleting post.");
+        }
+    };
+    
+    /**
+     * News repost hatane (un-repost) ka logic
+     */
+    window.handleUnrepost = async (postId) => {
+        if (!currentUser) return;
+        try {
+            const ref = doc(db, 'artifacts', APP_ID, 'public', 'data', 'reposts', postId);
+            await updateDoc(ref, {
+                reposters: arrayRemove(currentUser.uid),
+                repostCount: increment(-1)
+            });
+            showToast("Repost removed");
+            closePage('post-detail-page');
+            switchProfileTab('reposts'); // Profile grid refresh karein
+        } catch (e) {
+            console.error("Error removing repost:", e);
+            showToast("Error removing repost.");
+        }
+    };
+
 
     // --- UTILS ---
     window.switchView = (v) => {
-        // ... (no changes) ...
         document.getElementById('view-home').classList.add('hidden');
         document.getElementById('view-community').classList.add('hidden');
         document.getElementById(`view-${v}`).classList.remove('hidden');
@@ -1731,6 +1854,10 @@
         document.getElementById(id).classList.remove('open');
         if (id === 'comments-page' && commentsUnsub) {
             commentsUnsub(); commentsUnsub = null;
+        }
+        // NEW: Band karne par post detail content clear karein
+        if (id === 'post-detail-page') {
+            document.getElementById('post-detail-content').innerHTML = '';
         }
     };
     
