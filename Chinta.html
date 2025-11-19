@@ -372,7 +372,6 @@
           <div id="carousel-track">
             <div class="skeleton w-full h-full flex-shrink-0"></div>
           </div>
-          <!-- Changed Logic: Buttons now scroll the container -->
           <button id="prev-slide" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white p-3 rounded-full z-10"><i class="fas fa-chevron-left"></i></button>
           <button id="next-slide" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white p-3 rounded-full z-10"><i class="fas fa-chevron-right"></i></button>
         </div>
@@ -568,7 +567,6 @@
         <div class="text-center py-10 text-gray-400">Loading comments...</div>
     </div>
     <form id="comment-form" class="sticky bottom-0 p-3 bg-white dark:bg-black border-t dark:border-gray-800 flex gap-2">
-        <!-- ENTER KEY ADDED -->
         <input id="comment-input" type="text" enterkeyhint="send" class="flex-1 p-3 border rounded-full bg-gray-100 dark:bg-gray-800 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Add a comment..." required onkeypress="if(event.key === 'Enter') document.getElementById('comment-submit-btn').click()">
         <button id="comment-submit-btn" type="submit" class="bg-blue-600 text-white px-5 rounded-full font-bold">Post</button>
     </form>
@@ -841,6 +839,46 @@
     
     let currentPostIdForEdit = null; // For editing post
 
+    // --- HISTORY API & BACK BUTTON LOGIC ---
+    window.modalStack = [];
+
+    function openModal(id) {
+        const el = document.getElementById(id);
+        if(el && !el.classList.contains('open')) {
+            el.classList.add('open');
+            window.history.pushState({modal: id}, null);
+            window.modalStack.push(id);
+            
+            // Auto-focus logic specific to ID
+            if(id === 'create-thought-modal') setTimeout(() => document.getElementById('thought-text-in')?.focus(), 100);
+            if(id === 'comments-page') setTimeout(() => document.getElementById('comment-input')?.focus(), 100);
+        }
+    }
+
+    function closeModal() {
+        if(window.modalStack.length > 0) {
+            window.history.back();
+        }
+    }
+    
+    window.addEventListener('popstate', (e) => {
+        if(window.modalStack.length > 0) {
+            const id = window.modalStack.pop();
+            const el = document.getElementById(id);
+            if(el) el.classList.remove('open');
+            
+            // Cleanup Logic
+            if (id === 'comments-page' && commentsUnsub) { commentsUnsub(); commentsUnsub = null; }
+            if (id === 'post-detail-page') { document.getElementById('post-detail-content').innerHTML = ''; }
+            if (id === 'create-modal') resetCreateForm();
+            if (id === 'create-thought-modal') {
+                document.getElementById('thought-text-in').value = '';
+                document.getElementById('thought-category-in').value = '';
+            }
+             if (id === 'edit-post-modal') currentPostIdForEdit = null;
+        }
+    });
+
     // --- SHARE FUNCTION ---
     window.shareApp = async (title, text) => {
         if (navigator.share) {
@@ -858,12 +896,14 @@
     };
 
     // --- AUTH MODAL LOGIC ---
+    // Updated to use openModal/closeModal
     const authModal = document.getElementById('auth-modal');
     window.openAuthModal = () => {
-        authModal.classList.add('open');
+        openModal('auth-modal');
         toggleAuthView('signin'); 
     };
-    window.closeAuthModal = () => authModal.classList.remove('open');
+    window.closeAuthModal = () => closeModal();
+    
     window.toggleAuthView = (view) => {
         document.getElementById('auth-error-signin').innerText = '';
         document.getElementById('auth-error-signup').innerText = '';
@@ -1066,16 +1106,19 @@
         switchView('home'); 
         signOut(auth).then(() => {
             showToast("Signed Out");
-            closePage('profile-page');
-            closePage('notifications-page');
-            closePage('settings-page');
+            if(window.modalStack.length > 0) {
+                // Clear history if logged out
+                window.history.go(-window.modalStack.length);
+                window.modalStack = [];
+                document.querySelectorAll('.open').forEach(el => el.classList.remove('open'));
+            }
         });
     };
 
     // --- USERNAME MODAL ---
     window.editUsername = () => {
         document.getElementById('new-username-input').value = currentUsername || '';
-        document.getElementById('username-modal').classList.add('open');
+        openModal('username-modal');
     };
     document.getElementById('save-username-btn').onclick = async () => {
         const input = document.getElementById('new-username-input');
@@ -1090,7 +1133,7 @@
             }
             await setDoc(doc(db, 'users', currentUser.uid), { username: newName }, { merge: true });
             showToast("Username saved!");
-            document.getElementById('username-modal').classList.remove('open');
+            closeModal();
         } catch(e) { console.error(e); showToast("Error saving username"); }
     };
 
@@ -1206,7 +1249,7 @@
         } else {
             btn.innerHTML = '<i class="far fa-bookmark"></i>'; btn.classList.remove('text-yellow-500');
         }
-        document.getElementById('news-detail-page').classList.add('open');
+        openModal('news-detail-page');
     };
     window.repostCurrentNews = async (itemToRepost = null) => {
         const item = itemToRepost || currentNewsItem;
@@ -1214,7 +1257,7 @@
         if(!item) return;
         if(!currentUsername) {
             pendingRepostItem = item;
-            document.getElementById('username-modal').classList.add('open'); return;
+            openModal('username-modal'); return;
         }
         
         if(navigator.vibrate) navigator.vibrate(50);
@@ -1236,7 +1279,7 @@
         };
         await setDoc(ref, payload, { merge: true });
         showToast("Reposted to Community!");
-        closePage('news-detail-page');
+        closeModal(); // Close news detail
         switchView('community');
     };
     window.bookmarkCurrentNews = async () => {
@@ -1606,19 +1649,19 @@
     window.openAddPostOptionsModal = () => {
         if(!currentUser) { openAuthModal(); return; }
         if(!currentUsername) { document.getElementById('username-modal').classList.add('open'); return; }
-        document.getElementById('add-post-options-modal').classList.add('open');
+        openModal('add-post-options-modal');
     }
     window.closeAddPostOptionsModal = () => {
-        document.getElementById('add-post-options-modal').classList.remove('open');
+        closeModal();
     }
     
     window.openCreatePostModal = () => { // Image Post
         closeAddPostOptionsModal();
-        createModal.classList.add('open'); 
+        openModal('create-modal'); 
     };
     window.closeCreatePostModal = () => {
-        createModal.classList.remove('open'); 
-        resetCreateForm(); 
+        closeModal();
+        resetCreateForm(); // This is redundant with popstate handler but safe
     };
     dropArea.onclick = () => fileIn.click();
     fileIn.onchange = (e) => {
@@ -1659,14 +1702,11 @@
     // --- Create Thought Post ---
     window.openCreateThoughtModal = () => {
         closeAddPostOptionsModal();
-        document.getElementById('create-thought-modal').classList.add('open');
-        // AUTO FOCUS ADDED
-        setTimeout(() => document.getElementById('thought-text-in').focus(), 100);
+        openModal('create-thought-modal');
     }
     window.closeCreateThoughtModal = () => {
-        document.getElementById('create-thought-modal').classList.remove('open');
-        document.getElementById('thought-text-in').value = '';
-        document.getElementById('thought-category-in').value = '';
+        closeModal();
+        // Reset handled by popstate
     }
     window.handleShareThought = async () => {
         const text = document.getElementById('thought-text-in').value.trim();
@@ -1696,7 +1736,7 @@
             
             if(navigator.vibrate) navigator.vibrate(50);
             showToast("Shared Successfully!");
-            closeCreateThoughtModal();
+            closeModal();
             switchView('community');
             
         } catch(e) {
@@ -1718,7 +1758,7 @@
     };
     async function renderProfilePage(uid) {
         currentProfileUid = uid; 
-        document.getElementById('profile-page').classList.add('open');
+        openModal('profile-page');
         document.getElementById('p-title').innerText = "Loading...";
         document.getElementById('p-avatar').src = 'https://via.placeholder.com/80';
         document.getElementById('p-name').innerText = '...';
@@ -1735,7 +1775,7 @@
         const userSnap = await getDoc(userRef);
         if (!userSnap.exists()) {
             showToast("User not found");
-            closePage('profile-page'); return;
+            closeModal(); return;
         }
         
         const profileUserDoc = userSnap.data();
@@ -2014,7 +2054,7 @@
         if (listType === 'posts') return;
         if (!currentProfileUid) return;
 
-        document.getElementById('follow-list-modal').classList.add('open');
+        openModal('follow-list-modal');
         const titleEl = document.getElementById('follow-list-title');
         const contentEl = document.getElementById('follow-list-content');
         
@@ -2068,7 +2108,7 @@
 
         return `
             <div class="flex items-center justify-between p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
-                <div class="flex items-center gap-3 cursor-pointer" onclick="openPublicProfile('${uid}'); closePage('follow-list-modal');">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="openPublicProfile('${uid}'); closeModal();">
                     <img src="${user.photoURL}" class="w-10 h-10 rounded-full object-cover">
                     <div>
                         <p class="font-bold text-sm">${user.displayName}</p>
@@ -2084,7 +2124,7 @@
     window.openComments = (postId) => {
         if (!postId) return;
         currentPostIdForComments = postId;
-        document.getElementById('comments-page').classList.add('open');
+        openModal('comments-page');
         const list = document.getElementById('comments-list');
         list.innerHTML = `<div class="text-center py-10 text-gray-400">Loading...</div>`;
         if (commentsUnsub) commentsUnsub(); 
@@ -2118,8 +2158,6 @@
                 `;
             }).join('');
         });
-        // AUTO FOCUS ADDED
-        setTimeout(() => document.getElementById('comment-input').focus(), 100);
     };
     
     window.handleDeleteComment = async (commentId) => {
@@ -2185,7 +2223,7 @@
     };
     window.openHashtagFeed = (tag) => {
         if (!tag) return;
-        document.getElementById('hashtag-feed-page').classList.add('open');
+        openModal('hashtag-feed-page');
         const grid = document.getElementById('hashtag-grid');
         const title = document.getElementById('hashtag-title');
         title.innerText = `#${tag}`;
@@ -2209,7 +2247,7 @@
     window.openNotificationsPage = async () => {
         if(!currentUser) { openAuthModal(); return; }
         
-        document.getElementById('notifications-page').classList.add('open');
+        openModal('notifications-page');
         const listEl = document.getElementById('notifications-list');
         listEl.innerHTML = `<div class="text-center py-10 text-gray-400">Loading...</div>`;
         
@@ -2254,10 +2292,10 @@
         
         return `
             <div class="flex items-center gap-3 p-4 border-b dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer">
-                <img src="${notif.actorAvatar}" class="w-10 h-10 rounded-full object-cover flex-shrink-0 cursor-pointer" onclick="openPublicProfile('${notif.actorUid}'); closePage('notifications-page');">
+                <img src="${notif.actorAvatar}" class="w-10 h-10 rounded-full object-cover flex-shrink-0 cursor-pointer" onclick="openPublicProfile('${notif.actorUid}'); closeModal();">
                 <div class="flex-1 text-sm">
                     <p>
-                        <strong class="cursor-pointer" onclick="openPublicProfile('${notif.actorUid}'); closePage('notifications-page');">
+                        <strong class="cursor-pointer" onclick="openPublicProfile('${notif.actorUid}'); closeModal();">
                             @${notif.actorUsername}
                         </strong> 
                         ${actionText}
@@ -2292,7 +2330,7 @@
     // --- POST DETAIL PAGE (with Edit) ---
     window.openPostDetail = async (postId) => {
         if (!postId) return;
-        document.getElementById('post-detail-page').classList.add('open');
+        openModal('post-detail-page');
         const contentEl = document.getElementById('post-detail-content');
         const actionBtn = document.getElementById('post-detail-action-btn');
         const editBtn = document.getElementById('post-detail-edit-btn');
@@ -2344,7 +2382,7 @@
             if (currentUser && post.isUserPost && post.latestReposter.uid === currentUser.uid) {
                 await deleteDoc(ref);
                 showToast("Post deleted");
-                closePage('post-detail-page');
+                closeModal();
                 switchProfileTab('reposts'); 
             } else {
                 showToast("You do not have permission to delete this.");
@@ -2364,7 +2402,7 @@
                 repostCount: increment(-1)
             });
             showToast("Repost removed");
-            closePage('post-detail-page');
+            closeModal();
             switchProfileTab('reposts'); 
         } catch (e) {
             console.error("Error removing repost:", e);
@@ -2379,11 +2417,11 @@
         document.getElementById('edit-caption-in').value = post.headline;
         document.getElementById('edit-post-image-preview').src = post.image;
         document.getElementById('edit-post-avatar').src = currentUserDoc.photoURL;
-        document.getElementById('edit-post-modal').classList.add('open');
+        openModal('edit-post-modal');
     }
     
     window.closeEditPostModal = () => {
-        document.getElementById('edit-post-modal').classList.remove('open');
+        closeModal();
         currentPostIdForEdit = null;
     }
     
@@ -2444,7 +2482,7 @@
             });
             
             showToast("Profile Saved!");
-            closePage('settings-page');
+            closeModal();
         } catch(e) {
             console.error("Error saving profile:", e);
             showToast("Error saving profile");
@@ -2472,21 +2510,18 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     
+    // Re-Mapped openPage for Settings
     window.openPage = (id) => {
         if (id === 'settings-page' && currentUserDoc) {
             document.getElementById('edit-profile-name').value = currentUserDoc.displayName;
             document.getElementById('edit-profile-photo').value = currentUserDoc.photoURL;
         }
-        document.getElementById(id).classList.add('open');
+        openModal(id);
     }
+    
+    // Kept for backward compatibility with older code if any, but internally calls closeModal
     window.closePage = (id) => {
-        document.getElementById(id).classList.remove('open');
-        if (id === 'comments-page' && commentsUnsub) {
-            commentsUnsub(); commentsUnsub = null;
-        }
-        if (id === 'post-detail-page') {
-            document.getElementById('post-detail-content').innerHTML = '';
-        }
+        closeModal();
     };
     
     function showToast(msg) {
