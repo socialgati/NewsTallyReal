@@ -1,0 +1,10 @@
+{
+"homepage": "/index.html",
+"errorpage": "/index.html",
+"login_redirect": "/index.html",
+"ignore": [
+".git",
+"node_modules",
+"catalyst-config.json"
+]
+}
