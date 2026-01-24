@@ -1,0 +1,263 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/><title>NewsTally Community</title><meta name="description" content="Connect, Share, and Discuss."/><meta name="theme-color" content="#ffffff" id="theme-color-meta"><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"><style>:root{--primary:#0095f6;--bg-app:#fafafa;--card-bg:#ffffff;--text-main:#262626;--border:#dbdbdb;--btn-grey-bg:#efefef;--btn-grey-hover:#dbdbdb;--btn-grey-text:#000000;--story-gradient:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)}html.dark{--primary:#0095f6;--bg-app:#000000;--card-bg:#121212;--text-main:#f5f5f5;--border:#262626;--btn-grey-bg:#363636;--btn-grey-hover:#262626;--btn-grey-text:#ffffff}*{ -webkit-tap-highlight-color:transparent}body{font-family:'Inter',sans-serif;background-color:var(--bg-app);color:var(--text-main);-webkit-font-smoothing:antialiased;overscroll-behavior-y:none;transition:filter .3s ease}.insta-card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;margin-bottom:20px}@media(max-width:768px){.insta-card{border-left:none;border-right:none;border-radius:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}}.btn-insta-base{padding:7px 16px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;transition:all .1s ease-in-out;display:flex;align-items:center;justify-content:center}.btn-insta-follow{background-color:var(--primary);color:#fff;border:none}.btn-insta-following{background-color:var(--btn-grey-bg);color:var(--btn-grey-text);border:none}.page-layer,.modal-layer{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--bg-app);z-index:50;transition:transform .3s cubic-bezier(.25,1,.5,1);overflow-y:auto;transform:translateX(100%)}.page-layer.open,.modal-layer.open{transform:translateX(0)}.modal-layer{transform:translateY(100%)}.modal-layer.open{transform:translateY(0)}.overlay-modal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s ease-out}.overlay-modal.open{opacity:1;pointer-events:auto}.community-tab{flex:1;text-align:center;padding:12px 0;font-weight:500;color:#8e8e8e;border-bottom:2px solid var(--border);cursor:pointer}.community-tab.active{color:var(--text-main);border-bottom:2px solid var(--text-main)}.notify-badge{position:absolute;top:-3px;right:-4px;width:10px;height:10px;background-color:#ef4444;border-radius:9999px;border:2px solid var(--card-bg)}.story-ring{padding:2px;border-radius:50%;background:var(--story-gradient);display:inline-block}.skeleton{background:#e1e9ee;background-image:linear-gradient(90deg,#e1e9ee 0,#f4f8fa 40px,#e1e9ee 80px);background-size:600px;animation:shimmer 1.6s infinite linear}@keyframes shimmer{0%{background-position:-100px}100%{background-position:100px}}.choice-button{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;padding:24px;border-radius:16px;background-color:var(--bg-app);border:1px solid var(--border);font-size:1.1rem;font-weight:700;transition:all .2s}.choice-button i{font-size:2.5rem;margin-bottom:12px}.poll-bar{transition:width 0.3s ease}</style></head>
+<body class="pb-16 md:pb-0">
+
+<!-- Header Section -->
+<header class="fixed top-0 w-full z-40 h-14 bg-white/95 dark:bg-black/95 border-b dark:border-gray-800 flex items-center justify-between px-4 md:px-6 backdrop-blur-md">
+    <div class="flex items-center gap-3 cursor-pointer" onclick="location.href='index.html'">
+        <div class="bg-gradient-to-tr from-blue-600 to-purple-600 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold text-lg">N</div>
+        <h1 class="text-xl font-bold tracking-tight hidden md:block">NewsTally</h1>
+    </div>
+    <nav class="hidden md:flex items-center gap-8 font-medium text-sm text-gray-500 dark:text-gray-400">
+        <a href="index.html" class="hover:text-blue-600 transition">News</a>
+        <a href="community.html" class="text-purple-500 font-bold flex items-center gap-2"><i class="fas fa-fire"></i> Community</a>
+    </nav>
+    <div class="flex items-center gap-4">
+        <button id="sign-in-btn" onclick="openAuthModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-sm font-bold transition">Sign In</button>
+        <div id="user-actions" class="hidden flex items-center gap-3">
+            <button onclick="openAddPostOptionsModal()" class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center text-xl"><i class="far fa-plus-square"></i></button>
+            <button onclick="openNotificationsPage()" class="relative w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center text-xl">
+                <i class="far fa-heart"></i>
+                <span id="notify-badge-header" class="notify-badge hidden"></span>
+            </button>
+            <img id="header-avatar" src="" class="w-8 h-8 rounded-full object-cover border border-gray-200 cursor-pointer" onclick="openProfile()">
+        </div>
+    </div>
+</header>
+
+<div class="pt-16 max-w-lg mx-auto min-h-screen">
+    <div id="view-community" class="animate-fade">
+        <!-- Stories Bar -->
+        <div id="stories-bar" class="flex gap-4 overflow-x-auto px-4 py-4 mb-2 scrollbar-hide border-b dark:border-gray-800">
+            <div class="flex flex-col items-center gap-1 cursor-pointer" onclick="openAddStoryOptions()">
+                <div class="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center"><i class="fas fa-plus text-gray-400"></i></div>
+                <span class="text-xs font-medium">Add Story</span>
+            </div>
+        </div>
+
+        <!-- Community Navigation -->
+        <div class="flex sticky top-14 bg-[var(--bg-app)] z-30 border-b dark:border-gray-800">
+            <button class="community-tab active" onclick="switchCommunityFeed(this, 'global')">Global</button>
+            <button class="community-tab" onclick="switchCommunityFeed(this, 'following')">Following</button>
+            <button class="community-tab" onclick="switchCommunityFeed(this, 'trending')">Trending 🔥</button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="px-4 py-4">
+            <div class="relative">
+                <input type="text" id="user-search-input" class="w-full pl-10 p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm" placeholder="Find users by @username...">
+                <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
+                <div id="search-results" class="absolute top-full left-0 w-full mt-2 bg-white dark:bg-gray-800 rounded-xl shadow-xl z-50 hidden border dark:border-gray-700 max-h-60 overflow-y-auto"></div>
+            </div>
+        </div>
+
+        <!-- Main Feed -->
+        <div id="community-feed" class="space-y-0 md:space-y-4 pb-20">
+            <!-- Loading Skeleton -->
+            <div class="insta-card p-4 space-y-4">
+                <div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full skeleton"></div><div class="h-4 w-32 skeleton"></div></div>
+                <div class="aspect-square w-full skeleton rounded"></div>
+            </div>
+        </div>
+
+        <!-- Mobile Create Button -->
+        <button onclick="openAddPostOptionsModal()" class="md:hidden fixed bottom-20 right-5 w-14 h-14 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full shadow-xl flex items-center justify-center text-2xl z-30 active:scale-90 transition"><i class="fas fa-plus"></i></button>
+    </div>
+</div>
+
+<!-- Mobile Nav Bar -->
+<nav class="md:hidden fixed bottom-0 w-full bg-white dark:bg-black border-t dark:border-gray-800 flex justify-around py-3 z-40">
+    <button onclick="location.href='index.html'" class="text-gray-400 flex flex-col items-center gap-1"><i class="fas fa-home text-xl"></i></button>
+    <button onclick="location.reload()" class="text-purple-500 flex flex-col items-center gap-1"><i class="fas fa-compass text-xl"></i></button>
+    <button onclick="openNotificationsPage()" class="relative text-gray-400 flex flex-col items-center gap-1">
+        <i class="far fa-heart text-xl"></i>
+        <span id="notify-badge-mobile" class="notify-badge hidden"></span>
+    </button>
+    <button onclick="openProfile()" class="text-gray-400 flex flex-col items-center gap-1"><img id="btm-avatar" src="https://via.placeholder.com/30" class="w-6 h-6 rounded-full border"></button>
+</nav>
+
+<!-- Modals & Pages (Sync from index.html) -->
+<div id="auth-modal" class="overlay-modal"><div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl w-11/12 max-w-sm relative text-center"><h3 class="text-2xl font-bold mb-6">Sign In</h3><button onclick="handleGoogleSignIn()" class="w-full flex items-center justify-center gap-3 p-3 border rounded-xl font-bold"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"> Sign In with Google</button><button onclick="closeModal()" class="mt-4 text-sm text-gray-500">Cancel</button></div></div>
+
+<div id="add-post-options-modal" class="overlay-modal" onclick="closeModal()"><div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl w-11/12 max-w-sm relative" onclick="event.stopPropagation()"><h3 class="text-xl font-bold text-center mb-6">Create New Post</h3><div class="space-y-4"><button class="choice-button" onclick="openCreateModal('image')"><i class="fas fa-images text-blue-500"></i><span>Image Post</span></button><button class="choice-button" onclick="openCreateModal('thought')"><i class="fas fa-comment-dots text-purple-500"></i><span>Thought</span></button><button class="choice-button" onclick="openCreateModal('poll')"><i class="fas fa-poll text-green-500"></i><span>Poll</span></button></div></div></div>
+
+<!-- Create Image Post Modal -->
+<div id="create-modal" class="modal-layer bg-white dark:bg-black flex flex-col">
+    <div class="p-3 border-b dark:border-gray-800 flex justify-between items-center"><button onclick="closeModal()">&times;</button><h3 class="font-bold">New Post</h3><button id="share-btn" class="text-blue-500 font-bold opacity-50" disabled>Share</button></div>
+    <div class="p-4 flex-1 overflow-y-auto">
+        <div id="drop-area" class="aspect-square bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center cursor-pointer mb-4 relative overflow-hidden">
+            <div id="upload-ui" class="text-center"><i class="fas fa-images text-3xl text-gray-300"></i><p class="text-xs">Select Photo</p></div>
+            <img id="preview-img" class="absolute inset-0 w-full h-full object-cover hidden">
+            <input type="file" id="file-in" class="hidden" accept="image/*">
+        </div>
+        <textarea id="caption-in" class="w-full bg-transparent outline-none resize-none" rows="3" placeholder="Write a caption..."></textarea>
+    </div>
+</div>
+
+<div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full text-sm font-medium opacity-0 transition-opacity z-[100]">Action Successful</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { getFirestore, doc, setDoc, updateDoc, getDoc, onSnapshot, arrayUnion, arrayRemove, collection, addDoc, query, limit, where, getDocs, increment, serverTimestamp, orderBy } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+const firebaseConfig = {apiKey:"AIzaSyA4zw5cZqxLwzkTy2e5NiHz-tGKqk1KGdI",authDomain:"newstally-df03c.firebaseapp.com",projectId:"newstally-df03c",storageBucket:"newstally-df03c.appspot.com",messagingSenderId:"506893212961",appId:"1:506893212961:web:63882290195da992207260"};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+const APP_ID = 'newstally-social';
+
+let currentUser = null, currentUserDoc = null, currentCommunityFeed = 'global';
+
+// Modal Helpers
+window.openModal = (id) => document.getElementById(id).classList.add('open');
+window.closeModal = () => document.querySelectorAll('.open, .modal-layer, .overlay-modal').forEach(e => e.classList.remove('open'));
+window.openAuthModal = () => openModal('auth-modal');
+window.openAddPostOptionsModal = () => { if(!currentUser) return openAuthModal(); openModal('add-post-options-modal'); };
+window.openCreateModal = (type) => { closeModal(); openModal('create-modal'); };
+
+// Auth Logic
+onAuthStateChanged(auth, async (u) => {
+    currentUser = u;
+    if (u) {
+        document.getElementById('sign-in-btn').classList.add('hidden');
+        document.getElementById('user-actions').classList.remove('hidden');
+        document.getElementById('user-actions').classList.add('flex');
+        const userRef = doc(db, 'users', u.uid);
+        onSnapshot(userRef, (d) => {
+            if(d.exists()){
+                currentUserDoc = d.data();
+                document.getElementById('header-avatar').src = d.data().photoURL;
+                document.getElementById('btm-avatar').src = d.data().photoURL;
+            }
+        });
+        loadCommunityFeed();
+    } else {
+        document.getElementById('sign-in-btn').classList.remove('hidden');
+        document.getElementById('user-actions').classList.add('hidden');
+        loadCommunityFeed();
+    }
+});
+
+window.handleGoogleSignIn = async () => { try { await signInWithPopup(auth, provider); closeModal(); } catch(e) { console.error(e); } };
+
+// Feed Logic
+window.switchCommunityFeed = (btn, feed) => {
+    currentCommunityFeed = feed;
+    document.querySelectorAll('.community-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    loadCommunityFeed();
+};
+
+async function loadCommunityFeed() {
+    const feed = document.getElementById('community-feed');
+    feed.innerHTML = '<div class="p-10 text-center text-gray-400">Loading feed...</div>';
+    
+    try {
+        const colRef = collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts');
+        let q = query(colRef, orderBy('timestamp', 'desc'), limit(30));
+        
+        if(currentCommunityFeed === 'trending') q = query(colRef, orderBy('likes', 'desc'), limit(30));
+        
+        const snap = await getDocs(q);
+        if(snap.empty) {
+            feed.innerHTML = '<div class="p-10 text-center text-gray-400">Abhi tak koi post nahi hai.</div>';
+            return;
+        }
+        
+        feed.innerHTML = snap.docs.map(d => renderPost(d.id, d.data())).join('');
+    } catch(e) {
+        console.error(e);
+        feed.innerHTML = '<div class="p-10 text-center text-red-400">Feed load karne mein problem hui.</div>';
+    }
+}
+
+function renderPost(id, p) {
+    const likes = p.likes ? p.likes.length : 0;
+    const isLiked = currentUser && p.likes && p.likes.includes(currentUser.uid);
+    return `
+        <div class="insta-card animate-fade">
+            <div class="flex items-center justify-between p-3">
+                <div class="flex items-center gap-3">
+                    <img src="${p.latestReposter.avatar}" class="w-9 h-9 rounded-full border">
+                    <span class="font-bold text-sm">${p.latestReposter.username}</span>
+                </div>
+            </div>
+            <div class="w-full bg-gray-100">
+                ${p.image ? `<img src="${p.image}" class="w-full object-cover">` : `<div class="p-8 text-center text-xl font-bold">${p.headline}</div>`}
+            </div>
+            <div class="p-3">
+                <div class="flex items-center gap-4 text-2xl mb-2">
+                    <button onclick="toggleLike('${id}')" class="${isLiked ? 'text-red-500' : 'text-gray-800 dark:text-white'}">
+                        <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i>
+                    </button>
+                    <i class="far fa-comment"></i>
+                </div>
+                <div class="font-bold text-sm">${likes} likes</div>
+                <div class="text-sm mt-1"><span class="font-bold mr-2">${p.latestReposter.username}</span> ${p.headline}</div>
+            </div>
+        </div>
+    `;
+}
+
+// Create Post Logic
+const fileIn = document.getElementById('file-in');
+const previewImg = document.getElementById('preview-img');
+const shareBtn = document.getElementById('share-btn');
+
+document.getElementById('drop-area').onclick = () => fileIn.click();
+fileIn.onchange = (e) => {
+    const file = e.target.files[0];
+    if(file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            previewImg.src = ev.target.result;
+            previewImg.classList.remove('hidden');
+            document.getElementById('upload-ui').classList.add('hidden');
+            shareBtn.disabled = false;
+            shareBtn.classList.remove('opacity-50');
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
+shareBtn.onclick = async () => {
+    if(!currentUser) return;
+    shareBtn.innerText = "Posting...";
+    shareBtn.disabled = true;
+    try {
+        const docId = `post_${Date.now()}`;
+        await setDoc(doc(db, 'artifacts', APP_ID, 'public', 'data', 'reposts', docId), {
+            headline: document.getElementById('caption-in').value,
+            image: previewImg.src,
+            latestReposter: { username: currentUserDoc.username || currentUser.displayName, avatar: currentUserDoc.photoURL, uid: currentUser.uid },
+            timestamp: serverTimestamp(),
+            likes: [],
+            commentsCount: 0,
+            isUserPost: true
+        });
+        showToast("Post Shared!");
+        closeModal();
+        loadCommunityFeed();
+    } catch(e) { console.error(e); }
+};
+
+window.toggleLike = async (id) => {
+    if(!currentUser) return openAuthModal();
+    const ref = doc(db, 'artifacts', APP_ID, 'public', 'data', 'reposts', id);
+    const snap = await getDoc(ref);
+    if(snap.exists()){
+        const likes = snap.data().likes || [];
+        if(likes.includes(currentUser.uid)) await updateDoc(ref, { likes: arrayRemove(currentUser.uid) });
+        else await updateDoc(ref, { likes: arrayUnion(currentUser.uid) });
+        loadCommunityFeed();
+    }
+};
+
+function showToast(m){ const t=document.getElementById('toast'); t.innerText=m; t.style.opacity=1; setTimeout(()=>t.style.opacity=0,2500); }
+
+// Theme Init
+if(localStorage.getItem('theme')==='dark') document.documentElement.classList.add('dark');
+</script>
+</body></html>
+
