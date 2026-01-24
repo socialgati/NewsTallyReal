@@ -2,160 +2,116 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<!-- Dynamic SEO Meta Tags -->
-<title id="meta-title">NewsTally - Loading...</title>
-<meta name="description" id="meta-desc" content="Read the latest news and detailed stories on NewsTally.">
-<meta name="robots" content="index, follow">
-
-<!-- Open Graph (Social Sharing) -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="meta-title">NewsTally - Read News</title>
+<!-- SEO Meta Tags -->
+<meta name="description" id="meta-desc" content="Read the latest news on NewsTally.">
 <meta property="og:type" content="article">
-<meta property="og:title" id="og-title" content="NewsTally Headlines">
-<meta property="og:description" id="og-desc" content="Breaking news on NewsTally.">
+<meta property="og:title" id="og-title" content="NewsTally">
 <meta property="og:image" id="og-img" content="https://placehold.co/1200x630?text=NewsTally">
-<meta property="og:url" id="og-url" content="">
-
-<!-- Schema.org JSON-LD for Google News Indexing -->
-<script type="application/ld+json" id="news-schema">
-{
-  "@context": "https://schema.org",
-  "@type": "NewsArticle",
-  "mainEntityOfPage": {
-    "@type": "WebPage",
-    "@id": ""
-  },
-  "headline": "News Headline",
-  "image": [],
-  "datePublished": "",
-  "author": {
-    "@type": "Organization",
-    "name": "NewsTally"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "NewsTally",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://via.placeholder.com/60"
-    }
-  }
-}
-</script>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    :root { --primary: #2563eb; }
-    body { font-family: 'Inter', sans-serif; background-color: #ffffff; color: #1a1a1a; -webkit-font-smoothing: antialiased; }
-    .prose p { margin-bottom: 1.5rem; line-height: 1.8; font-size: 1.15rem; color: #374151; }
-    .skeleton { background: #f3f4f6; background-image: linear-gradient(90deg, #f3f4f6 0, #ffffff 50%, #f3f4f6 100%); background-size: 800px; animation: shimmer 2s infinite linear; }
-    @keyframes shimmer { 0% { background-position: -400px } 100% { background-position: 400px } }
-    .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    img { border-radius: 1rem; }
+    body { font-family: 'Inter', sans-serif; background-color: #fafafa; color: #1a1a1a; }
+    .prose p { margin-bottom: 1.5rem; color: #374151; line-height: 1.8; font-size: 1.1rem; }
+    .skeleton { background: #eee; background-image: linear-gradient(90deg, #eee 0, #f9f9f9 40px, #eee 80px); background-size: 600px; animation: shimmer 1.5s infinite linear; }
+    @keyframes shimmer { 0% { background-position: -100px } 100% { background-position: 100px } }
 </style>
 
 </head>
-<body class="bg-gray-50">
-<!-- Header Navigation -->
-<header class="fixed top-0 w-full z-50 h-16 bg-white/90 border-b flex items-center justify-between px-4 md:px-8 backdrop-blur-lg">
-    <a href="index.html" class="flex items-center gap-2 group">
-        <div class="bg-gradient-to-tr from-blue-600 to-purple-600 text-white w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg group-hover:scale-105 transition">N</div>
-        <span class="font-extrabold text-xl tracking-tight hidden sm:block">NewsTally</span>
+<body class="bg-white">
+<header class="fixed top-0 w-full z-50 h-14 bg-white/90 border-b backdrop-blur-md flex items-center justify-between px-4">
+    <a href="index.html" class="flex items-center gap-2">
+        <div class="bg-gradient-to-tr from-blue-600 to-purple-600 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold">N</div>
+        <span class="font-bold text-lg">NewsTally</span>
     </a>
-    <div class="flex items-center gap-4">
-        <button onclick="shareArticle()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition text-gray-600" title="Share Story">
-            <i class="fas fa-share-alt text-lg"></i>
-        </button>
-        <a href="index.html" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full font-bold text-sm shadow-md transition active:scale-95">
-            Back Home
-        </a>
+    <div class="flex items-center gap-3">
+        <button onclick="shareThis()" class="p-2 text-gray-500 hover:text-blue-600"><i class="fas fa-share-alt"></i></button>
+        <a href="index.html" class="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full">Back Home</a>
     </div>
 </header>
 
-<!-- Main Content Area -->
-<main class="pt-24 pb-20 max-w-3xl mx-auto px-4">
-    
-    <!-- Loading State (Skeleton) -->
-    <div id="loader-ui">
-        <div class="h-4 w-24 skeleton rounded mb-4"></div>
+<main class="pt-20 pb-10 max-w-3xl mx-auto px-4">
+    <!-- Error Message (Hidden by default) -->
+    <div id="error-ui" class="hidden text-center py-20">
+        <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+        <h2 class="text-xl font-bold mb-2">Oops! News nahi mil rahi.</h2>
+        <p id="error-msg" class="text-gray-500 mb-6 text-sm">Check your internet or API settings.</p>
+        <a href="index.html" class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold">Home par jayein</a>
+    </div>
+
+    <!-- Skeleton Loader -->
+    <div id="loader">
+        <div class="h-4 w-20 skeleton rounded mb-4"></div>
         <div class="h-10 w-full skeleton rounded mb-6"></div>
-        <div class="flex gap-2 mb-8"><div class="h-4 w-32 skeleton rounded"></div><div class="h-4 w-32 skeleton rounded"></div></div>
-        <div class="aspect-video w-full skeleton rounded-2xl mb-8 shadow-sm"></div>
+        <div class="aspect-video w-full skeleton rounded-xl mb-6 shadow-sm"></div>
         <div class="space-y-4">
             <div class="h-4 w-full skeleton rounded"></div>
             <div class="h-4 w-full skeleton rounded"></div>
-            <div class="h-4 w-3/4 skeleton rounded"></div>
+            <div class="h-4 w-2/3 skeleton rounded"></div>
         </div>
     </div>
 
-    <!-- Article Content -->
-    <article id="article-ui" class="hidden fade-in">
-        <div class="flex items-center gap-2 mb-4">
-            <span id="article-category" class="text-xs font-bold text-blue-600 uppercase tracking-widest px-2.5 py-1 bg-blue-50 rounded-md">General</span>
-        </div>
-
-        <h1 id="article-title" class="text-3xl md:text-5xl font-extrabold leading-tight text-gray-900 mb-6">...</h1>
+    <!-- Article UI -->
+    <article id="news-content" class="hidden opacity-0 transition-opacity duration-500">
+        <span id="category" class="text-xs font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-1 rounded">Category</span>
+        <h1 id="title" class="text-3xl md:text-5xl font-extrabold mt-4 mb-6 leading-tight text-gray-900">...</h1>
         
-        <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-100">
-            <div class="bg-gradient-to-br from-gray-100 to-gray-200 w-12 h-12 rounded-full flex items-center justify-center text-gray-400 text-xl font-bold" id="source-avatar">?</div>
+        <div class="flex items-center gap-3 mb-8 text-sm text-gray-500 border-t border-b py-4">
+            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-400" id="source-icon">?</div>
             <div>
-                <p id="article-source" class="font-bold text-gray-900 leading-none mb-1">Source</p>
-                <p id="article-date" class="text-xs text-gray-500 font-medium tracking-wide uppercase">Date</p>
+                <p id="source" class="font-bold text-gray-900">Source Name</p>
+                <p id="date" class="text-xs">Date Published</p>
             </div>
         </div>
 
-        <div class="relative mb-10">
-            <img id="article-image" src="" alt="News Headline Image" class="w-full object-cover shadow-2xl transition-opacity duration-500 opacity-0" onload="this.classList.remove('opacity-0')">
+        <img id="main-image" src="" class="w-full rounded-2xl shadow-lg mb-10 object-cover max-h-[500px]" onerror="this.src='https://placehold.co/800x500?text=NewsTally'">
+
+        <div id="body-text" class="prose max-w-none text-gray-800">
+            <!-- Data from Sheets -->
         </div>
 
-        <div id="article-body" class="prose max-w-none text-gray-800 antialiased">
-            <!-- Paragraphs injected here -->
-        </div>
-
-        <!-- Call to Action -->
-        <div class="mt-16 p-8 bg-white border border-gray-100 rounded-[2.5rem] shadow-2xl text-center relative overflow-hidden group">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-50 rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition"></div>
-            
-            <h3 class="text-2xl font-extrabold text-gray-900 mb-3 relative z-10">Spread the Word</h3>
-            <p class="text-gray-500 mb-8 max-w-md mx-auto relative z-10">Community par is news ko repost karein aur apni raaye logon tak pahunchayein.</p>
-            
-            <div class="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
-                <button onclick="repostToApp()" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-bold shadow-xl shadow-blue-200 transition transform hover:-translate-y-1 active:scale-95">
-                    <i class="fas fa-retweet mr-2"></i> Repost Now
-                </button>
-                <button onclick="shareArticle()" class="flex-1 sm:flex-none bg-gray-100 hover:bg-gray-200 text-gray-800 px-8 py-4 rounded-2xl font-bold transition active:scale-95">
-                    <i class="fas fa-share-nodes mr-2"></i> Share
-                </button>
+        <div class="mt-12 p-8 bg-blue-600 rounded-[2rem] text-white text-center shadow-xl">
+            <h3 class="text-2xl font-bold mb-3">Yeh news repost karein!</h3>
+            <p class="text-blue-100 mb-6">Community feed par doston ke saath share karein.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="goToRepost()" class="bg-white text-blue-600 px-10 py-3 rounded-full font-bold hover:shadow-lg transform active:scale-95 transition">Repost Now</button>
             </div>
         </div>
     </article>
 </main>
 
 <script>
+    // Bilkul vahi Credentials jo index.html mein kaam kar rahe hain
     const SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
     const API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
-    let currentNewsData = null;
+    let newsItem = null;
 
-    // Function to fetch and render the news
-    async function init() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const rawHeadline = urlParams.get('headline');
+    async function fetchArticle() {
+        const params = new URLSearchParams(window.location.search);
+        const targetHeadline = params.get('headline');
 
-        if (!rawHeadline) {
+        if (!targetHeadline) {
             window.location.href = 'index.html';
             return;
         }
 
-        const targetHeadline = decodeURIComponent(rawHeadline).trim();
-
         try {
-            const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${API_KEY}`);
+            // Fetching the whole sheet like index.html does
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${API_KEY}`;
+            const response = await fetch(url);
             const data = await response.json();
-            
-            if (!data.values) throw new Error("No data found");
+
+            if (data.error) {
+                throw new Error(data.error.message);
+            }
+
+            if (!data.values) {
+                throw new Error("Data values not found in Sheet.");
+            }
 
             const items = data.values.slice(1).map(r => ({
                 headline: r[1],
@@ -163,95 +119,72 @@
                 date: r[3],
                 desc: r[4],
                 category: r[6] || 'General',
-                image: r[7] && r[7].startsWith('http') ? r[7] : `https://placehold.co/800x600?text=News+Image`
+                image: r[7] && r[7].startsWith('http') ? r[7] : `https://placehold.co/600x400?text=News`
             }));
 
-            // Advanced matching logic: try exact match, then try fuzzy match if needed
-            currentNewsData = items.find(n => n.headline.trim() === targetHeadline) || 
-                              items.find(n => n.headline.toLowerCase().includes(targetHeadline.toLowerCase().substring(0, 20)));
+            const decodedHeadline = decodeURIComponent(targetHeadline).trim();
+            
+            // Flexible matching (Exact or partial)
+            newsItem = items.find(n => n.headline && n.headline.trim() === decodedHeadline);
 
-            if (currentNewsData) {
-                renderArticle(currentNewsData);
+            if (newsItem) {
+                renderArticle(newsItem);
             } else {
-                handleNotFound();
+                showError("News item not found in our database.");
             }
-        } catch (error) {
-            console.error("News Load Error:", error);
-            document.getElementById('loader-ui').innerHTML = `<div class="text-center py-20 text-red-500 font-bold">Failed to load news. Check your connection.</div>`;
+
+        } catch (err) {
+            console.error("Fetch Error:", err);
+            showError("API Error: " + err.message);
         }
     }
 
     function renderArticle(n) {
-        // UI Updates
-        document.getElementById('article-title').innerText = n.headline;
-        document.getElementById('article-category').innerText = n.category;
-        document.getElementById('article-source').innerText = n.source;
-        document.getElementById('article-date').innerText = n.date;
-        document.getElementById('article-image').src = n.image;
-        document.getElementById('article-image').alt = n.headline;
-        document.getElementById('source-avatar').innerText = n.source.charAt(0);
+        document.getElementById('loader').classList.add('hidden');
+        const content = document.getElementById('news-content');
         
-        // Body Formatting
-        const bodyHtml = n.desc.split('\n').filter(p => p.trim() !== "").map(p => `<p>${p}</p>`).join('');
-        document.getElementById('article-body').innerHTML = bodyHtml;
-
-        // SEO Dynamic Meta Updates
-        document.title = `${n.headline} - NewsTally`;
-        document.getElementById('meta-title').innerText = n.headline;
-        const snippet = n.desc.substring(0, 160).replace(/["']/g, "") + "...";
-        document.getElementById('meta-desc').content = snippet;
+        document.title = n.headline + " | NewsTally";
+        document.getElementById('title').innerText = n.headline;
+        document.getElementById('category').innerText = n.category;
+        document.getElementById('source').innerText = n.source;
+        document.getElementById('date').innerText = n.date;
+        document.getElementById('main-image').src = n.image;
+        document.getElementById('source-icon').innerText = n.source.charAt(0);
         
-        // Social Sharing Meta
+        // SEO Meta updates
         document.getElementById('og-title').content = n.headline;
-        document.getElementById('og-desc').content = snippet;
         document.getElementById('og-img').content = n.image;
-        document.getElementById('og-url').content = window.location.href;
 
-        // Update JSON-LD for Google
-        const schema = JSON.parse(document.getElementById('news-schema').innerHTML);
-        schema.headline = n.headline;
-        schema.image = [n.image];
-        schema.datePublished = new Date().toISOString(); // Fallback for schema
-        schema.mainEntityOfPage["@id"] = window.location.href;
-        document.getElementById('news-schema').innerHTML = JSON.stringify(schema);
+        const paragraphs = n.desc.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('');
+        document.getElementById('body-text').innerHTML = paragraphs;
 
-        // Toggle UI
-        document.getElementById('loader-ui').classList.add('hidden');
-        document.getElementById('article-ui').classList.remove('hidden');
+        content.classList.remove('hidden');
+        setTimeout(() => content.style.opacity = "1", 50);
     }
 
-    function handleNotFound() {
-        document.getElementById('loader-ui').innerHTML = `
-            <div class="text-center py-20">
-                <h2 class="text-2xl font-bold mb-4">News Not Found</h2>
-                <p class="text-gray-500 mb-8">Humma maaf karein, yeh khabar shayad ab purani ho gayi hai.</p>
-                <a href="index.html" class="text-blue-600 font-bold border-b-2 border-blue-600">Explore Latest News</a>
-            </div>
-        `;
+    function showError(msg) {
+        document.getElementById('loader').classList.add('hidden');
+        const ui = document.getElementById('error-ui');
+        document.getElementById('error-msg').innerText = msg;
+        ui.classList.remove('hidden');
     }
 
-    function shareArticle() {
-        if (!currentNewsData) return;
-        if (navigator.share) {
-            navigator.share({
-                title: currentNewsData.headline,
-                text: `Read this story on NewsTally: ${currentNewsData.headline}`,
-                url: window.location.href
-            });
-        } else {
-            navigator.clipboard.writeText(window.location.href);
-            alert("Link copied! Share it with your friends.");
+    function goToRepost() {
+        if (newsItem) {
+            window.location.href = `index.html?action=repost&headline=${encodeURIComponent(newsItem.headline)}`;
         }
     }
 
-    function repostToApp() {
-        if (!currentNewsData) return;
-        // Redirect to index.html with action parameter
-        window.location.href = `index.html?action=repost&headline=${encodeURIComponent(currentNewsData.headline)}`;
+    function shareThis() {
+        if (navigator.share) {
+            navigator.share({ title: document.title, url: window.location.href });
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Link copied!");
+        }
     }
 
-    // Start initialization on window load
-    window.onload = init;
+    window.onload = fetchArticle;
 </script>
 
 </body>
