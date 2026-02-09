@@ -13,19 +13,21 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+<!-- Fonts: Merriweather for News feel, Inter for UI -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Merriweather:wght@300;400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
 <style>
-    body { font-family: 'Roboto', sans-serif; background-color: #f3f4f6; color: #1f2937; }
-    .serif-font { font-family: 'Merriweather', serif; }
+    body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #1f2937; }
+    .font-serif-news { font-family: 'Merriweather', serif; }
+    .font-display { font-family: 'Playfair Display', serif; }
     
     /* Skeleton Animation */
     .skeleton { background: #e5e7eb; background-image: linear-gradient(90deg, #e5e7eb 0, #f3f4f6 40px, #e5e7eb 80px); background-size: 600px; animation: shimmer 1.5s infinite linear; }
     @keyframes shimmer { 0% { background-position: -100px } 100% { background-position: 100px } }
 
     /* HIDDEN CARD CONTAINER 
-       Positioned far off-screen.
-       Dimensions: 1080px width (High Res). Height adjusts based on content but min-height set.
+       1080x1920 is standard 9:16 Story format.
+       We hide it offscreen but keep it rendered.
     */
     #share-canvas-wrapper {
         position: fixed;
@@ -36,8 +38,8 @@
 
     #share-card {
         width: 1080px;
-        min-height: 1440px; /* Portrait Ratio */
-        background-color: #ffffff;
+        height: 1920px;
+        background-color: #f8fafc; /* Subtle background */
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -46,19 +48,19 @@
 </style>
 
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50">
 
 <!-- Header -->
 <header class="fixed top-0 w-full z-50 h-16 bg-white/95 border-b border-gray-200 backdrop-blur flex items-center justify-between px-4 lg:px-8 shadow-sm">
     <a href="index.html" class="flex items-center gap-2 group">
-        <div class="bg-blue-600 text-white w-9 h-9 rounded-lg flex items-center justify-center font-bold text-xl shadow-md group-hover:scale-110 transition">N</div>
+        <div class="bg-blue-700 text-white w-9 h-9 rounded-lg flex items-center justify-center font-bold text-xl shadow-md group-hover:scale-110 transition">N</div>
         <span class="font-bold text-xl tracking-tight text-gray-800">NewsTally</span>
     </a>
     <div class="flex items-center gap-3">
-        <button onclick="generateAndShareCard()" class="hidden md:flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-6 py-2 rounded-full text-sm font-bold transition shadow-lg border border-gray-700">
-            <i class="fas fa-share-nodes"></i> Share Card
+        <button onclick="generateAndShareCard()" class="hidden md:flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-5 py-2 rounded-full text-sm font-bold transition shadow-lg border border-gray-700 transform hover:scale-105">
+            <i class="fas fa-download"></i> Save Card
         </button>
-        <button onclick="shareLink()" class="md:hidden p-2 text-gray-600 hover:text-blue-600 bg-gray-100 rounded-full"><i class="fas fa-link"></i></button>
+        <button onclick="shareLink()" class="p-2.5 text-gray-600 hover:text-blue-600 bg-gray-100 hover:bg-blue-50 rounded-full transition"><i class="fas fa-share-alt text-lg"></i></button>
         <a href="index.html" class="text-sm font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-full hover:bg-blue-100 transition">Back</a>
     </div>
 </header>
@@ -90,49 +92,69 @@
             
             <!-- Breadcrumb / Meta -->
             <div class="flex items-center gap-3 mb-4 px-4 pt-4 md:px-0 md:pt-0">
-                <span id="category" class="text-xs font-bold text-blue-600 uppercase tracking-wider bg-blue-50 px-2 py-1 rounded">Category</span>
-                <span class="text-gray-300">|</span>
-                <span id="date" class="text-xs text-gray-500 font-medium">Date</span>
+                <span id="category" class="text-xs font-bold text-white bg-blue-600 px-3 py-1 rounded-md uppercase tracking-wide">Category</span>
+                <span id="date" class="text-xs text-gray-400 font-medium">Date</span>
             </div>
 
-            <h1 id="title" class="text-3xl md:text-4xl font-extrabold mb-6 leading-tight text-gray-900 px-4 md:px-0 serif-font">...</h1>
+            <h1 id="title" class="text-2xl md:text-4xl font-extrabold mb-6 leading-snug text-gray-900 px-4 md:px-0 font-display">...</h1>
 
             <!-- Image -->
             <div class="w-full mb-8 relative">
-                <img id="main-image" src="" class="w-full h-auto object-cover md:rounded-xl shadow-sm bg-gray-100 min-h-[200px]" onerror="this.src='https://placehold.co/800x500?text=NewsTally'">
+                <img id="main-image" src="" class="w-full h-auto object-cover md:rounded-xl shadow-sm bg-gray-100 min-h-[250px]" onerror="this.src='https://placehold.co/800x500?text=NewsTally'">
             </div>
 
             <!-- Author Section -->
             <div class="flex items-center justify-between px-4 md:px-0 mb-8 border-b border-gray-100 pb-6">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-500 text-lg" id="source-icon">?</div>
+                    <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center font-bold text-blue-600 border border-blue-100" id="source-icon">?</div>
                     <div>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase">Source</p>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase">Published by</p>
                         <p id="source" class="font-bold text-gray-800 text-sm">Source Name</p>
                     </div>
                 </div>
             </div>
 
             <!-- Body Text -->
-            <div id="body-text" class="prose prose-lg prose-gray max-w-none text-gray-700 px-4 md:px-0 mb-10 serif-font">
+            <div id="body-text" class="prose prose-lg prose-gray max-w-none text-gray-700 px-4 md:px-0 mb-10 font-serif-news">
                 <!-- Data injection -->
             </div>
 
-            <!-- Sticky Bottom / Action Area for Mobile -->
-            <div class="fixed bottom-6 left-0 right-0 px-4 md:static md:px-0 md:mt-10 z-40 flex justify-center">
-                 <button onclick="generateAndShareCard()" class="w-full md:w-auto bg-black text-white px-8 py-4 rounded-full font-bold shadow-2xl flex items-center justify-center gap-3 hover:scale-105 transition transform border border-gray-800">
-                     <i class="fas fa-share-alt"></i> Share Card
+            <!-- Action Area (Restored Repost Feature) -->
+            <div class="px-4 md:px-0 mb-12">
+                <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-bold text-gray-800">Found this interesting?</h3>
+                        <p class="text-sm text-gray-500">Repost to NewsTally community or share externally.</p>
+                    </div>
+                    <div class="flex gap-3 w-full md:w-auto">
+                        <button onclick="goToRepost()" class="flex-1 md:flex-none bg-white border border-gray-300 text-gray-700 px-6 py-2.5 rounded-full font-bold hover:bg-gray-50 transition text-sm">
+                            <i class="fas fa-retweet mr-1"></i> Repost
+                        </button>
+                        <button onclick="generateAndShareCard()" class="flex-1 md:flex-none bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200 text-sm">
+                            <i class="fas fa-share-alt mr-1"></i> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sticky Mobile Button -->
+            <div class="fixed bottom-6 left-0 right-0 px-4 md:hidden z-40 flex justify-center">
+                 <button onclick="generateAndShareCard()" class="w-full bg-black text-white px-8 py-4 rounded-full font-bold shadow-2xl flex items-center justify-center gap-3 active:scale-95 transition transform border border-gray-800">
+                     <i class="fas fa-image"></i> Share Card
                 </button>
             </div>
             
-            <div class="h-20 md:hidden"></div> <!-- Spacer for fixed button -->
+            <div class="h-20 md:hidden"></div> 
 
         </div>
 
-        <!-- Recommendations -->
+        <!-- Recommendations (Restored) -->
         <div class="mt-12 max-w-3xl mx-auto px-4 md:px-0">
-            <h3 class="text-lg font-bold text-gray-800 mb-4">More for you</h3>
-            <div id="suggestions-grid" class="grid grid-cols-1 gap-4">
+            <div class="flex items-center gap-2 mb-6">
+                <div class="w-1 h-6 bg-blue-600 rounded-full"></div>
+                <h3 class="text-xl font-bold text-gray-900">Recommended for You</h3>
+            </div>
+            <div id="suggestions-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Suggestions injected here -->
             </div>
         </div>
@@ -141,56 +163,71 @@
 
 <!-- 
     ========================================
-    INSHORTS STYLE CARD TEMPLATE (Hidden)
-    Size: 1080px x 1440px (Vertical)
+    ULTIMATE SHARE CARD TEMPLATE (Hidden)
+    Design: "Inshorts" / "Magazine" Hybrid
+    Features: Rounded sheet overlapping image, crisp typography
+    Size: 1080px x 1920px (9:16)
     ========================================
 -->
 <div id="share-canvas-wrapper">
     <div id="share-card">
         
-        <!-- 1. IMAGE SECTION (Top 45%) -->
-        <div class="h-[600px] w-full relative overflow-hidden bg-gray-200">
-            <!-- We use a special proxy URL in JS to ensure this loads -->
+        <!-- 1. IMAGE SECTION (Top 50%) -->
+        <div class="h-[960px] w-full relative overflow-hidden bg-gray-900">
+            <!-- Smart Proxy Image -->
             <img id="card-img" src="" class="w-full h-full object-cover" crossorigin="anonymous">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
         </div>
 
-        <!-- 2. CONTENT SECTION (Bottom 55%) -->
-        <div class="flex-1 bg-white p-12 flex flex-col relative -mt-10 rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-10">
+        <!-- 2. CONTENT SHEET (Bottom 55% - Overlaps Image) -->
+        <div class="absolute bottom-0 w-full h-[1050px] bg-white rounded-t-[80px] p-12 flex flex-col shadow-[0_-20px_60px_rgba(0,0,0,0.3)] z-10">
             
-            <!-- Category Tag -->
-            <div class="absolute -top-6 left-12">
-                 <span id="card-category" class="bg-blue-600 text-white text-lg font-bold uppercase tracking-widest px-6 py-3 rounded-lg shadow-lg">
+            <!-- Floating Category Badge -->
+            <div class="absolute -top-8 left-12">
+                 <span id="card-category" class="bg-blue-600 text-white text-2xl font-bold uppercase tracking-widest px-8 py-4 rounded-xl shadow-xl border-4 border-white">
                     Category
                 </span>
             </div>
 
-            <!-- Headlines & Body -->
-            <div class="mt-6 flex-1">
-                <h1 id="card-headline" class="text-[52px] leading-[1.1] font-bold text-gray-900 mb-6 font-sans tracking-tight">
-                    This is the main headline of the news card
+            <!-- Main Content -->
+            <div class="mt-12 flex-1">
+                <!-- Headline -->
+                <h1 id="card-headline" class="text-[64px] leading-[1.15] font-extrabold text-gray-900 mb-8 font-display tracking-tight text-left">
+                    Headline Text Appears Here
                 </h1>
                 
-                <p id="card-desc" class="text-3xl text-gray-600 leading-normal serif-font line-clamp-6">
-                    This is the short description or summary of the news. It will give context to the user before they decide to read the full story. It should look very clean.
+                <!-- Divider -->
+                <div class="w-24 h-2 bg-gray-200 rounded-full mb-8"></div>
+
+                <!-- Summary/Description -->
+                <p id="card-desc" class="text-[36px] text-gray-600 leading-[1.6] font-serif-news text-left line-clamp-[8]">
+                    This is where the summary of the news goes. It uses a serif font to look like a real newspaper article. The text is large and legible for mobile screens.
                 </p>
             </div>
 
-            <!-- Footer -->
-            <div class="mt-10 pt-8 border-t-2 border-gray-100 flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                    <div class="bg-black text-white w-14 h-14 rounded-xl flex items-center justify-center font-bold text-3xl">N</div>
+            <!-- Footer Area -->
+            <div class="mt-auto pt-10 border-t border-gray-100 flex items-center justify-between">
+                <!-- Brand -->
+                <div class="flex items-center gap-5">
+                    <div class="bg-black text-white w-20 h-20 rounded-2xl flex items-center justify-center font-bold text-5xl shadow-lg">N</div>
                     <div class="flex flex-col">
-                        <span class="text-sm font-bold text-gray-400 uppercase tracking-widest">Read more at</span>
-                        <span class="text-2xl font-black text-gray-900">NewsTally</span>
+                        <span class="text-lg font-bold text-gray-400 uppercase tracking-widest">Read more at</span>
+                        <span class="text-4xl font-black text-gray-900 tracking-tighter">NewsTally</span>
                     </div>
                 </div>
                 
-                <div class="flex flex-col items-end">
-                    <span class="text-lg text-gray-500 font-medium">Source</span>
-                    <span id="card-source" class="text-2xl font-bold text-gray-800">TOI</span>
+                <!-- Source Info -->
+                <div class="text-right">
+                    <p class="text-xl text-gray-500 font-bold mb-1">Source</p>
+                    <div class="flex items-center justify-end gap-3">
+                        <span id="card-source" class="text-3xl font-bold text-gray-800">TOI</span>
+                        <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Bottom decorative bar -->
+            <div class="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
         </div>
     </div>
 </div>
@@ -202,11 +239,11 @@
     let currentNewsItem = null;
     let allNewsItems = [];
 
-    // --- SMART IMAGE PROXY ---
-    // Uses wsrv.nl to proxy, resize, and fix CORS for canvas
+    // --- SMART IMAGE PROXY (High Res) ---
+    // Uses wsrv.nl to ensure image is readable by canvas and high quality
     const getSmartImageUrl = (url) => {
-        if (!url || !url.startsWith('http')) return 'https://placehold.co/1080x720/png?text=NewsTally';
-        // Encode URL and request a high-quality output
+        if (!url || !url.startsWith('http')) return 'https://placehold.co/1080x1080/png?text=NewsTally';
+        // 'output=png' for transparency handling if needed, 'w=1080' for sharpness
         return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=1080&output=png`;
     };
 
@@ -238,8 +275,8 @@
             const decodedHeadline = decodeURIComponent(targetHeadline).trim();
             currentNewsItem = allNewsItems.find(n => n.headline && n.headline.trim() === decodedHeadline);
             
-            // Fuzzy match fallback
             if (!currentNewsItem) {
+                // Fuzzy match
                 currentNewsItem = allNewsItems.find(n => n.headline && n.headline.includes(decodedHeadline.substring(0, 15)));
             }
 
@@ -247,12 +284,12 @@
                 renderArticle(currentNewsItem);
                 renderSuggestions(currentNewsItem, allNewsItems);
             } else {
-                document.getElementById('error-ui').classList.remove('hidden');
-                document.getElementById('loader').classList.add('hidden');
+                showError("News not found.");
             }
 
         } catch (err) {
             console.error("Fetch Error:", err);
+            showError("Network error.");
         }
     }
 
@@ -274,7 +311,7 @@
         // Clean paragraphs
         const paragraphs = n.desc.split('\n')
             .filter(p => p.trim().length > 0)
-            .map(p => `<p class="mb-4 text-lg leading-relaxed">${p}</p>`).join('');
+            .map(p => `<p class="mb-4 leading-relaxed">${p}</p>`).join('');
         document.getElementById('body-text').innerHTML = paragraphs;
 
         content.classList.remove('hidden');
@@ -285,97 +322,106 @@
         const grid = document.getElementById('suggestions-grid');
         grid.innerHTML = '';
 
-        let suggestions = all.filter(item => item.headline !== current.headline).slice(0, 3);
+        // Simple recommendation logic: Same category first, then others
+        let suggestions = all.filter(item => 
+            item.headline !== current.headline && item.category === current.category
+        ).slice(0, 4);
+        
+        if (suggestions.length < 2) {
+            let others = all.filter(item => item.headline !== current.headline && item.category !== current.category).slice(0, 4 - suggestions.length);
+            suggestions = [...suggestions, ...others];
+        }
 
         suggestions.forEach(item => {
             const card = document.createElement('a');
             card.href = `article.html?headline=${encodeURIComponent(item.headline)}`;
-            card.className = "flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition";
+            card.className = "flex items-center gap-4 p-3 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition hover:border-blue-200 group";
             card.innerHTML = `
-                <img src="${item.image}" class="w-20 h-20 object-cover rounded-lg bg-gray-200 shrink-0">
+                <div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 relative">
+                    <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition">
+                </div>
                 <div>
-                    <h4 class="font-bold text-gray-800 text-sm line-clamp-2 leading-snug mb-1">${item.headline}</h4>
-                    <span class="text-xs text-blue-600 font-semibold">Read Now</span>
+                    <span class="text-[10px] font-bold text-blue-600 uppercase mb-1 block">${item.category}</span>
+                    <h4 class="font-bold text-gray-800 text-sm line-clamp-2 leading-snug group-hover:text-blue-700 transition">${item.headline}</h4>
                 </div>
             `;
             grid.appendChild(card);
         });
     }
 
-    // --- CARD GENERATION LOGIC ---
+    // --- HIGH QUALITY CARD GEN LOGIC ---
     async function generateAndShareCard() {
         if (!currentNewsItem) return;
 
-        // 1. UI Feedback
         const btns = document.querySelectorAll('button[onclick="generateAndShareCard()"]');
         btns.forEach(b => {
             b.dataset.original = b.innerHTML;
-            b.innerHTML = `<i class="fas fa-spinner fa-spin animate-spin"></i> Creating...`;
+            b.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Generating...`;
             b.disabled = true;
         });
 
-        // 2. Setup The Hidden Card
+        // 1. Setup Data in Hidden Card
         const cardImg = document.getElementById('card-img');
-        
-        // Use Smart Proxy for reliable CORS handling
         const proxyUrl = getSmartImageUrl(currentNewsItem.image);
         
-        cardImg.src = ""; // Clear first
+        cardImg.src = ""; // Clear to force reload
         cardImg.crossOrigin = "anonymous"; 
         
         document.getElementById('card-headline').innerText = currentNewsItem.headline;
         document.getElementById('card-category').innerText = currentNewsItem.category;
         document.getElementById('card-source').innerText = currentNewsItem.source;
         
-        // Use first 150 chars of description for the card summary
-        const cleanDesc = currentNewsItem.desc.replace(/\n/g, ' ').substring(0, 200) + "...";
+        // Use ~300 chars for summary
+        let cleanDesc = currentNewsItem.desc.replace(/\n/g, ' ').substring(0, 350);
+        if(currentNewsItem.desc.length > 350) cleanDesc += "...";
         document.getElementById('card-desc').innerText = cleanDesc;
 
         try {
-            // 3. Load Image safely
-            await new Promise((resolve, reject) => {
+            // 2. Load Image (Timeout 3s)
+            await new Promise((resolve) => {
                 cardImg.onload = resolve;
-                cardImg.onerror = resolve; // Continue even if image fails (shows placeholder logic if needed)
+                cardImg.onerror = resolve; 
                 cardImg.src = proxyUrl;
-                setTimeout(resolve, 3000); // 3s timeout
+                setTimeout(resolve, 3500);
             });
 
-            // 4. Generate Canvas
+            // 3. Render Canvas
             const cardElement = document.getElementById('share-card');
             const canvas = await html2canvas(cardElement, {
                 useCORS: true,
-                scale: 1, // High res implied by 1080px width
+                scale: 1.5, // Super crisp
                 backgroundColor: '#ffffff',
-                logging: false
+                logging: false,
+                allowTaint: true
             });
 
-            // 5. Share / Download
+            // 4. Blob & Share
             canvas.toBlob(async (blob) => {
-                const file = new File([blob], 'newstally-card.png', { type: 'image/png' });
+                const file = new File([blob], 'newstally-story.png', { type: 'image/png' });
                 const shareData = {
                     files: [file],
-                    title: "NewsTally",
-                    text: `${currentNewsItem.headline}\nRead more: ${window.location.href}`
+                    title: "NewsTally Update",
+                    text: `${currentNewsItem.headline}\nRead full story: ${window.location.href}`
                 };
 
                 if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
-                    await navigator.share(shareData);
+                    try {
+                        await navigator.share(shareData);
+                    } catch (e) { console.log("Share dismissed"); }
                 } else {
                     const link = document.createElement('a');
                     link.download = `NewsTally-${Date.now()}.png`;
                     link.href = canvas.toDataURL();
                     link.click();
-                    alert("Card saved! Share it manually.");
+                    alert("Image saved! Share it manually.");
                 }
                 
-                // Reset Buttons
                 btns.forEach(b => { b.innerHTML = b.dataset.original; b.disabled = false; });
             }, 'image/png', 1.0);
 
         } catch (err) {
             console.error("Gen Error:", err);
-            alert("Card generation failed. Sharing link instead.");
-            shareLink();
+            shareLink(); // Fallback
             btns.forEach(b => { b.innerHTML = b.dataset.original; b.disabled = false; });
         }
     }
@@ -387,6 +433,15 @@
             navigator.clipboard.writeText(window.location.href);
             alert("Link copied!");
         }
+    }
+
+    function goToRepost() {
+        if (currentNewsItem) window.location.href = `index.html?action=repost&headline=${encodeURIComponent(currentNewsItem.headline)}`;
+    }
+
+    function showError(msg) {
+        document.getElementById('loader').classList.add('hidden');
+        document.getElementById('error-ui').classList.remove('hidden');
     }
 
     window.onload = fetchArticle;
