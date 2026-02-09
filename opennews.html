@@ -11,84 +11,180 @@
 <meta property="og:image" id="og-img" content="https://placehold.co/1200x630?text=NewsTally">
 
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    body { font-family: 'Inter', sans-serif; background-color: #fafafa; color: #1a1a1a; }
-    .prose p { margin-bottom: 1.5rem; color: #374151; line-height: 1.8; font-size: 1.1rem; }
-    .skeleton { background: #eee; background-image: linear-gradient(90deg, #eee 0, #f9f9f9 40px, #eee 80px); background-size: 600px; animation: shimmer 1.5s infinite linear; }
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+    .prose p { margin-bottom: 1.5rem; color: #475569; line-height: 1.8; font-size: 1.125rem; }
+    
+    /* Skeleton Animation */
+    .skeleton { background: #e2e8f0; background-image: linear-gradient(90deg, #e2e8f0 0, #f1f5f9 40px, #e2e8f0 80px); background-size: 600px; animation: shimmer 1.5s infinite linear; }
     @keyframes shimmer { 0% { background-position: -100px } 100% { background-position: 100px } }
+
+    /* Hidden Share Card Container */
+    #share-canvas-container {
+        position: fixed;
+        top: -9999px;
+        left: -9999px;
+        width: 600px; /* High res width */
+        z-index: -1;
+    }
 </style>
 
 </head>
-<body class="bg-white">
-<header class="fixed top-0 w-full z-50 h-14 bg-white/90 border-b backdrop-blur-md flex items-center justify-between px-4">
-    <a href="index.html" class="flex items-center gap-2">
-        <div class="bg-gradient-to-tr from-blue-600 to-purple-600 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold">N</div>
-        <span class="font-bold text-lg">NewsTally</span>
+<body class="bg-slate-50">
+
+<!-- Header -->
+<header class="fixed top-0 w-full z-50 h-16 bg-white/90 border-b border-slate-200 backdrop-blur-md flex items-center justify-between px-4 lg:px-8">
+    <a href="index.html" class="flex items-center gap-2 group">
+        <div class="bg-gradient-to-tr from-blue-600 to-indigo-600 text-white w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xl shadow-md group-hover:scale-110 transition">N</div>
+        <span class="font-bold text-xl tracking-tight text-slate-800">NewsTally</span>
     </a>
     <div class="flex items-center gap-3">
-        <button onclick="shareThis()" class="p-2 text-gray-500 hover:text-blue-600"><i class="fas fa-share-alt"></i></button>
-        <a href="index.html" class="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full">Back Home</a>
+        <button onclick="generateAndShareCard()" class="hidden md:flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-full text-sm font-semibold transition">
+            <i class="fas fa-image"></i> Share Card
+        </button>
+        <button onclick="shareLink()" class="p-2.5 text-slate-500 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 rounded-full transition"><i class="fas fa-share-alt text-lg"></i></button>
+        <a href="index.html" class="text-sm font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-full hover:bg-blue-100 transition">Back Home</a>
     </div>
 </header>
 
-<main class="pt-20 pb-10 max-w-3xl mx-auto px-4">
-    <!-- Error Message (Hidden by default) -->
-    <div id="error-ui" class="hidden text-center py-20">
-        <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
-        <h2 class="text-xl font-bold mb-2">Oops! News nahi mil rahi.</h2>
-        <p id="error-msg" class="text-gray-500 mb-6 text-sm">Check your internet or API settings.</p>
-        <a href="index.html" class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold">Home par jayein</a>
+<main class="pt-24 pb-16 max-w-4xl mx-auto px-4">
+    <!-- Error Message -->
+    <div id="error-ui" class="hidden flex flex-col items-center justify-center py-20 text-center">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fas fa-newspaper text-red-500 text-2xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-slate-800 mb-2">News not found</h2>
+        <p id="error-msg" class="text-slate-500 mb-6 max-w-md">We couldn't locate the article you are looking for.</p>
+        <a href="index.html" class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">Go to Feed</a>
     </div>
 
     <!-- Skeleton Loader -->
-    <div id="loader">
-        <div class="h-4 w-20 skeleton rounded mb-4"></div>
-        <div class="h-10 w-full skeleton rounded mb-6"></div>
-        <div class="aspect-video w-full skeleton rounded-xl mb-6 shadow-sm"></div>
+    <div id="loader" class="max-w-3xl mx-auto">
+        <div class="h-4 w-24 skeleton rounded mb-4"></div>
+        <div class="h-12 w-full skeleton rounded mb-6"></div>
+        <div class="aspect-video w-full skeleton rounded-2xl mb-8"></div>
         <div class="space-y-4">
             <div class="h-4 w-full skeleton rounded"></div>
             <div class="h-4 w-full skeleton rounded"></div>
-            <div class="h-4 w-2/3 skeleton rounded"></div>
+            <div class="h-4 w-3/4 skeleton rounded"></div>
         </div>
     </div>
 
-    <!-- Article UI -->
-    <article id="news-content" class="hidden opacity-0 transition-opacity duration-500">
-        <span id="category" class="text-xs font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-1 rounded">Category</span>
-        <h1 id="title" class="text-3xl md:text-5xl font-extrabold mt-4 mb-6 leading-tight text-gray-900">...</h1>
-        
-        <div class="flex items-center gap-3 mb-8 text-sm text-gray-500 border-t border-b py-4">
-            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-400" id="source-icon">?</div>
-            <div>
-                <p id="source" class="font-bold text-gray-900">Source Name</p>
-                <p id="date" class="text-xs">Date Published</p>
+    <!-- Article Content -->
+    <article id="news-content" class="hidden opacity-0 transition-opacity duration-700 ease-out">
+        <div class="max-w-3xl mx-auto">
+            <!-- Header Info -->
+            <div class="flex flex-wrap items-center gap-3 mb-6">
+                <span id="category" class="text-xs font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">Category</span>
+                <span class="text-slate-300">|</span>
+                <span id="date" class="text-sm text-slate-500 font-medium">Date</span>
+            </div>
+
+            <h1 id="title" class="text-3xl md:text-5xl font-extrabold mb-8 leading-tight text-slate-900 tracking-tight">...</h1>
+
+            <!-- Author/Source -->
+            <div class="flex items-center gap-4 mb-8 p-4 bg-white rounded-2xl shadow-sm border border-slate-100">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center font-bold text-slate-500 text-xl shadow-inner" id="source-icon">?</div>
+                <div>
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wide">Published by</p>
+                    <p id="source" class="font-bold text-slate-800 text-lg leading-none mt-0.5">Source Name</p>
+                </div>
+                <div class="ml-auto">
+                     <button onclick="generateAndShareCard()" class="md:hidden text-blue-600 bg-blue-50 p-2 rounded-full text-sm font-bold flex items-center gap-2">
+                        <i class="fas fa-download"></i> <span class="hidden sm:inline">Save Card</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Image -->
+            <div class="relative group rounded-2xl overflow-hidden shadow-2xl shadow-slate-200 mb-10">
+                <img id="main-image" src="" class="w-full object-cover max-h-[500px] bg-slate-100" onerror="this.src='https://placehold.co/800x500?text=NewsTally'">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
+            </div>
+
+            <!-- Body Text -->
+            <div id="body-text" class="prose prose-lg prose-slate max-w-none text-slate-600">
+                <!-- Data injection -->
+            </div>
+
+            <!-- Action Card -->
+            <div class="mt-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 text-white text-center shadow-2xl shadow-blue-200 relative overflow-hidden">
+                <div class="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 bg-white opacity-10 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 -ml-10 -mb-10 w-40 h-40 bg-blue-400 opacity-20 rounded-full blur-3xl"></div>
+                
+                <h3 class="text-2xl font-bold mb-2 relative z-10">Share this story!</h3>
+                <p class="text-blue-100 mb-8 relative z-10">Found this interesting? Repost it to the community feed.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
+                    <button onclick="goToRepost()" class="bg-white text-blue-700 px-8 py-3 rounded-full font-bold hover:shadow-lg hover:scale-105 transform transition duration-200">
+                        <i class="fas fa-retweet mr-2"></i> Repost Internally
+                    </button>
+                    <button onclick="generateAndShareCard()" class="bg-blue-500/30 backdrop-blur border border-blue-400/50 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-500/50 transition">
+                         <i class="fas fa-share-alt mr-2"></i> Share Card
+                    </button>
+                </div>
             </div>
         </div>
 
-        <img id="main-image" src="" class="w-full rounded-2xl shadow-lg mb-10 object-cover max-h-[500px]" onerror="this.src='https://placehold.co/800x500?text=NewsTally'">
-
-        <div id="body-text" class="prose max-w-none text-gray-800">
-            <!-- Data from Sheets -->
-        </div>
-
-        <div class="mt-12 p-8 bg-blue-600 rounded-[2rem] text-white text-center shadow-xl">
-            <h3 class="text-2xl font-bold mb-3">Yeh news repost karein!</h3>
-            <p class="text-blue-100 mb-6">Community feed par doston ke saath share karein.</p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button onclick="goToRepost()" class="bg-white text-blue-600 px-10 py-3 rounded-full font-bold hover:shadow-lg transform active:scale-95 transition">Repost Now</button>
+        <!-- Related/Suggestions Section -->
+        <div class="mt-20 border-t border-slate-200 pt-12">
+            <h3 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <i class="fas fa-bolt text-yellow-500"></i> Recommended for You
+            </h3>
+            <div id="suggestions-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Suggestions injected here -->
             </div>
         </div>
     </article>
 </main>
 
+<!-- Hidden HTML Template for Image Generation -->
+<div id="share-canvas-container">
+    <div id="share-card" class="bg-white p-6 border border-gray-100 flex flex-col h-full relative overflow-hidden">
+        <!-- Background Decor -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500 rounded-bl-full opacity-10"></div>
+        
+        <!-- Branding -->
+        <div class="flex items-center gap-2 mb-4">
+            <div class="bg-blue-600 text-white w-8 h-8 rounded flex items-center justify-center font-bold">N</div>
+            <span class="font-bold text-lg text-slate-800">NewsTally</span>
+        </div>
+
+        <!-- Image Area -->
+        <div class="w-full aspect-video rounded-xl overflow-hidden mb-4 shadow-sm bg-gray-100 relative">
+            <img id="card-img" src="" class="w-full h-full object-cover" crossorigin="anonymous">
+            <div class="absolute bottom-2 left-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded shadow-sm" id="card-category">
+                GENERAL
+            </div>
+        </div>
+
+        <!-- Content -->
+        <h2 id="card-headline" class="text-2xl font-extrabold text-slate-900 leading-tight mb-2 line-clamp-3">
+            Headline goes here...
+        </h2>
+        
+        <div class="flex items-center gap-2 mt-auto pt-4 border-t border-gray-100">
+            <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-500" id="card-source-icon">S</div>
+            <div class="flex-1">
+                <p id="card-source" class="text-xs font-bold text-gray-700">Source</p>
+                <p class="text-[10px] text-gray-400">Read full story on NewsTally</p>
+            </div>
+            <div class="bg-gray-100 p-2 rounded-lg">
+                <i class="fas fa-qrcode text-xl text-slate-800"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    // Bilkul vahi Credentials jo index.html mein kaam kar rahe hain
     const SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
     const API_KEY = 'AIzaSyC8D-4bl3GDyj_--BGG1pPdO5Bz63r5iXI';
-    let newsItem = null;
+    
+    let currentNewsItem = null;
+    let allNewsItems = [];
 
     async function fetchArticle() {
         const params = new URLSearchParams(window.location.search);
@@ -100,20 +196,15 @@
         }
 
         try {
-            // Fetching the whole sheet like index.html does
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${API_KEY}`;
             const response = await fetch(url);
             const data = await response.json();
 
-            if (data.error) {
-                throw new Error(data.error.message);
-            }
+            if (data.error) throw new Error(data.error.message);
+            if (!data.values) throw new Error("Data values not found in Sheet.");
 
-            if (!data.values) {
-                throw new Error("Data values not found in Sheet.");
-            }
-
-            const items = data.values.slice(1).map(r => ({
+            // Parse all items
+            allNewsItems = data.values.slice(1).map(r => ({
                 headline: r[1],
                 source: r[2],
                 date: r[3],
@@ -124,18 +215,25 @@
 
             const decodedHeadline = decodeURIComponent(targetHeadline).trim();
             
-            // Flexible matching (Exact or partial)
-            newsItem = items.find(n => n.headline && n.headline.trim() === decodedHeadline);
+            // Find current article
+            // Using logic to find partial matches if exact match fails due to encoding
+            currentNewsItem = allNewsItems.find(n => n.headline && n.headline.trim() === decodedHeadline);
+            
+            if (!currentNewsItem) {
+                // Fallback fuzzy search if exact match fails
+                currentNewsItem = allNewsItems.find(n => n.headline && n.headline.includes(decodedHeadline.substring(0, 20)));
+            }
 
-            if (newsItem) {
-                renderArticle(newsItem);
+            if (currentNewsItem) {
+                renderArticle(currentNewsItem);
+                renderSuggestions(currentNewsItem, allNewsItems);
             } else {
-                showError("News item not found in our database.");
+                showError("News item not found.");
             }
 
         } catch (err) {
             console.error("Fetch Error:", err);
-            showError("API Error: " + err.message);
+            showError("Unable to load news. Please try again.");
         }
     }
 
@@ -143,7 +241,7 @@
         document.getElementById('loader').classList.add('hidden');
         const content = document.getElementById('news-content');
         
-        document.title = n.headline + " | NewsTally";
+        document.title = n.headline.substring(0, 50) + "... | NewsTally";
         document.getElementById('title').innerText = n.headline;
         document.getElementById('category').innerText = n.category;
         document.getElementById('source').innerText = n.source;
@@ -155,11 +253,142 @@
         document.getElementById('og-title').content = n.headline;
         document.getElementById('og-img').content = n.image;
 
-        const paragraphs = n.desc.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('');
+        // Render Body
+        const paragraphs = n.desc.split('\n')
+            .filter(p => p.trim().length > 0)
+            .map(p => `<p>${p}</p>`).join('');
         document.getElementById('body-text').innerHTML = paragraphs;
 
+        // Reveal
         content.classList.remove('hidden');
         setTimeout(() => content.style.opacity = "1", 50);
+    }
+
+    function renderSuggestions(current, all) {
+        const grid = document.getElementById('suggestions-grid');
+        grid.innerHTML = '';
+
+        // 1. Filter by Category
+        let suggestions = all.filter(item => 
+            item.category === current.category && 
+            item.headline !== current.headline
+        );
+
+        // 2. If not enough, fill with general latest news
+        if (suggestions.length < 3) {
+            const others = all.filter(item => 
+                item.category !== current.category && 
+                item.headline !== current.headline
+            );
+            suggestions = [...suggestions, ...others];
+        }
+
+        // 3. Take top 3
+        suggestions = suggestions.slice(0, 3);
+
+        if(suggestions.length === 0) {
+            document.querySelector('.mt-20').classList.add('hidden'); // Hide section if no suggestions
+            return;
+        }
+
+        // 4. Render
+        suggestions.forEach(item => {
+            const card = document.createElement('a');
+            card.href = `article.html?headline=${encodeURIComponent(item.headline)}`;
+            card.className = "group bg-white rounded-2xl overflow-hidden border border-slate-100 hover:shadow-xl hover:border-blue-100 transition duration-300 flex flex-col h-full";
+            card.innerHTML = `
+                <div class="h-40 overflow-hidden relative">
+                    <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy">
+                    <span class="absolute top-2 left-2 bg-white/90 backdrop-blur text-xs font-bold px-2 py-1 rounded shadow-sm text-slate-800">${item.category}</span>
+                </div>
+                <div class="p-5 flex-1 flex flex-col">
+                    <h4 class="font-bold text-slate-800 mb-2 line-clamp-2 leading-tight group-hover:text-blue-600 transition">${item.headline}</h4>
+                    <div class="mt-auto flex justify-between items-center text-xs text-slate-400">
+                        <span>${item.source}</span>
+                        <span class="text-blue-600 font-semibold group-hover:translate-x-1 transition">Read <i class="fas fa-arrow-right ml-1"></i></span>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    async function generateAndShareCard() {
+        if (!currentNewsItem) return;
+
+        const btn = document.querySelector('button[onclick="generateAndShareCard()"]');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Creating...`;
+        
+        // Populate the hidden card
+        document.getElementById('card-img').src = currentNewsItem.image;
+        document.getElementById('card-headline').innerText = currentNewsItem.headline;
+        document.getElementById('card-source').innerText = currentNewsItem.source;
+        document.getElementById('card-source-icon').innerText = currentNewsItem.source.charAt(0);
+        document.getElementById('card-category').innerText = currentNewsItem.category.toUpperCase();
+
+        try {
+            // Wait for image to load in hidden div (crucial for canvas)
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const canvas = await html2canvas(document.getElementById('share-card'), {
+                useCORS: true, // Try to fetch cross-origin images
+                scale: 2 // High res
+            });
+
+            canvas.toBlob(async (blob) => {
+                const file = new File([blob], 'newstally-card.png', { type: 'image/png' });
+                
+                // Try Native Share
+                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: currentNewsItem.headline,
+                            text: `Read this on NewsTally: ${currentNewsItem.headline}`,
+                            url: window.location.href
+                        });
+                    } catch (shareError) {
+                        console.log('Share dismissed', shareError);
+                    }
+                } else {
+                    // Fallback: Download the image
+                    const link = document.createElement('a');
+                    link.download = 'newstally-share.png';
+                    link.href = canvas.toDataURL();
+                    link.click();
+                    alert("Image saved! You can now share it manually.");
+                }
+                btn.innerHTML = originalText;
+            }, 'image/png');
+
+        } catch (err) {
+            console.error("Card Gen Error", err);
+            // Fallback to simple link share if canvas fails (e.g. CORS)
+            shareLink(); 
+            btn.innerHTML = originalText;
+        }
+    }
+
+    function shareLink() {
+        const shareData = {
+            title: document.title,
+            text: `Check out this news on NewsTally: ${currentNewsItem ? currentNewsItem.headline : ''}`,
+            url: window.location.href
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData).catch(console.error);
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Link copied to clipboard!");
+        }
+    }
+
+    function goToRepost() {
+        if (currentNewsItem) {
+            window.location.href = `index.html?action=repost&headline=${encodeURIComponent(currentNewsItem.headline)}`;
+        }
     }
 
     function showError(msg) {
@@ -169,23 +398,9 @@
         ui.classList.remove('hidden');
     }
 
-    function goToRepost() {
-        if (newsItem) {
-            window.location.href = `index.html?action=repost&headline=${encodeURIComponent(newsItem.headline)}`;
-        }
-    }
-
-    function shareThis() {
-        if (navigator.share) {
-            navigator.share({ title: document.title, url: window.location.href });
-        } else {
-            navigator.clipboard.writeText(window.location.href);
-            alert("Link copied!");
-        }
-    }
-
     window.onload = fetchArticle;
 </script>
 
 </body>
 </html>
+
