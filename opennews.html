@@ -45,6 +45,28 @@
         overflow: hidden;
         position: relative;
     }
+
+    /* GOOGLE TRANSLATE CUSTOM STYLING */
+    body { top: 0 !important; } /* Prevents body jump when translate loads */
+    .goog-te-banner-frame { display: none !important; } /* Hide translate banner */
+    .goog-tooltip, .goog-tooltip:hover { display: none !important; } /* Hide tooltips */
+    .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+    
+    #google_translate_element { display: inline-block; }
+    .goog-te-gadget { color: transparent !important; font-size: 0px !important; display: flex; align-items: center; }
+    .goog-te-gadget .goog-te-combo {
+        color: #4b5563;
+        background-color: transparent;
+        border: none;
+        padding: 0.25rem 0.5rem 0.25rem 0;
+        font-size: 0.875rem;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        outline: none;
+        margin: 0;
+    }
+    .goog-logo-link { display: none !important; }
 </style>
 
 </head>
@@ -52,16 +74,23 @@
 
 <!-- Header -->
 <header class="fixed top-0 w-full z-50 h-16 bg-white/95 border-b border-gray-200 backdrop-blur flex items-center justify-between px-4 lg:px-8 shadow-sm">
-    <a href="index.html" class="flex items-center gap-2 group">
+    <a href="index.html" class="flex items-center gap-2 group" translate="no">
         <div class="bg-blue-700 text-white w-9 h-9 rounded-lg flex items-center justify-center font-bold text-xl shadow-md group-hover:scale-110 transition">N</div>
-        <span class="font-bold text-xl tracking-tight text-gray-800">NewsTally</span>
+        <span class="font-bold text-xl tracking-tight text-gray-800 hidden sm:block">NewsTally</span>
     </a>
-    <div class="flex items-center gap-3">
-        <button onclick="generateAndShareCard()" class="hidden md:flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-5 py-2 rounded-full text-sm font-bold transition shadow-lg border border-gray-700 transform hover:scale-105">
+    
+    <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Translate Widget UI -->
+        <div class="flex items-center gap-1 bg-gray-100 rounded-full px-3 py-1.5 hover:bg-gray-200 transition border border-gray-200" translate="no">
+            <i class="fas fa-globe text-gray-500 text-sm pl-1"></i>
+            <div id="google_translate_element"></div>
+        </div>
+
+        <button onclick="generateAndShareCard()" class="hidden md:flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-5 py-2 rounded-full text-sm font-bold transition shadow-lg border border-gray-700 transform hover:scale-105" translate="no">
             <i class="fas fa-download"></i> Save Card
         </button>
         <button onclick="shareLink()" class="p-2.5 text-gray-600 hover:text-blue-600 bg-gray-100 hover:bg-blue-50 rounded-full transition"><i class="fas fa-share-alt text-lg"></i></button>
-        <a href="index.html" class="text-sm font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-full hover:bg-blue-100 transition">Back</a>
+        <a href="index.html" class="text-sm font-bold text-blue-600 bg-blue-50 px-4 py-2 rounded-full hover:bg-blue-100 transition" translate="no">Back</a>
     </div>
 </header>
 
@@ -72,7 +101,7 @@
             <i class="fas fa-exclamation text-red-500 text-2xl"></i>
         </div>
         <h2 class="text-2xl font-bold text-gray-800 mb-2">News unavailable</h2>
-        <a href="index.html" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition">Go Home</a>
+        <a href="index.html" class="mt-4 bg-blue-600 text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition" translate="no">Go Home</a>
     </div>
 
     <!-- Skeleton Loader -->
@@ -108,7 +137,7 @@
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center font-bold text-blue-600 border border-blue-100" id="source-icon">?</div>
                     <div>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase">Published by</p>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase" translate="no">Published by</p>
                         <p id="source" class="font-bold text-gray-800 text-sm">Source Name</p>
                     </div>
                 </div>
@@ -119,14 +148,14 @@
                 <!-- Data injection -->
             </div>
 
-            <!-- Action Area (Restored Repost Feature) -->
+            <!-- Action Area -->
             <div class="px-4 md:px-0 mb-12">
                 <div class="bg-gray-50 rounded-2xl p-6 border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
                     <div>
                         <h3 class="font-bold text-gray-800">Found this interesting?</h3>
                         <p class="text-sm text-gray-500">Repost to NewsTally community or share externally.</p>
                     </div>
-                    <div class="flex gap-3 w-full md:w-auto">
+                    <div class="flex gap-3 w-full md:w-auto" translate="no">
                         <button onclick="goToRepost()" class="flex-1 md:flex-none bg-white border border-gray-300 text-gray-700 px-6 py-2.5 rounded-full font-bold hover:bg-gray-50 transition text-sm">
                             <i class="fas fa-retweet mr-1"></i> Repost
                         </button>
@@ -138,7 +167,7 @@
             </div>
 
             <!-- Sticky Mobile Button -->
-            <div class="fixed bottom-6 left-0 right-0 px-4 md:hidden z-40 flex justify-center">
+            <div class="fixed bottom-6 left-0 right-0 px-4 md:hidden z-40 flex justify-center" translate="no">
                  <button onclick="generateAndShareCard()" class="w-full bg-black text-white px-8 py-4 rounded-full font-bold shadow-2xl flex items-center justify-center gap-3 active:scale-95 transition transform border border-gray-800">
                      <i class="fas fa-image"></i> Share Card
                 </button>
@@ -148,7 +177,7 @@
 
         </div>
 
-        <!-- Recommendations (Restored) -->
+        <!-- Recommendations -->
         <div class="mt-12 max-w-3xl mx-auto px-4 md:px-0">
             <div class="flex items-center gap-2 mb-6">
                 <div class="w-1 h-6 bg-blue-600 rounded-full"></div>
@@ -164,50 +193,36 @@
 <!-- 
     ========================================
     ULTIMATE SHARE CARD TEMPLATE (Hidden)
-    Design: "Inshorts" / "Magazine" Hybrid
-    Features: Rounded sheet overlapping image, crisp typography
-    Size: 1080px x 1920px (9:16)
     ========================================
 -->
 <div id="share-canvas-wrapper">
     <div id="share-card">
-        
-        <!-- 1. IMAGE SECTION (Top 50%) -->
+        <!-- IMAGE SECTION -->
         <div class="h-[960px] w-full relative overflow-hidden bg-gray-900">
-            <!-- Smart Proxy Image -->
             <img id="card-img" src="" class="w-full h-full object-cover" crossorigin="anonymous">
             <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
         </div>
 
-        <!-- 2. CONTENT SHEET (Bottom 55% - Overlaps Image) -->
+        <!-- CONTENT SHEET -->
         <div class="absolute bottom-0 w-full h-[1050px] bg-white rounded-t-[80px] p-12 flex flex-col shadow-[0_-20px_60px_rgba(0,0,0,0.3)] z-10">
             
-            <!-- Floating Category Badge -->
             <div class="absolute -top-8 left-12">
                  <span id="card-category" class="bg-blue-600 text-white text-2xl font-bold uppercase tracking-widest px-8 py-4 rounded-xl shadow-xl border-4 border-white">
                     Category
                 </span>
             </div>
 
-            <!-- Main Content -->
             <div class="mt-12 flex-1">
-                <!-- Headline -->
                 <h1 id="card-headline" class="text-[64px] leading-[1.15] font-extrabold text-gray-900 mb-8 font-display tracking-tight text-left">
                     Headline Text Appears Here
                 </h1>
-                
-                <!-- Divider -->
                 <div class="w-24 h-2 bg-gray-200 rounded-full mb-8"></div>
-
-                <!-- Summary/Description -->
                 <p id="card-desc" class="text-[36px] text-gray-600 leading-[1.6] font-serif-news text-left line-clamp-[8]">
-                    This is where the summary of the news goes. It uses a serif font to look like a real newspaper article. The text is large and legible for mobile screens.
+                    This is where the summary of the news goes.
                 </p>
             </div>
 
-            <!-- Footer Area -->
-            <div class="mt-auto pt-10 border-t border-gray-100 flex items-center justify-between">
-                <!-- Brand -->
+            <div class="mt-auto pt-10 border-t border-gray-100 flex items-center justify-between" translate="no">
                 <div class="flex items-center gap-5">
                     <div class="bg-black text-white w-20 h-20 rounded-2xl flex items-center justify-center font-bold text-5xl shadow-lg">N</div>
                     <div class="flex flex-col">
@@ -215,8 +230,6 @@
                         <span class="text-4xl font-black text-gray-900 tracking-tighter">NewsTally</span>
                     </div>
                 </div>
-                
-                <!-- Source Info -->
                 <div class="text-right">
                     <p class="text-xl text-gray-500 font-bold mb-1">Source</p>
                     <div class="flex items-center justify-end gap-3">
@@ -226,11 +239,22 @@
                 </div>
             </div>
             
-            <!-- Bottom decorative bar -->
             <div class="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
         </div>
     </div>
 </div>
+
+<!-- Google Translate Script Initialization -->
+<script type="text/javascript">
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+    }, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <script>
     const SHEET_ID = '1Wy6rzaCALqPLFx079nqBCDRP7dk3au5eRO4GuMwQ8Sk';
@@ -239,11 +263,9 @@
     let currentNewsItem = null;
     let allNewsItems = [];
 
-    // --- SMART IMAGE PROXY (High Res) ---
-    // Uses wsrv.nl to ensure image is readable by canvas and high quality
+    // --- SMART IMAGE PROXY ---
     const getSmartImageUrl = (url) => {
         if (!url || !url.startsWith('http')) return 'https://placehold.co/1080x1080/png?text=NewsTally';
-        // 'output=png' for transparency handling if needed, 'w=1080' for sharpness
         return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=1080&output=png`;
     };
 
@@ -276,7 +298,6 @@
             currentNewsItem = allNewsItems.find(n => n.headline && n.headline.trim() === decodedHeadline);
             
             if (!currentNewsItem) {
-                // Fuzzy match
                 currentNewsItem = allNewsItems.find(n => n.headline && n.headline.includes(decodedHeadline.substring(0, 15)));
             }
 
@@ -308,7 +329,6 @@
         document.getElementById('og-title').content = n.headline;
         document.getElementById('og-img').content = n.image;
 
-        // Clean paragraphs
         const paragraphs = n.desc.split('\n')
             .filter(p => p.trim().length > 0)
             .map(p => `<p class="mb-4 leading-relaxed">${p}</p>`).join('');
@@ -322,7 +342,6 @@
         const grid = document.getElementById('suggestions-grid');
         grid.innerHTML = '';
 
-        // Simple recommendation logic: Same category first, then others
         let suggestions = all.filter(item => 
             item.headline !== current.headline && item.category === current.category
         ).slice(0, 4);
@@ -337,7 +356,7 @@
             card.href = `article.html?headline=${encodeURIComponent(item.headline)}`;
             card.className = "flex items-center gap-4 p-3 bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition hover:border-blue-200 group";
             card.innerHTML = `
-                <div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 relative">
+                <div class="w-20 h-20 rounded-lg overflow-hidden shrink-0 relative" translate="no">
                     <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition">
                 </div>
                 <div>
@@ -364,16 +383,23 @@
         const cardImg = document.getElementById('card-img');
         const proxyUrl = getSmartImageUrl(currentNewsItem.image);
         
-        cardImg.src = ""; // Clear to force reload
+        cardImg.src = ""; 
         cardImg.crossOrigin = "anonymous"; 
         
-        document.getElementById('card-headline').innerText = currentNewsItem.headline;
-        document.getElementById('card-category').innerText = currentNewsItem.category;
-        document.getElementById('card-source').innerText = currentNewsItem.source;
+        // DYNAMIC TRANSLATION CAPTURE: 
+        // We capture the current innerText of the DOM elements rather than the raw JSON.
+        // This ensures if the user translated the page, the generated share card is in that language!
+        const currentTitleText = document.getElementById('title').innerText || currentNewsItem.headline;
+        const currentCategoryText = document.getElementById('category').innerText || currentNewsItem.category;
+        const currentSourceText = document.getElementById('source').innerText || currentNewsItem.source;
+        const currentBodyText = document.getElementById('body-text').innerText || currentNewsItem.desc;
+
+        document.getElementById('card-headline').innerText = currentTitleText;
+        document.getElementById('card-category').innerText = currentCategoryText;
+        document.getElementById('card-source').innerText = currentSourceText;
         
-        // Use ~300 chars for summary
-        let cleanDesc = currentNewsItem.desc.replace(/\n/g, ' ').substring(0, 350);
-        if(currentNewsItem.desc.length > 350) cleanDesc += "...";
+        let cleanDesc = currentBodyText.replace(/\n/g, ' ').substring(0, 350);
+        if(currentBodyText.length > 350) cleanDesc += "...";
         document.getElementById('card-desc').innerText = cleanDesc;
 
         try {
@@ -389,7 +415,7 @@
             const cardElement = document.getElementById('share-card');
             const canvas = await html2canvas(cardElement, {
                 useCORS: true,
-                scale: 1.5, // Super crisp
+                scale: 1.5,
                 backgroundColor: '#ffffff',
                 logging: false,
                 allowTaint: true
@@ -401,7 +427,7 @@
                 const shareData = {
                     files: [file],
                     title: "NewsTally Update",
-                    text: `${currentNewsItem.headline}\nRead full story: ${window.location.href}`
+                    text: `${currentTitleText}\nRead full story: ${window.location.href}`
                 };
 
                 if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
@@ -449,5 +475,4 @@
 
 </body>
 </html>
-
 
