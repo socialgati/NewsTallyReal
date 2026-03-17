@@ -1,0 +1,276 @@
+/* NewsTally — Socialgati: Complete Community Feed Styles */
+
+.sg-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px 10px;
+  background: #fff;
+  border-bottom: 1px solid #e8eaed;
+  position: sticky; top: 56px; z-index: 30;
+}
+html.dark .sg-topbar { background: #1c1c26; border-bottom-color: #2e2e3e; }
+
+.sg-brand { display: flex; align-items: center; gap: 8px; }
+.sg-logo-text {
+  font-size: 20px; font-weight: 800;
+  background: linear-gradient(135deg, #9334e6, #1a73e8);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; letter-spacing: -0.5px;
+}
+.sg-tagline { font-size: 10px; color: #9aa0a6; font-weight: 500; letter-spacing: 0.04em; }
+.sg-topbar-actions { display: flex; gap: 4px; align-items: center; }
+.sg-icon-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #5f6368; background: none; border: none;
+  font-size: 17px; cursor: pointer; transition: all 0.18s;
+}
+.sg-icon-btn:hover { background: #f1f3f4; color: #202124; }
+html.dark .sg-icon-btn { color: #9aa0a6; }
+html.dark .sg-icon-btn:hover { background: #2d2d3a; color: #e8eaed; }
+
+/* ---- QUICK POST BAR ---- */
+.sg-quick-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: #fff;
+  border-bottom: 6px solid #f1f3f4;
+}
+html.dark .sg-quick-bar { background: #1c1c26; border-bottom-color: #1e1e28; }
+.sg-quick-av {
+  width: 38px; height: 38px; border-radius: 50%;
+  object-fit: cover; flex-shrink: 0; cursor: pointer;
+  border: 2px solid #e8eaed;
+}
+html.dark .sg-quick-av { border-color: #3c4043; }
+.sg-quick-input {
+  flex: 1; padding: 9px 14px; border-radius: 24px;
+  background: #f1f3f4; border: none;
+  font-size: 14px; color: #9aa0a6; cursor: pointer;
+  transition: background 0.18s;
+}
+html.dark .sg-quick-input { background: #2d2d3a; }
+.sg-quick-input:hover { background: #e8eaed; }
+html.dark .sg-quick-input:hover { background: #363646; }
+.sg-quick-actions { display: flex; gap: 4px; }
+.sg-quick-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; cursor: pointer;
+  font-size: 16px; transition: background 0.15s;
+}
+.sg-quick-btn:hover { background: #f1f3f4; }
+html.dark .sg-quick-btn:hover { background: #2d2d3a; }
+
+/* ---- TRENDING ---- */
+.sg-trending-wrap {
+  padding: 10px 14px 10px;
+  background: #fff;
+  border-bottom: 6px solid #f1f3f4;
+}
+html.dark .sg-trending-wrap { background: #1c1c26; border-bottom-color: #1e1e28; }
+.sg-section-label {
+  font-size: 11px; font-weight: 700; color: #5f6368;
+  margin-bottom: 8px; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.sg-hashtag-scroll { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+.sg-hashtag-scroll::-webkit-scrollbar { display: none; }
+.sg-hash-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 5px 12px; border-radius: 99px;
+  background: #f8f9fa; border: 1.5px solid #e8eaed;
+  font-size: 12px; font-weight: 600; color: #5f6368;
+  cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  transition: all 0.18s;
+}
+.sg-hash-chip:hover { background: #ede7f6; border-color: #9334e6; color: #9334e6; }
+html.dark .sg-hash-chip { background: #2d2d3a; border-color: #3c4043; color: #9aa0a6; }
+
+/* ---- FEED TABS ---- */
+.sg-tabs {
+  display: flex; background: #fff;
+  border-bottom: 1px solid #e8eaed;
+  position: sticky; top: calc(56px + 57px); z-index: 29;
+}
+html.dark .sg-tabs { background: #1c1c26; border-bottom-color: #2e2e3e; }
+.sg-tab {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 4px; font-size: 13px; font-weight: 600; color: #5f6368;
+  border-bottom: 2.5px solid transparent; background: none; border-top: none;
+  border-left: none; border-right: none; cursor: pointer; transition: all 0.2s;
+}
+.sg-tab:hover { color: #202124; background: #f8f9fa; }
+html.dark .sg-tab:hover { background: #242432; color: #e8eaed; }
+.sg-tab.active { color: #9334e6; border-bottom-color: #9334e6; }
+
+/* ---- FEED CONTAINER ---- */
+.sg-feed-container {
+  background: #f1f3f4;
+  min-height: 60vh;
+}
+html.dark .sg-feed-container { background: #111118; }
+
+/* ---- POST CARD (Reddit-style card) ---- */
+.sg-post {
+  background: #fff;
+  border-radius: 0;
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+html.dark .sg-post { background: #1c1c26; }
+.sg-post:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+/* Post header: avatar on left, all info right */
+.sg-post-head {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 14px 14px 0;
+}
+.sg-post-av {
+  width: 40px; height: 40px; border-radius: 50%;
+  object-fit: cover; flex-shrink: 0; cursor: pointer;
+  border: 2px solid #e8eaed;
+}
+html.dark .sg-post-av { border-color: #3c4043; }
+.sg-post-meta { flex: 1; min-width: 0; }
+.sg-post-username {
+  font-size: 14px; font-weight: 700; color: #202124;
+}
+html.dark .sg-post-username { color: #e8eaed; }
+.sg-post-handle { font-size: 12px; color: #9aa0a6; }
+.sg-post-dot { color: #dadce0; margin: 0 3px; font-size: 10px; }
+.sg-post-time { font-size: 12px; color: #9aa0a6; }
+.sg-post-more {
+  color: #9aa0a6; padding: 4px; border-radius: 50%;
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; background: none; border: none; font-size: 16px; flex-shrink: 0;
+  transition: background 0.15s;
+}
+.sg-post-more:hover { background: #f1f3f4; color: #5f6368; }
+html.dark .sg-post-more:hover { background: #2d2d3a; }
+
+/* Type badges */
+.sg-type-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 10px; font-weight: 700; padding: 2px 8px;
+  border-radius: 99px; margin-left: 5px; vertical-align: middle;
+}
+.sg-type-repost { background: #e6f4ea; color: #34a853; }
+.sg-type-poll   { background: #fef7e0; color: #f29900; }
+.sg-type-text   { background: #ede7f6; color: #9334e6; }
+
+/* Post body */
+.sg-post-body { padding: 10px 14px 4px; }
+.sg-post-text {
+  font-size: 15px; line-height: 1.65; color: #202124;
+  word-break: break-word; white-space: pre-wrap;
+}
+html.dark .sg-post-text { color: #e8eaed; }
+.sg-post-text .hashtag { color: #9334e6; font-weight: 600; }
+.sg-post-text .mention { color: #1a73e8; font-weight: 600; }
+
+/* Post image — full width, max 500px */
+.sg-post-image {
+  width: 100%; background: #f1f3f4;
+  margin-top: 8px; overflow: hidden;
+  cursor: pointer;
+}
+html.dark .sg-post-image { background: #2d2d3a; }
+.sg-post-image img {
+  width: 100%; max-height: 500px;
+  object-fit: contain; display: block;
+}
+
+/* Repost embed card */
+.sg-repost-embed {
+  margin: 8px 14px 4px;
+  border: 1.5px solid #e8eaed;
+  border-radius: 12px; overflow: hidden; cursor: pointer;
+  transition: background 0.18s;
+}
+html.dark .sg-repost-embed { border-color: #2e2e3e; }
+.sg-repost-embed:hover { background: #f8f9fa; }
+html.dark .sg-repost-embed:hover { background: #242432; }
+.sg-repost-embed img { width: 100%; max-height: 160px; object-fit: cover; display: block; }
+.sg-repost-embed-body { padding: 10px 12px 12px; }
+.sg-repost-source { font-size: 11px; font-weight: 700; color: #9aa0a6; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.sg-repost-title { font-size: 14px; font-weight: 600; color: #202124; line-height: 1.4; }
+html.dark .sg-repost-title { color: #e8eaed; }
+
+/* Poll */
+.sg-poll { padding: 10px 14px 0; }
+.sg-poll-question { font-size: 15px; font-weight: 600; color: #202124; margin-bottom: 12px; line-height: 1.5; }
+html.dark .sg-poll-question { color: #e8eaed; }
+.sg-poll-option {
+  display: flex; align-items: center;
+  padding: 10px 14px; margin-bottom: 8px;
+  border: 1.5px solid #e8eaed; border-radius: 10px;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: border-color 0.18s; background: var(--card-bg);
+}
+html.dark .sg-poll-option { border-color: #2e2e3e; }
+.sg-poll-option:hover { border-color: #9334e6; }
+.sg-poll-option.voted { border-color: #9334e6; background: #ede7f6; }
+html.dark .sg-poll-option.voted { background: #2a1a4a; border-color: #9334e6; }
+.sg-poll-fill { position: absolute; left: 0; top: 0; bottom: 0; background: rgba(147,52,230,0.1); transition: width 0.5s ease; border-radius: 8px; }
+.sg-poll-label { font-size: 14px; font-weight: 500; color: #202124; position: relative; z-index: 1; flex: 1; }
+html.dark .sg-poll-label { color: #e8eaed; }
+.sg-poll-pct { font-size: 13px; font-weight: 700; color: #9334e6; position: relative; z-index: 1; }
+.sg-poll-total { font-size: 12px; color: #9aa0a6; margin-top: 4px; }
+
+/* ---- ACTION BAR (Reddit-style horizontal) ---- */
+.sg-post-actions {
+  display: flex; align-items: center;
+  padding: 4px 6px 2px;
+  border-top: 1px solid #f1f3f4;
+  margin-top: 8px; gap: 2px;
+}
+html.dark .sg-post-actions { border-top-color: #2e2e3e; }
+.sg-action {
+  display: flex; align-items: center; gap: 5px;
+  padding: 7px 10px; border-radius: 99px;
+  font-size: 13px; font-weight: 600; color: #5f6368;
+  background: none; border: none; cursor: pointer;
+  transition: all 0.18s; flex: 1; justify-content: center;
+  min-width: 0;
+}
+.sg-action:hover { background: #f1f3f4; color: #202124; }
+html.dark .sg-action { color: #9aa0a6; }
+html.dark .sg-action:hover { background: #2d2d3a; color: #e8eaed; }
+.sg-action.liked { color: #ea4335; }
+.sg-action.liked:hover { background: #fce8e6; }
+.sg-action.bookmarked { color: #9334e6; }
+.sg-action.bookmarked:hover { background: #ede7f6; }
+.sg-action i { font-size: 16px; flex-shrink: 0; }
+
+/* ---- EMOJI REACTIONS ---- */
+.sg-reactions {
+  display: flex; gap: 5px; padding: 4px 14px 12px;
+  flex-wrap: wrap; align-items: center;
+}
+.sg-reaction-pill {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 4px 9px; border-radius: 99px;
+  background: #f8f9fa; border: 1.5px solid #e8eaed;
+  font-size: 15px; cursor: pointer; transition: all 0.18s;
+  font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif;
+}
+.sg-reaction-pill:hover {
+  border-color: #9334e6; background: #ede7f6;
+  transform: scale(1.12);
+}
+.sg-reaction-pill.reacted { background: #ede7f6; border-color: #c084fc; }
+html.dark .sg-reaction-pill { background: #2d2d3a; border-color: #3c4043; }
+html.dark .sg-reaction-pill.reacted { background: #2a1a4a; border-color: #9334e6; }
+.sg-r-count { font-size: 11px; font-weight: 700; color: #5f6368; }
+.sg-reaction-pill.reacted .sg-r-count { color: #9334e6; }
+
+/* ---- SKELETON ---- */
+.sg-post-skeleton {
+  background: #fff;
+  border-bottom: 1px solid #e8eaed;
+  padding: 14px; margin-bottom: 8px;
+}
+html.dark .sg-post-skeleton { background: #1c1c26; border-bottom-color: #2e2e3e; }
+
+/* ---- SEARCH PAGE ---- */
+#sg-search-page .search-wrapper { padding: 12px 16px; }
