@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>New Post — Socialgati</title>
+<link rel="icon" href="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="/css/base.css">
+<script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')</script>
+<style>
+.compose-area{display:flex;gap:12px;padding:16px;border-bottom:1px solid var(--border)}
+.compose-av{width:42px;height:42px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.compose-textarea{flex:1;background:none;border:none;outline:none;resize:none;font-size:17px;line-height:1.6;color:var(--ink);font-family:var(--font);min-height:120px}
+.hashtag-chip{display:inline-flex;align-items:center;padding:5px 12px;border-radius:99px;background:var(--card-2);border:1.5px solid var(--border);font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:.15s;margin:4px}
+.hashtag-chip.selected{background:#f0ebff;border-color:var(--sg);color:var(--sg)}
+</style>
+</head><body>
+<header class="app-header">
+  <div class="app-header-inner">
+    <button style="font-size:15px;font-weight:400;color:var(--ink);background:none;border:none;cursor:pointer;padding:4px 8px" onclick="history.back()">Cancel</button>
+    <div class="header-spacer"></div>
+    <button id="post-btn" onclick="submitPost()" style="background:var(--sg);color:#fff;border:none;padding:7px 20px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer">Post</button>
+  </div>
+</header>
+<div style="padding-top:52px">
+  <div class="compose-area">
+    <img id="compose-av" src="https://ui-avatars.com/api/?name=U" class="compose-av">
+    <textarea id="compose-text" class="compose-textarea" placeholder="What's on your mind?" maxlength="500" oninput="updateCount(this)"></textarea>
+  </div>
+  <!-- Tags -->
+  <div style="padding:12px 16px;border-bottom:1px solid var(--border)">
+    <p style="font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Add a tag</p>
+    <div id="tags-row">
+      <span class="hashtag-chip" onclick="selectTag(this,'#Politics')">#Politics</span>
+      <span class="hashtag-chip" onclick="selectTag(this,'#Sports')">#Sports</span>
+      <span class="hashtag-chip" onclick="selectTag(this,'#Tech')">#Tech</span>
+      <span class="hashtag-chip" onclick="selectTag(this,'#Entertainment')">#Entertainment</span>
+      <span class="hashtag-chip" onclick="selectTag(this,'#Opinion')">#Opinion</span>
+      <span class="hashtag-chip" onclick="selectTag(this,'#Business')">#Business</span>
+      <span class="hashtag-chip" onclick="selectTag(this,'#Health')">#Health</span>
+      <span class="hashtag-chip" onclick="selectTag(this,'#Science')">#Science</span>
+    </div>
+  </div>
+  <!-- Char count -->
+  <div style="padding:10px 16px;display:flex;align-items:center;justify-content:flex-end">
+    <span id="char-count" style="font-size:13px;color:var(--muted)">500</span>
+  </div>
+</div>
+<div id="toast"><span></span></div>
+<script type="module">
+import { db, auth, doc, getDoc, addDoc, collection, serverTimestamp } from '/js/firebase.js';
+import { initAuth, currentUser, openAuthModal } from '/js/auth.js';
+import { showToast, toggleDarkMode, initTheme } from '/js/utils.js';
+
+window.toggleDarkMode = toggleDarkMode;
+initTheme();
+
+let selectedTag = '';
+initAuth((user) => {
+  const av = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName||'U')}&background=random`;
+  document.getElementById('compose-av').src = av;
+}, () => { openAuthModal(); });
+
+window.updateCount = (el) => {
+  const rem = 500 - el.value.length;
+  const cnt = document.getElementById('char-count');
+  cnt.textContent = rem;
+  cnt.style.color = rem < 50 ? '#ea4335' : rem < 100 ? '#fbbc04' : 'var(--muted)';
+};
+
+window.selectTag = (el, tag) => {
+  document.querySelectorAll('.hashtag-chip').forEach(c=>c.classList.remove('selected'));
+  if (selectedTag === tag) { selectedTag = ''; return; }
+  el.classList.add('selected');
+  selectedTag = tag;
+};
+
+window.submitPost = async () => {
+  if (!currentUser) return openAuthModal();
+  const text = document.getElementById('compose-text').value.trim();
+  if (!text) return showToast('Write something first!');
+  if (text.length > 500) return showToast('Too long (max 500 chars)');
+
+  // Rate limit
+  const rl = JSON.parse(localStorage.getItem('nt_post_rl') || '{"c":0,"t":0}');
+  if (Date.now() < rl.t && rl.c >= 5) return showToast('Too many posts. Wait a moment.');
+  if (Date.now() > rl.t) { rl.c=0; rl.t=Date.now()+60000; }
+  rl.c++; localStorage.setItem('nt_post_rl', JSON.stringify(rl));
+
+  const btn = document.getElementById('post-btn');
+  btn.disabled = true; btn.textContent = 'Posting...'; btn.style.opacity = '.7';
+  try {
+    const uSnap = await getDoc(doc(db,'users',currentUser.uid)).catch(()=>null);
+    const uData = uSnap?.data() || {};
+    const APP_ID = 'newstally-social';
+    await addDoc(collection(db,'artifacts',APP_ID,'public','data','reposts'), {
+      userId: currentUser.uid,
+      username: uData.username || currentUser.displayName || 'User',
+      userAvatar: currentUser.photoURL || '',
+      headline: text + (selectedTag ? ' '+selectedTag : ''),
+      likes: [], commentsCount: 0, timestamp: serverTimestamp(), type: 'text'
+    });
+    showToast('Posted! ✅');
+    setTimeout(()=>location.href='/', 800);
+  } catch(e) {
+    showToast('Failed to post. Try again.');
+    btn.disabled=false; btn.textContent='Post'; btn.style.opacity='1';
+  }
+};
+</script>
+</body></html>
