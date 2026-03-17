@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Alerts — Socialgati</title>
+<link rel="icon" href="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="/css/base.css">
+<script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')</script>
+<style>
+.notif-item{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer}
+.notif-item:hover{background:var(--card-2)}
+.notif-av{width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.notif-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.notif-unread{background:var(--card-2)}
+</style>
+</head><body>
+<header class="app-header">
+  <div class="app-header-inner">
+    <button class="icon-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+    <span style="font-size:16px;font-weight:700;flex:1;text-align:center">Alerts</span>
+    <button class="icon-btn" onclick="markAllRead()" title="Mark all read"><i class="fas fa-check-double"></i></button>
+  </div>
+</header>
+<div style="padding-top:52px">
+  <div id="notif-loading" style="padding:40px;text-align:center;color:var(--muted)">
+    <i class="fas fa-bell" style="font-size:32px;display:block;margin-bottom:12px;opacity:.3;animation:pulse 1.5s infinite"></i>
+    Loading alerts...
+  </div>
+  <div id="notif-empty" style="display:none;text-align:center;padding:60px 20px;color:var(--muted)">
+    <i class="far fa-bell" style="font-size:40px;display:block;margin-bottom:12px;opacity:.3"></i>
+    <p style="font-weight:600">No alerts yet</p>
+    <p style="font-size:14px;margin-top:6px">When someone Gatis or comments, it'll show here</p>
+  </div>
+  <div id="notif-list"></div>
+</div>
+<nav class="bottom-nav">
+  <a href="/" class="nav-btn"><i class="fas fa-bolt"></i><span>Socialgati</span></a>
+  <a href="/newstally.html" class="nav-btn"><i class="far fa-newspaper"></i><span>NewsTally</span></a>
+  <div class="nav-compose-wrap"><button class="nav-compose-btn" onclick="location.href='/pages/create-post.html'"><i class="fas fa-pen"></i></button></div>
+  <a href="/pages/notifications.html" class="nav-btn active"><i class="fas fa-bell"></i><span>Alerts</span></a>
+  <a href="/pages/profile.html" class="nav-btn"><i class="far fa-user"></i><span>Profile</span></a>
+</nav>
+<div id="toast"><span></span></div>
+<script type="module">
+import { db, collection, query, where, orderBy, limit, getDocs, updateDoc, doc, onSnapshot } from '/js/firebase.js';
+import { initAuth, currentUser } from '/js/auth.js';
+import { showToast, formatTimestamp, toggleDarkMode, initTheme } from '/js/utils.js';
+window.toggleDarkMode = toggleDarkMode;
+initTheme();
+const APP_ID = 'newstally-social';
+
+initAuth(async (user) => {
+  // Load user's posts to check for new interactions
+  const myPostsSnap = await getDocs(query(
+    collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'),
+    where('userId','==',user.uid), orderBy('timestamp','desc'), limit(20)
+  )).catch(()=>null);
+
+  const notifEl = document.getElementById('notif-list');
+  document.getElementById('notif-loading').style.display = 'none';
+
+  if (!myPostsSnap || myPostsSnap.empty) {
+    document.getElementById('notif-empty').style.display = '';
+    return;
+  }
+
+  const notifs = [];
+  myPostsSnap.docs.forEach(d => {
+    const p = d.data();
+    const likes = p.likes || [];
+    if (likes.length > 0) {
+      notifs.push({ type: 'like', count: likes.length, headline: p.headline, postId: d.id, ts: p.timestamp });
+    }
+    if (p.commentsCount > 0) {
+      notifs.push({ type: 'comment', count: p.commentsCount, headline: p.headline, postId: d.id, ts: p.timestamp });
+    }
+  });
+
+  if (notifs.length === 0) { document.getElementById('notif-empty').style.display = ''; return; }
+
+  notifEl.innerHTML = notifs.map(n => `
+    <div class="notif-item" onclick="location.href='/pages/post.html?id=${n.postId}'">
+      <div class="notif-icon" style="background:${n.type==='like'?'#fce8e6':'#e8f0fe'}">
+        <i class="fas fa-${n.type==='like'?'heart':'comment'}" style="color:${n.type==='like'?'#c01515':'var(--nt)'}"></i>
+      </div>
+      <div style="flex:1;min-width:0">
+        <p style="font-size:14px;font-weight:500;color:var(--ink)">
+          <strong>${n.count} ${n.type==='like'?'Gati':'comment'}${n.count>1?'s':''}</strong> on your post
+        </p>
+        <p style="font-size:13px;color:var(--muted);margin-top:2px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden">${n.headline||'Your post'}</p>
+        <p style="font-size:11px;color:var(--muted);margin-top:3px">${formatTimestamp(n.ts)}</p>
+      </div>
+      <i class="fas fa-chevron-right" style="color:var(--border);font-size:12px"></i>
+    </div>`).join('');
+}, () => {
+  document.getElementById('notif-loading').style.display = 'none';
+  document.getElementById('notif-list').innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--muted)">
+    <p style="font-weight:600">Sign in to see alerts</p>
+    <button class="btn-primary" style="margin-top:16px" onclick="openAuthModal()">Sign In</button>
+  </div>`;
+});
+
+window.markAllRead = () => showToast('All marked as read');
+</script>
+</body></html>
