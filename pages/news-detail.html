@@ -1,1 +1,410 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>News — NewsTally</title>
+<meta name="description" content="Read the latest news on NewsTally.">
+<link rel="canonical" href="https://newstally.online/pages/news-detail.html">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="News — NewsTally">
+<meta property="og:description" content="Read the latest news on NewsTally.">
+<meta property="og:image" content="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png">
+<meta property="og:site_name" content="Socialgati by NewsTally">
+<meta name="theme-color" content="#ffffff" id="theme-color-meta">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/news-detail.css">
+<script>
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+const _t = localStorage.getItem('theme');
+if(_t === 'dark') document.documentElement.classList.add('dark');
+</script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="app-header-inner">
+    <a href="/" style="font-size:13px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:4px"><i class="fas fa-bolt" style="color:#9334e6"></i> Socialgati</a>
+        <span style="width:1px;height:16px;background:var(--border);display:inline-block;margin:0 10px"></span>
+        <span class="brand-nt" onclick="location.href='/newstally.html'">NewsTally</span>
+    <div class="header-spacer"></div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="toggleDarkMode()" id="theme-toggle-btn">
+        <i id="theme-icon" class="fas fa-moon"></i>
+      </button>
+      <button id="sign-in-btn" class="btn-signin" onclick="openAuthModal()">Sign In</button>
+      <div id="user-actions" style="display:none;align-items:center;gap:8px">
+        <button class="icon-btn" onclick="location.href='/pages/notifications.html'" title="Alerts">
+          <i class="far fa-bell"></i>
+        </button>
+        <img class="user-avatar icon-btn" src="https://ui-avatars.com/api/?name=U" 
+             style="border-radius:50%;object-fit:cover;cursor:pointer;padding:0;border:2px solid var(--border)"
+             onclick="location.href='/pages/profile.html'">
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- OFFLINE BANNER -->
+<div id="offline-banner">⚡ You're offline — showing cached content</div>
+
+
+<div class="page-wrap narrow" id="news-page">
+
+  <!-- BACK HEADER -->
+  <div class="news-topbar">
+    <button class="icon-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+    <span id="news-category-badge" class="cat-badge">News</span>
+    <button class="icon-btn" id="news-share-btn"><i class="fas fa-share-nodes"></i></button>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div id="news-skeleton">
+    <div class="skeleton" style="width:100%;aspect-ratio:16/9;border-radius:0;margin-bottom:16px"></div>
+    <div style="padding:0 16px">
+      <div class="skeleton" style="height:14px;width:30%;margin-bottom:12px;border-radius:6px"></div>
+      <div class="skeleton" style="height:28px;width:90%;margin-bottom:8px;border-radius:6px"></div>
+      <div class="skeleton" style="height:28px;width:70%;margin-bottom:20px;border-radius:6px"></div>
+      <div class="skeleton" style="height:14px;width:60%;margin-bottom:8px;border-radius:6px"></div>
+      <div class="skeleton" style="height:14px;width:80%;margin-bottom:8px;border-radius:6px"></div>
+      <div class="skeleton" style="height:14px;width:50%;border-radius:6px"></div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <article id="news-content" style="display:none">
+    <div id="news-hero-img"></div>
+    <div style="padding:20px 16px 32px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <span id="news-cat-pill" class="cat-badge"></span>
+        <span id="news-read-time" style="font-size:12px;color:var(--muted)"></span>
+      </div>
+      <h1 id="news-title" style="font-size:clamp(20px,4vw,26px);font-weight:700;line-height:1.35;margin-bottom:14px;color:var(--ink)"></h1>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--card-2);border-radius:10px;border-left:3px solid var(--nt);margin-bottom:20px">
+        <div>
+          <div id="news-source" style="font-size:13px;font-weight:600;color:var(--ink)"></div>
+          <div id="news-date" style="font-size:11px;color:var(--muted);margin-top:2px"></div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button id="news-save-btn" class="btn-outline" style="padding:6px 12px;font-size:12px" onclick="toggleSaveNews()">
+            <i class="far fa-bookmark"></i> Save
+          </button>
+          <button class="btn-outline" style="padding:6px 12px;font-size:12px" onclick="repostCurrentNews()">
+            <i class="fas fa-retweet"></i> Repost
+          </button>
+        </div>
+      </div>
+      <div id="news-body" style="font-size:15px;line-height:1.8;color:var(--ink-2)"></div>
+      <div id="news-tags" style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap"></div>
+    </div>
+
+    <!-- RELATED NEWS -->
+    <div style="padding:0 16px 24px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-top:16px;border-top:1px solid var(--border)">
+        <div style="width:4px;height:20px;background:var(--nt);border-radius:2px"></div>
+        <h3 style="font-size:16px;font-weight:700">More like this</h3>
+      </div>
+      <div id="related-news"></div>
+    </div>
+  </article>
+
+  <!-- NOT FOUND -->
+  <div id="news-not-found" style="display:none;text-align:center;padding:60px 20px">
+    <i class="fas fa-newspaper" style="font-size:40px;color:var(--muted);display:block;margin-bottom:12px"></i>
+    <p style="font-weight:700;font-size:18px">Article not found</p>
+    <a href="/newstally.html" class="btn-primary nt" style="margin-top:16px;display:inline-flex">← Back to News</a>
+  </div>
+</div>
+
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a href="/" class="nav-btn" id="nav-sg">
+    <i class="fas fa-bolt"></i>
+    <span>Socialgati</span>
+  </a>
+  <a href="/newstally.html" class="nav-btn active nt" id="nav-nt">
+    <i class="fas fa-newspaper"></i>
+    <span>NewsTally</span>
+  </a>
+  <div class="nav-compose-wrap">
+    <button class="nav-compose-btn" onclick="openComposePost()">
+      <i class="fas fa-pen"></i>
+    </button>
+  </div>
+  <a href="/pages/notifications.html" class="nav-btn" id="nav-notif">
+    <i class="far fa-bell"></i>
+    <span>Alerts</span>
+  </a>
+  <a href="/pages/profile.html" class="nav-btn" id="nav-profile">
+    <img class="user-avatar" src="https://ui-avatars.com/api/?name=U" 
+         style="width:24px;height:24px;border-radius:50%;object-fit:cover">
+    <span>Profile</span>
+  </a>
+</nav>
+
+<!-- TOAST -->
+<div id="toast"><span></span></div>
+
+<!-- AUTH MODAL -->
+<div id="auth-overlay" class="overlay-bg" onclick="if(event.target===this)closeAuthModal()">
+  <div class="overlay-box">
+    <button onclick="closeAuthModal()" style="position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:var(--card-2);display:flex;align-items:center;justify-content:center;color:var(--muted)"><i class="fas fa-times"></i></button>
+    <div id="auth-view-signin">
+      <div style="text-align:center;margin-bottom:20px">
+        <span class="brand-sg" style="font-size:28px;display:block;margin-bottom:6px">Socialgati</span>
+        <p style="color:var(--muted);font-size:14px">Sign in to post, Gati & comment</p>
+      </div>
+      <button onclick="handleGoogleSignIn()" class="auth-google-btn" style="margin-bottom:12px">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
+        Continue with Google
+      </button>
+      <div class="auth-divider">or</div>
+      <form onsubmit="handleEmailSignIn(event)" style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+        <input type="email" id="signin-email" class="auth-input" placeholder="Email" required>
+        <input type="password" id="signin-password" class="auth-input" placeholder="Password" required>
+        <div id="auth-error-signin" style="color:#ea4335;font-size:13px;min-height:18px;text-align:center"></div>
+        <button type="submit" class="auth-submit">Sign In</button>
+      </form>
+      <p style="text-align:center;font-size:14px;color:var(--muted);margin-top:16px">
+        No account? <span class="auth-link" onclick="toggleAuthView('signup')">Sign Up</span>
+      </p>
+    </div>
+    <div id="auth-view-signup" style="display:none">
+      <div style="text-align:center;margin-bottom:20px">
+        <span class="brand-sg" style="font-size:28px;display:block;margin-bottom:6px">Join Socialgati</span>
+        <p style="color:var(--muted);font-size:14px">Create your account</p>
+      </div>
+      <button onclick="handleGoogleSignIn()" class="auth-google-btn" style="margin-bottom:12px">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
+        Continue with Google
+      </button>
+      <div class="auth-divider">or</div>
+      <form onsubmit="handleEmailSignUp(event)" style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+        <input type="text" id="signup-name" class="auth-input" placeholder="Full Name" required>
+        <input type="email" id="signup-email" class="auth-input" placeholder="Email" required>
+        <input type="password" id="signup-password" class="auth-input" placeholder="Password (6+ chars)" minlength="6" required>
+        <div id="auth-error-signup" style="color:#ea4335;font-size:13px;min-height:18px;text-align:center"></div>
+        <button type="submit" class="auth-submit">Create Account</button>
+      </form>
+      <p style="text-align:center;font-size:14px;color:var(--muted);margin-top:16px">
+        Have account? <span class="auth-link" onclick="toggleAuthView('signin')">Sign In</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- USERNAME MODAL -->
+<div id="username-overlay" class="overlay-bg">
+  <div class="overlay-box" style="text-align:center">
+    <h3 style="font-size:20px;font-weight:700;margin-bottom:8px">Choose username</h3>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:20px">Your unique identity on Socialgati</p>
+    <div style="position:relative;margin-bottom:14px">
+      <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--muted)">@</span>
+      <input type="text" id="new-username-input" class="auth-input" style="padding-left:32px" placeholder="username">
+    </div>
+    <button id="save-username-btn" class="auth-submit" onclick="saveUsername()">Save & Continue</button>
+  </div>
+</div>
+
+<script type="module">
+import { initAuth, currentUser, openAuthModal, closeAuthModal, toggleAuthView,
+         handleGoogleSignIn, handleEmailSignIn, handleEmailSignUp, doLogout,
+         saveUsername } from '/js/auth.js';
+import { initTheme, toggleDarkMode, showToast } from '/js/utils.js';
+
+// Make global
+window.openAuthModal = openAuthModal;
+window.closeAuthModal = closeAuthModal;
+window.toggleAuthView = toggleAuthView;
+window.handleGoogleSignIn = handleGoogleSignIn;
+window.handleEmailSignIn = handleEmailSignIn;
+window.handleEmailSignUp = handleEmailSignUp;
+window.doLogout = doLogout;
+window.saveUsername = saveUsername;
+window.toggleDarkMode = toggleDarkMode;
+window.showToast = showToast;
+
+window.openComposePost = () => {
+  if (!currentUser) return openAuthModal();
+  window.location.href = '/pages/create-post.html';
+};
+
+// Offline
+window.addEventListener('online', () => document.getElementById('offline-banner')?.classList.remove('show'));
+window.addEventListener('offline', () => document.getElementById('offline-banner')?.classList.add('show'));
+
+initTheme();
+initAuth(
+  (user) => { /* logged in */ },
+  () => { /* logged out */ }
+);
+
+
+import { SHEET_ID, SHEETS_KEY } from '/js/firebase.js';
+import { formatDate, readingTime, isVerified, catColor, showToast } from '/js/utils.js';
+import { db, auth, doc, getDoc, setDoc, addDoc, collection, serverTimestamp,
+         arrayUnion, arrayRemove, updateDoc, onAuthStateChanged } from '/js/firebase.js';
+
+const APP_ID = 'newstally-social';
+const params = new URLSearchParams(location.search);
+const newsId  = params.get('id') || '';
+const newsQ   = params.get('q')  || '';
+const newsCat = params.get('cat')|| '';
+
+let allNews = [];
+let currentNews = null;
+
+// Load news
+async function loadNews() {
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${SHEETS_KEY}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const rows = data.values || [];
+    allNews = rows.slice(1).reverse().map((r,i) => ({
+      id: String(r[0]||i), title: r[1]||'', source: r[2]||'', date: r[3]||'',
+      description: r[4]||'', url: r[5]||'', category: r[6]||'', image: r[7]||''
+    })).filter(n => n.title);
+
+    // Find matching article
+    let match = null;
+    if (newsId) match = allNews.find(n => String(n.id) === newsId);
+    if (!match && newsQ) {
+      const qLow = decodeURIComponent(newsQ).toLowerCase().substring(0,40);
+      match = allNews.find(n => n.title.toLowerCase().includes(qLow));
+    }
+    if (!match && newsCat) {
+      match = allNews.find(n => n.category?.toLowerCase() === decodeURIComponent(newsCat).toLowerCase());
+    }
+
+    if (match) renderNews(match);
+    else showNotFound();
+  } catch(e) {
+    console.error(e);
+    showNotFound();
+  }
+}
+
+function renderNews(item) {
+  currentNews = item;
+  document.getElementById('news-skeleton').style.display = 'none';
+  document.getElementById('news-content').style.display = '';
+  document.title = `${item.title} — NewsTally`;
+
+  // Hero image
+  const heroDiv = document.getElementById('news-hero-img');
+  if (item.image) {
+    heroDiv.innerHTML = `<img src="${item.image}" alt="${item.title}" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block" onerror="this.parentElement.style.display='none'">`;
+  }
+
+  // Category badge
+  const cat = item.category || 'News';
+  const color = catColor(cat);
+  document.getElementById('news-cat-pill').textContent = cat;
+  document.getElementById('news-cat-pill').style.background = color + '18';
+  document.getElementById('news-cat-pill').style.color = color;
+  document.getElementById('news-category-badge').textContent = cat;
+  document.getElementById('news-read-time').textContent = readingTime(item.title, item.description) + ' min read';
+  document.getElementById('news-title').textContent = item.title;
+  document.getElementById('news-source').innerHTML = item.source + (isVerified(item.source) ? ' <i class="fas fa-circle-check" style="color:var(--nt);font-size:11px"></i>' : '');
+  document.getElementById('news-date').textContent = formatDate(item.date);
+
+  // Body
+  const paras = (item.description || 'Full article not available in this feed.').split('. ').filter(s=>s.trim());
+  document.getElementById('news-body').innerHTML = paras.map(p => `<p style="margin-bottom:14px">${p.trim()}${p.endsWith('.')?'':'.'}</p>`).join('');
+
+  // Tags
+  document.getElementById('news-tags').innerHTML = `
+    <span style="background:${color}18;color:${color};padding:4px 12px;border-radius:99px;font-size:12px;font-weight:600;cursor:pointer" onclick="location.href='/pages/category.html?cat=${encodeURIComponent(cat)}">#${cat}</span>
+    ${item.source ? `<span style="background:var(--card-2);color:var(--muted);padding:4px 12px;border-radius:99px;font-size:12px">${item.source}</span>` : ''}
+  `;
+
+  // Share button
+  document.getElementById('news-share-btn').onclick = () => {
+    const url = location.href;
+    if (navigator.share) navigator.share({ title: item.title, url }).catch(()=>{});
+    else navigator.clipboard?.writeText(url).then(()=>showToast('Link copied!'));
+  };
+
+  // Related
+  const related = allNews.filter(n => n.id !== item.id && n.category === item.category).slice(0,4);
+  document.getElementById('related-news').innerHTML = related.map(n => `
+    <div onclick="location.href='/pages/news-detail.html?id=${n.id}'" style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer">
+      ${n.image ? `<img src="${n.image}" style="width:72px;height:54px;object-fit:cover;border-radius:8px;flex-shrink:0" onerror="this.style.display='none'">` : ''}
+      <div style="flex:1;min-width:0">
+        <p style="font-size:13px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${n.title}</p>
+        <p style="font-size:11px;color:var(--muted);margin-top:4px">${n.source} · ${formatDate(n.date)}</p>
+      </div>
+    </div>`).join('') || '<p style="color:var(--muted);font-size:14px">No related articles</p>';
+
+  // Save state
+  const saved = JSON.parse(localStorage.getItem('nt_saved_news') || '[]');
+  const isSaved = saved.includes(item.id);
+  const saveBtn = document.getElementById('news-save-btn');
+  saveBtn.innerHTML = `<i class="${isSaved?'fas':'far'} fa-bookmark"></i> ${isSaved?'Saved':'Save'}`;
+  if (isSaved) saveBtn.style.color = 'var(--nt)';
+
+  // Reading history
+  const hist = JSON.parse(localStorage.getItem('nt_history') || '[]').filter(h=>h.id!==item.id);
+  hist.unshift({ id: item.id, title: item.title, image: item.image, category: item.category, ts: Date.now() });
+  localStorage.setItem('nt_history', JSON.stringify(hist.slice(0,20)));
+}
+
+function showNotFound() {
+  document.getElementById('news-skeleton').style.display = 'none';
+  document.getElementById('news-not-found').style.display = '';
+}
+
+window.toggleSaveNews = () => {
+  if (!currentNews) return;
+  const saved = JSON.parse(localStorage.getItem('nt_saved_news') || '[]');
+  const idx = saved.indexOf(currentNews.id);
+  const btn = document.getElementById('news-save-btn');
+  if (idx > -1) {
+    saved.splice(idx,1);
+    btn.innerHTML = '<i class="far fa-bookmark"></i> Save';
+    btn.style.color = '';
+    showToast('Removed from saved');
+  } else {
+    saved.push(currentNews.id);
+    btn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
+    btn.style.color = 'var(--nt)';
+    showToast('Saved!');
+  }
+  localStorage.setItem('nt_saved_news', JSON.stringify(saved));
+};
+
+window.repostCurrentNews = async () => {
+  if (!currentNews) return;
+  if (!currentUser) return openAuthModal();
+  try {
+    const uSnap = await getDoc(doc(db, 'users', currentUser.uid)).catch(()=>null);
+    const uData = uSnap?.data() || {};
+    await addDoc(collection(db, 'artifacts', APP_ID, 'public', 'data', 'reposts'), {
+      userId: currentUser.uid,
+      username: uData.username || currentUser.displayName || 'User',
+      userAvatar: currentUser.photoURL || '',
+      image: currentNews.image || '', headline: currentNews.title,
+      newsUrl: currentNews.url || '', newsSource: currentNews.source || '',
+      newsCategory: currentNews.category || '',
+      likes: [], commentsCount: 0, timestamp: serverTimestamp(), type: 'repost'
+    });
+    showToast('✅ Reposted to Socialgati!');
+  } catch(e) { showToast('Repost failed.'); }
+};
+
+loadNews();
+
+</script>
+
+</body>
+</html>
