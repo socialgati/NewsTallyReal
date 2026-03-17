@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Settings — Socialgati</title>
+<link rel="icon" href="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="/css/base.css">
+<script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')</script>
+<style>
+.settings-section{padding:8px 0}
+.settings-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:16px 16px 6px}
+.settings-group{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:8px}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer}
+.settings-row:last-child{border-bottom:none}
+.settings-row:hover{background:var(--card-2)}
+.settings-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-right:12px;font-size:15px;flex-shrink:0}
+.toggle-switch{position:relative;display:inline-block;width:44px;height:24px}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:24px;transition:.3s;cursor:pointer}
+.toggle-switch input:checked+.toggle-slider{background:var(--sg)}
+.toggle-slider:before{content:"";position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle-switch input:checked+.toggle-slider:before{transform:translateX(20px)}
+</style>
+</head><body>
+<header class="app-header">
+  <div class="app-header-inner">
+    <button class="icon-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+    <span style="font-size:16px;font-weight:700;flex:1;text-align:center">Settings</span>
+    <div style="width:36px"></div>
+  </div>
+</header>
+<div style="padding-top:52px;padding-bottom:80px">
+
+  <!-- PROFILE QUICK -->
+  <div id="profile-quick" style="display:none;padding:16px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;cursor:pointer" onclick="location.href='/pages/profile.html'">
+    <img id="settings-av" src="https://ui-avatars.com/api/?name=U" style="width:60px;height:60px;border-radius:50%;object-fit:cover">
+    <div><div id="settings-name" style="font-size:17px;font-weight:700"></div><div id="settings-username" style="font-size:14px;color:var(--muted)"></div></div>
+    <i class="fas fa-chevron-right" style="color:var(--border);margin-left:auto"></i>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-label">Appearance</div>
+    <div class="settings-group">
+      <div class="settings-row">
+        <div style="display:flex;align-items:center"><div class="settings-icon" style="background:#e8eaed;color:#5f6368"><i class="fas fa-moon"></i></div>Dark Mode</div>
+        <label class="toggle-switch"><input type="checkbox" id="dark-toggle" onchange="toggleDarkMode(this.checked)"><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+
+    <div class="settings-label">Account</div>
+    <div class="settings-group">
+      <div class="settings-row" onclick="location.href='/pages/edit-profile.html'">
+        <div style="display:flex;align-items:center"><div class="settings-icon" style="background:#e8f0fe;color:#1a73e8"><i class="fas fa-user-pen"></i></div>Edit Profile</div>
+        <i class="fas fa-chevron-right" style="color:var(--border)"></i>
+      </div>
+      <div class="settings-row" onclick="changePassword()">
+        <div style="display:flex;align-items:center"><div class="settings-icon" style="background:#fce8e6;color:#ea4335"><i class="fas fa-lock"></i></div>Change Password</div>
+        <i class="fas fa-chevron-right" style="color:var(--border)"></i>
+      </div>
+    </div>
+
+    <div class="settings-label">Legal</div>
+    <div class="settings-group">
+      <div class="settings-row" onclick="window.open('/terms.html','_blank')">
+        <div style="display:flex;align-items:center"><div class="settings-icon" style="background:#f0ebff;color:#9334e6"><i class="fas fa-file-contract"></i></div>Terms of Service</div>
+        <i class="fas fa-chevron-right" style="color:var(--border)"></i>
+      </div>
+      <div class="settings-row" onclick="window.open('/privacy.html','_blank')">
+        <div style="display:flex;align-items:center"><div class="settings-icon" style="background:#e6f4ea;color:#34a853"><i class="fas fa-shield-halved"></i></div>Privacy Policy</div>
+        <i class="fas fa-chevron-right" style="color:var(--border)"></i>
+      </div>
+      <div class="settings-row" onclick="window.open('/pages/about.html','_blank')">
+        <div style="display:flex;align-items:center"><div class="settings-icon" style="background:#e8f0fe;color:#1a73e8"><i class="fas fa-info-circle"></i></div>About</div>
+        <i class="fas fa-chevron-right" style="color:var(--border)"></i>
+      </div>
+    </div>
+
+    <div class="settings-label">Account Actions</div>
+    <div class="settings-group">
+      <div class="settings-row" onclick="doLogout()">
+        <div style="display:flex;align-items:center"><div class="settings-icon" style="background:#fce8e6;color:#ea4335"><i class="fas fa-sign-out-alt"></i></div>Sign Out</div>
+        <i class="fas fa-chevron-right" style="color:var(--border)"></i>
+      </div>
+      <div class="settings-row" onclick="requestAccountDeletion()">
+        <div style="display:flex;align-items:center"><div class="settings-icon" style="background:#fce8e6;color:#ea4335"><i class="fas fa-user-xmark"></i></div><span style="color:#ea4335">Delete Account</span></div>
+        <i class="fas fa-chevron-right" style="color:var(--border)"></i>
+      </div>
+    </div>
+  </div>
+  <p style="text-align:center;font-size:12px;color:var(--muted);padding:20px">Socialgati by NewsTally · v3.0</p>
+</div>
+<nav class="bottom-nav">
+  <a href="/" class="nav-btn"><i class="fas fa-bolt"></i><span>Socialgati</span></a>
+  <a href="/newstally.html" class="nav-btn"><i class="far fa-newspaper"></i><span>NewsTally</span></a>
+  <div class="nav-compose-wrap"><button class="nav-compose-btn" onclick="location.href='/pages/create-post.html'"><i class="fas fa-pen"></i></button></div>
+  <a href="/pages/notifications.html" class="nav-btn"><i class="far fa-bell"></i><span>Alerts</span></a>
+  <a href="/pages/profile.html" class="nav-btn active"><i class="fas fa-user"></i><span>Profile</span></a>
+</nav>
+<div id="toast"><span></span></div>
+<script type="module">
+import { auth, db, doc, getDoc, signOut, onAuthStateChanged } from '/js/firebase.js';
+import { initAuth, currentUser, doLogout, requestAccountDeletion } from '/js/auth.js';
+import { showToast, toggleDarkMode, initTheme } from '/js/utils.js';
+window.toggleDarkMode = (val) => { toggleDarkMode(val); };
+window.doLogout = doLogout;
+window.requestAccountDeletion = requestAccountDeletion;
+initTheme();
+const isDark = document.documentElement.classList.contains('dark');
+const toggle = document.getElementById('dark-toggle');
+if (toggle) toggle.checked = isDark;
+
+initAuth(async (user) => {
+  const snap = await getDoc(doc(db,'users',user.uid)).catch(()=>null);
+  const d = snap?.data() || {};
+  document.getElementById('settings-av').src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName||'U')}&background=random`;
+  document.getElementById('settings-name').textContent = d.displayName || user.displayName || 'User';
+  document.getElementById('settings-username').textContent = d.username ? '@'+d.username : user.email || '';
+  document.getElementById('profile-quick').style.display = 'flex';
+}, ()=>{});
+
+window.changePassword = () => showToast('Reset link will be sent to your email');
+</script>
+</body></html>
