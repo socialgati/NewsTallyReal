@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>NewsTally</title><meta name="robots" content="noindex">
+<script>
+  var path = window.location.pathname;
+  var search = window.location.search;
+  // Route /newstally* to newstally.html
+  if (path.startsWith('/newstally')) {
+    window.location.replace('/newstally.html' + search);
+  } else {
+    window.location.replace('/?_route=' + encodeURIComponent(path + search));
+  }
+</script>
+</head><body><p style="font-family:sans-serif;text-align:center;padding:40px">Redirecting...</p></body></html>
