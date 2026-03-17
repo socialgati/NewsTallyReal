@@ -1,7 +1,0 @@
-User-agent: *
-Disallow: /admin/
-Disallow: /private/
-Disallow: /temp/
-Allow: /
-
-Sitemap: https://newstally.online/sitemap.xml
