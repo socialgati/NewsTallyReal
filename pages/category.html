@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Category — NewsTally</title>
+<link rel="icon" href="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="/css/base.css">
+<script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')</script>
+<style>
+.news-card{display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer}
+.news-card:hover{background:var(--card-2)}
+.news-thumb{width:80px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0}
+</style>
+</head><body>
+<header class="app-header">
+  <div class="app-header-inner">
+    <button class="icon-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+    <span id="cat-title" style="font-size:16px;font-weight:700;flex:1;text-align:center"></span>
+    <button class="icon-btn" onclick="toggleDarkMode()"><i id="theme-icon" class="fas fa-moon"></i></button>
+  </div>
+</header>
+<div style="padding-top:52px">
+  <div id="loading" style="padding:40px;text-align:center;color:var(--muted)">Loading news...</div>
+  <div id="news-list"></div>
+</div>
+<nav class="bottom-nav">
+  <a href="/" class="nav-btn"><i class="fas fa-bolt"></i><span>Socialgati</span></a>
+  <a href="/newstally.html" class="nav-btn active nt"><i class="fas fa-newspaper"></i><span>NewsTally</span></a>
+  <div class="nav-compose-wrap"><button class="nav-compose-btn" onclick="location.href='/pages/create-post.html'"><i class="fas fa-pen"></i></button></div>
+  <a href="/pages/notifications.html" class="nav-btn"><i class="far fa-bell"></i><span>Alerts</span></a>
+  <a href="/pages/profile.html" class="nav-btn"><i class="far fa-user"></i><span>Profile</span></a>
+</nav>
+<div id="toast"><span></span></div>
+<script type="module">
+import { SHEET_ID, SHEETS_KEY } from '/js/firebase.js';
+import { formatDate, catColor, toggleDarkMode, initTheme } from '/js/utils.js';
+window.toggleDarkMode = toggleDarkMode;
+initTheme();
+const cat = new URLSearchParams(location.search).get('cat') || '';
+document.getElementById('cat-title').textContent = cat || 'News';
+document.title = `${cat} News — NewsTally`;
+async function load() {
+  try {
+    const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${SHEETS_KEY}`);
+    const data = await res.json();
+    const all = (data.values||[]).slice(1).reverse().map((r,i)=>({id:String(r[0]||i),title:r[1]||'',source:r[2]||'',date:r[3]||'',category:r[6]||'',image:r[7]||''})).filter(n=>n.title);
+    const filtered = cat ? all.filter(n=>n.category?.toLowerCase()===cat.toLowerCase()) : all;
+    document.getElementById('loading').style.display='none';
+    const color = catColor(cat);
+    document.getElementById('news-list').innerHTML = filtered.length ? filtered.map(n=>`
+      <div class="news-card" onclick="location.href='/pages/news-detail.html?id=${n.id}'">
+        ${n.image?`<img src="${n.image}" class="news-thumb" onerror="this.style.display='none'">`:''}
+        <div style="flex:1;min-width:0">
+          <span style="font-size:11px;font-weight:700;color:${color}">${n.category}</span>
+          <p style="font-size:14px;font-weight:600;line-height:1.4;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${n.title}</p>
+          <p style="font-size:11px;color:var(--muted);margin-top:4px">${n.source} · ${formatDate(n.date)}</p>
+        </div>
+      </div>`).join('') : `<div style="text-align:center;padding:60px;color:var(--muted)">No news in ${cat}</div>`;
+  } catch(e) { document.getElementById('loading').textContent = 'Failed to load. Try again.'; }
+}
+load();
+</script>
+</body></html>
