@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Search — Socialgati</title>
+<link rel="icon" href="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="/css/base.css">
+<script>if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')</script>
+<style>
+.search-bar-wrap{padding:8px 12px;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:52px;z-index:20}
+.search-input-inner{display:flex;align-items:center;gap:8px;background:var(--card-2);border-radius:10px;padding:0 12px}
+.search-input-inner input{flex:1;background:none;border:none;outline:none;padding:10px 0;font-size:15px;color:var(--ink)}
+.search-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:calc(52px + 52px);z-index:19}
+.stab{flex:1;padding:12px;text-align:center;font-size:14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;transition:.15s}
+.stab.active{color:var(--sg);border-bottom-color:var(--sg)}
+.user-result{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer}
+.user-result:hover{background:var(--card-2)}
+.user-av-sm{width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0}
+</style>
+</head><body>
+<header class="app-header">
+  <div class="app-header-inner">
+    <button class="icon-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+    <span style="font-size:16px;font-weight:700;flex:1;text-align:center">Search</span>
+    <button class="icon-btn" onclick="toggleDarkMode()"><i id="theme-icon" class="fas fa-moon"></i></button>
+  </div>
+</header>
+
+<div style="padding-top:52px">
+  <div class="search-bar-wrap">
+    <div class="search-input-inner">
+      <i class="fas fa-magnifying-glass" style="color:var(--muted)"></i>
+      <input type="search" id="search-input" placeholder="Search people, posts, news..."
+             oninput="handleSearch(this.value)" autofocus>
+      <button id="clear-btn" onclick="clearSearch()" style="display:none;color:var(--muted)"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
+
+  <div class="search-tabs">
+    <div class="stab active" onclick="switchTab('people',this)">People</div>
+    <div class="stab" onclick="switchTab('posts',this)">Posts</div>
+    <div class="stab" onclick="switchTab('news',this)">News</div>
+  </div>
+
+  <div id="tab-people"><div id="people-results" style="padding:8px 0"></div></div>
+  <div id="tab-posts" style="display:none"><div id="posts-results" style="padding:8px 0"></div></div>
+  <div id="tab-news" style="display:none"><div id="news-results" style="padding:8px 0"></div></div>
+
+  <!-- DEFAULT STATE -->
+  <div id="search-default" style="text-align:center;padding:60px 20px;color:var(--muted)">
+    <i class="fas fa-magnifying-glass" style="font-size:40px;display:block;margin-bottom:12px;opacity:.3"></i>
+    <p style="font-weight:600">Search Socialgati</p>
+    <p style="font-size:14px;margin-top:6px">Find people, posts, and news</p>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="/" class="nav-btn"><i class="fas fa-bolt"></i><span>Socialgati</span></a>
+  <a href="/newstally.html" class="nav-btn"><i class="far fa-newspaper"></i><span>NewsTally</span></a>
+  <div class="nav-compose-wrap"><button class="nav-compose-btn" onclick="openComposePost()"><i class="fas fa-pen"></i></button></div>
+  <a href="/pages/notifications.html" class="nav-btn"><i class="far fa-bell"></i><span>Alerts</span></a>
+  <a href="/pages/profile.html" class="nav-btn"><i class="far fa-user"></i><span>Profile</span></a>
+</nav>
+<div id="toast"><span></span></div>
+
+<script type="module">
+import { db, collection, query, where, orderBy, limit, getDocs, SHEET_ID, SHEETS_KEY } from '/js/firebase.js';
+import { initAuth } from '/js/auth.js';
+import { showToast, toggleDarkMode, initTheme, formatTimestamp } from '/js/utils.js';
+
+window.toggleDarkMode = toggleDarkMode;
+window.openComposePost = () => location.href = '/pages/create-post.html';
+initTheme();
+initAuth(()=>{}, ()=>{});
+
+let allNews = [], currentTab = 'people', searchTimer = null;
+const APP_ID = 'newstally-social';
+
+// Load news for search
+fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1?key=${SHEETS_KEY}`)
+  .then(r=>r.json()).then(data=>{
+    allNews = (data.values||[]).slice(1).reverse().map((r,i)=>({
+      id:String(r[0]||i),title:r[1]||'',source:r[2]||'',category:r[6]||'',image:r[7]||''
+    })).filter(n=>n.title);
+  }).catch(()=>{});
+
+window.handleSearch = (val) => {
+  const q = val.trim();
+  document.getElementById('clear-btn').style.display = q ? '' : 'none';
+  document.getElementById('search-default').style.display = q ? 'none' : '';
+  clearTimeout(searchTimer);
+  if (!q) return;
+  searchTimer = setTimeout(() => runSearch(q), 300);
+};
+
+async function runSearch(q) {
+  const qLow = q.toLowerCase();
+  // People
+  const uSnap = await getDocs(query(collection(db,'users'), where('username','>=',qLow), where('username','<=',qLow+''), limit(10))).catch(()=>null);
+  const peopleEl = document.getElementById('people-results');
+  if (uSnap && !uSnap.empty) {
+    peopleEl.innerHTML = uSnap.docs.map(d => {
+      const u = d.data();
+      return `<div class="user-result" onclick="location.href='/pages/profile.html?uid=${d.id}'">
+        <img src="${u.photoURL||`https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName||'U')}&background=random`}" class="user-av-sm" onerror="this.src='https://ui-avatars.com/api/?name=U'">
+        <div><div style="font-size:14px;font-weight:700">${u.displayName||'User'}</div><div style="font-size:13px;color:var(--muted)">@${u.username||'user'}</div></div>
+      </div>`;
+    }).join('');
+  } else peopleEl.innerHTML = `<div style="text-align:center;padding:32px;color:var(--muted)">No people found for "${q}"</div>`;
+
+  // Posts
+  const pSnap = await getDocs(query(collection(db,'artifacts',APP_ID,'public','data','reposts'), orderBy('timestamp','desc'), limit(30))).catch(()=>null);
+  const postsEl = document.getElementById('posts-results');
+  const matchPosts = pSnap ? pSnap.docs.filter(d=>(d.data().headline||'').toLowerCase().includes(qLow)).slice(0,10) : [];
+  postsEl.innerHTML = matchPosts.length ? matchPosts.map(d=>{
+    const p = d.data();
+    return `<div onclick="location.href='/pages/post.html?id=${d.id}'" style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer">
+      <div style="font-size:13px;font-weight:700;color:var(--muted);margin-bottom:4px">@${p.username||'user'}</div>
+      <div style="font-size:14px;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${p.headline||''}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">${formatTimestamp(p.timestamp)}</div>
+    </div>`;
+  }).join('') : `<div style="text-align:center;padding:32px;color:var(--muted)">No posts found</div>`;
+
+  // News
+  const matchNews = allNews.filter(n=>n.title.toLowerCase().includes(qLow)).slice(0,10);
+  const newsEl = document.getElementById('news-results');
+  newsEl.innerHTML = matchNews.length ? matchNews.map(n=>`
+    <div onclick="location.href='/pages/news-detail.html?id=${n.id}'" style="display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer">
+      ${n.image?`<img src="${n.image}" style="width:64px;height:48px;object-fit:cover;border-radius:6px;flex-shrink:0" onerror="this.style.display='none'">` : ''}
+      <div style="flex:1;min-width:0">
+        <span style="font-size:11px;font-weight:700;color:var(--nt)">${n.category}</span>
+        <p style="font-size:13px;font-weight:600;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${n.title}</p>
+        <p style="font-size:11px;color:var(--muted);margin-top:3px">${n.source}</p>
+      </div>
+    </div>`).join('') : `<div style="text-align:center;padding:32px;color:var(--muted)">No news found</div>`;
+}
+
+window.switchTab = (tab, btn) => {
+  currentTab = tab;
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['people','posts','news'].forEach(t=>{ const el=document.getElementById('tab-'+t); if(el) el.style.display=t===tab?'':'none'; });
+};
+
+window.clearSearch = () => {
+  document.getElementById('search-input').value = '';
+  document.getElementById('clear-btn').style.display = 'none';
+  document.getElementById('search-default').style.display = '';
+  document.getElementById('people-results').innerHTML = '';
+  document.getElementById('posts-results').innerHTML = '';
+  document.getElementById('news-results').innerHTML = '';
+};
+// Pre-fill from URL
+const q0 = new URLSearchParams(location.search).get('q');
+if (q0) { const inp = document.getElementById('search-input'); inp.value=q0; window.handleSearch(q0); }
+</script>
+</body></html>
