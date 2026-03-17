@@ -1,0 +1,30 @@
+{
+  "name": "NewsTally",
+  "short_name": "NewsTally",
+  "description": "Read. Repost. Connect. — Latest News & Community",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#1a73e8",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    { "name": "News", "url": "/", "description": "Latest Headlines" },
+    { "name": "Socialgati", "url": "/socialgati", "description": "Community Feed" }
+  ],
+  "categories": ["news", "social"]
+}
