@@ -1,0 +1,15 @@
+{
+  "name": "Socialgati by NewsTally",
+  "short_name": "Socialgati",
+  "description": "India's News & Community Platform",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#9334e6",
+  "icons": [{"src": "https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png","sizes": "512x512","type": "image/png","purpose": "any maskable"}],
+  "shortcuts": [
+    {"name": "Socialgati", "url": "/"},
+    {"name": "NewsTally News", "url": "/newstally.html"}
+  ]
+}
