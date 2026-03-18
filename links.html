@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NewsTally — Redirecting...</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#9334e6">
+<link rel="icon" href="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:14px}
+  .logo{width:64px;height:64px;border-radius:50%;overflow:hidden;box-shadow:0 4px 20px rgba(147,52,230,.25)}
+  .logo img{width:100%;height:100%;object-fit:cover}
+  .brand{font-size:22px;font-weight:900;font-family:Georgia,serif;font-style:italic;color:#0a0a14}
+  .msg{font-size:14px;color:#737373}
+  .bar{width:180px;height:3px;background:#f0f0f0;border-radius:2px;overflow:hidden}
+  .fill{height:100%;background:linear-gradient(90deg,#9334e6,#1a73e8);border-radius:2px;animation:ld 1.2s ease-in-out infinite}
+  @keyframes ld{0%{width:0}60%{width:75%}100%{width:100%}}
+  .error{display:none;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:20px}
+  .error i{font-size:40px;color:#dbdbdb}
+  .error h2{font-size:18px;font-weight:700;color:#262626}
+  .error p{font-size:14px;color:#8e8e8e;max-width:300px;line-height:1.5}
+  .home-btn{margin-top:4px;padding:10px 28px;background:#9334e6;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="logo"><img src="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png" alt="NewsTally"></div>
+  <div class="brand">Socialgati</div>
+  <div class="bar"><div class="fill"></div></div>
+  <div class="msg" id="msg">Opening...</div>
+</div>
+
+<div id="error" class="error">
+  <i class="fas fa-link-slash"></i>
+  <h2>Link not found</h2>
+  <p id="err-msg">This link may be broken or no longer exists.</p>
+  <a href="/" class="home-btn">Go to Socialgati</a>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<script>
+// ============================================================
+// UNIVERSAL LINK HANDLER — newstally.online/links.html
+//
+// Handles ALL link formats:
+//   newstally.online/@username          → User profile
+//   newstally.online/post/POSTID        → Socialgati post
+//   newstally.online/s/POSTID           → Short post share link
+//   newstally.online/newstally?nid=...  → News article
+//   newstally.online/news/slug?id=...   → News article (old format)
+//   newstally.online/profile            → Own profile
+//   newstally.online/socialgati         → Socialgati feed
+//   newstally.online/about              → About page
+//   newstally.online/                   → Home (Socialgati)
+// ============================================================
+
+const BASE     = 'https://newstally.online';
+const params   = new URLSearchParams(window.location.search);
+const rawPath  = window.location.pathname; // e.g. /links.html
+
+// Get the intended path from ?_for= param OR from path itself
+// Usage: links.html?_for=/@shivank  OR  links.html?_for=/post/abc123
+const intended = params.get('_for') || params.get('path') || '';
+const msgEl    = document.getElementById('msg');
+const errEl    = document.getElementById('error');
+const loadEl   = document.getElementById('loading');
+
+function showError(msg) {
+  loadEl.style.display = 'none';
+  errEl.style.display  = 'flex';
+  document.getElementById('err-msg').textContent = msg || 'This link is broken or expired.';
+}
+
+function redirect(url, msg) {
+  if (msg) msgEl.textContent = msg;
+  setTimeout(() => { window.location.replace(url); }, 600);
+}
+
+function buildNewsUrl(p) {
+  const nid = p.get('nid') || p.get('id') || '';
+  const q   = p.get('q')   || '';
+  const cat = p.get('cat') || '';
+  const src = p.get('src') || '';
+  return `/newstally.html?nid=${encodeURIComponent(nid)}&q=${encodeURIComponent(q)}&cat=${encodeURIComponent(cat)}&src=${encodeURIComponent(src)}`;
+}
+
+(function resolve() {
+  const path = (intended || window.location.pathname).replace(/\/links\.html$/, '') || '/';
+
+  // ── /@username ──────────────────────────────────────────
+  if (path.startsWith('/@')) {
+    const username = path.slice(2).split('?')[0].toLowerCase();
+    if (!username) return showError('No username specified');
+    msgEl.textContent = 'Opening @' + username + '...';
+    redirect(`/?_open_user=${encodeURIComponent(username)}`, 'Loading profile...');
+    return;
+  }
+
+  // ── /post/ID or /s/ID ────────────────────────────────────
+  if (path.startsWith('/post/') || path.startsWith('/s/')) {
+    const postId = path.replace(/^\/(post|s)\//, '').split('?')[0];
+    if (!postId) return showError('Post ID missing');
+    msgEl.textContent = 'Opening post...';
+    redirect(`/?_open_post=${encodeURIComponent(postId)}`, 'Loading post...');
+    return;
+  }
+
+  // ── /newstally?nid= or news params ──────────────────────
+  if (path === '/newstally' || path.startsWith('/newstally')) {
+    const nid = params.get('nid') || params.get('id') || '';
+    const q   = params.get('q') || '';
+    if (!nid && !q) {
+      redirect('/newstally.html', 'Opening NewsTally...');
+      return;
+    }
+    msgEl.textContent = 'Opening article...';
+    redirect(buildNewsUrl(params), 'Loading article...');
+    return;
+  }
+
+  // ── /news/slug?id= (old format) ──────────────────────────
+  if (path.startsWith('/news/')) {
+    msgEl.textContent = 'Opening article...';
+    redirect(buildNewsUrl(params), 'Loading article...');
+    return;
+  }
+
+  // ── /socialgati ──────────────────────────────────────────
+  if (path === '/socialgati' || path.startsWith('/socialgati')) {
+    redirect('/', 'Opening Socialgati...');
+    return;
+  }
+
+  // ── /profile ─────────────────────────────────────────────
+  if (path === '/profile' || path.startsWith('/profile/')) {
+    redirect('/?_open_profile=1', 'Opening profile...');
+    return;
+  }
+
+  // ── /about ───────────────────────────────────────────────
+  if (path === '/about') {
+    redirect('/?_open_about=1', 'Opening about...');
+    return;
+  }
+
+  // ── /settings ────────────────────────────────────────────
+  if (path === '/settings') {
+    redirect('/?_open_settings=1', 'Opening settings...');
+    return;
+  }
+
+  // ── / root ───────────────────────────────────────────────
+  if (path === '/' || path === '' || path === '/links.html') {
+    redirect('/', 'Opening Socialgati...');
+    return;
+  }
+
+  // ── Unknown — go home ────────────────────────────────────
+  showError('This link format is not recognized.\nRedirecting to home...');
+  setTimeout(() => window.location.replace('/'), 2000);
+})();
+</script>
+
+</body>
+</html>
