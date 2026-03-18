@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>NewsTally</title>
+<meta name="robots" content="noindex">
+<script>
+  var path  = window.location.pathname;
+  var search = window.location.search;
+  var hash  = window.location.hash;
+
+  // /@username → index.html with _open_user param
+  if (path.match(/^\/@[a-zA-Z0-9_.]+$/)) {
+    var username = path.slice(2);
+    window.location.replace('/?_open_user=' + encodeURIComponent(username));
+  }
+  // /post/ID or /s/ID → index.html
+  else if (path.match(/^\/(post|s)\//)) {
+    var postId = path.replace(/^\/(post|s)\//, '');
+    window.location.replace('/?_open_post=' + encodeURIComponent(postId));
+  }
+  // /newstally* → newstally.html
+  else if (path === '/newstally' || path.startsWith('/newstally?') || path.startsWith('/newstally/')) {
+    window.location.replace('/newstally.html' + search + hash);
+  }
+  // /news/* → newstally.html
+  else if (path.startsWith('/news/')) {
+    window.location.replace('/newstally.html' + search + hash);
+  }
+  // Everything else → index.html with _route param
+  else {
+    window.location.replace('/?_route=' + encodeURIComponent(path + search + hash));
+  }
+</script>
+</head>
+<body><p style="font-family:sans-serif;text-align:center;padding:40px;color:#737373">Redirecting...</p></body>
+</html>
