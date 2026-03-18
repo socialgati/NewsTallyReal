@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Disallow: /profile
+Disallow: /settings
+Disallow: /saved
+
+# Block bots from API endpoints
+Disallow: /?_route=
+Disallow: /?_open=
+
+# Crawl delay for heavy bots
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# Sitemap
+Sitemap: https://newstally.online/sitemap.xml
