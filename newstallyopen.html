@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>NewsTally</title>
+<meta name="theme-color" content="#1a73e8">
+<link rel="icon" href="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f8f9fa;color:#202124;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none;outline:none}
+img{max-width:100%;display:block}
+#ld{position:fixed;inset:0;z-index:9999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .35s}
+#ld.hide{opacity:0;pointer-events:none}
+.ld-logo{width:68px;height:68px;border-radius:50%;overflow:hidden;box-shadow:0 6px 24px rgba(26,115,232,.2)}
+.ld-logo img{width:100%;height:100%;object-fit:cover}
+.ld-name{font-size:22px;font-weight:800;color:#1a73e8;letter-spacing:-.5px}
+.ld-bar{width:160px;height:3px;background:#e8eaed;border-radius:2px;overflow:hidden}
+.ld-fill{height:100%;background:linear-gradient(90deg,#1a73e8,#9334e6);animation:ldA 1.4s ease infinite}
+@keyframes ldA{0%{width:0}70%{width:85%}100%{width:100%}}
+#rpbar{position:fixed;top:0;left:0;right:0;height:3px;z-index:9998;pointer-events:none}
+#rpfill{height:100%;background:linear-gradient(90deg,#1a73e8,#9334e6);width:0;transition:width .08s linear}
+header{position:sticky;top:0;z-index:500;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-bottom:1px solid #e8eaed;height:54px;display:flex;align-items:center;padding:0 10px;gap:6px}
+.hbk{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#202124;font-size:18px;flex-shrink:0}
+.hbk:active{background:#f1f3f4}
+.hlogo{flex:1;display:flex;align-items:center;gap:8px;cursor:pointer}
+.hlogo img{width:30px;height:30px;border-radius:50%;object-fit:cover}
+.hlogotext{font-size:18px;font-weight:800;color:#1a73e8;letter-spacing:-.4px}
+.hacts{display:flex;gap:2px}
+.hbtn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:#5f6368;transition:all .15s}
+.hbtn:active{background:#f1f3f4}
+.hbtn.saved-on{color:#1a73e8}
+.hbtn.tts-on{color:#9334e6}
+.page{max-width:720px;margin:0 auto;padding-bottom:72px}
+.hero{width:100%;position:relative;background:#e8eaed;overflow:hidden}
+.hero-img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.hero-gradient{position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+.hero-cat-badge{position:absolute;top:14px;left:14px;background:rgba(26,115,232,.9);color:#fff;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:4px 12px;border-radius:99px;backdrop-filter:blur(4px)}
+.hero-ph{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#1a73e8,#1557b0 50%,#9334e6);display:flex;align-items:center;justify-content:center}
+.hero-ph img{width:80px;height:80px;border-radius:50%;opacity:.3}
+.art-card{background:#fff;margin:12px;border-radius:16px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.07)}
+.art-inner{padding:18px 16px 14px}
+.meta-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.cat-pill{display:inline-flex;align-items:center;gap:5px;background:#e8f0fe;color:#1a73e8;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:99px}
+.mdot{width:3px;height:3px;border-radius:50%;background:#dadce0}
+.minfo{font-size:12px;color:#9aa0a6;display:inline-flex;align-items:center;gap:4px}
+.art-h1{font-size:clamp(19px,4vw,26px);font-weight:700;line-height:1.42;color:#0a0a14;letter-spacing:-.3px;margin-bottom:14px}
+.src-strip{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;background:#f8f9fa;border-radius:10px;border-left:3px solid #1a73e8;margin-bottom:18px}
+.src-name{font-size:13px;font-weight:700;color:#202124}
+.src-date{font-size:11px;color:#9aa0a6;margin-top:2px}
+.src-btns{display:flex;gap:7px;flex-wrap:wrap}
+.sbtn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;background:#fff;border:1.5px solid #e8eaed;font-size:12px;font-weight:600;color:#3c4043;cursor:pointer;transition:all .15s}
+.sbtn:hover{border-color:#1a73e8;color:#1a73e8;background:#e8f0fe}
+.sbtn.on{background:#e8f0fe;border-color:#aecbfa;color:#1a73e8}
+.tts-bar{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#f0ebff;border-radius:10px;margin-bottom:18px;cursor:pointer;transition:background .15s}
+.tts-bar:active{background:#e4d5ff}
+.tts-icon{width:40px;height:40px;border-radius:50%;background:#9334e6;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tts-icon i{color:#fff;font-size:17px}
+.tts-info strong{font-size:13px;font-weight:700;color:#9334e6;display:block}
+.tts-info span{font-size:12px;color:#7b5ea7}
+.art-body{font-size:15.5px;line-height:1.85;color:#3c4043;margin-bottom:20px}
+.art-body p{margin-bottom:14px}
+.art-body p:last-child{margin-bottom:0}
+.no-desc{padding:24px;text-align:center;background:#f8f9fa;border-radius:12px;margin-bottom:18px}
+.no-desc i{font-size:28px;color:#dadce0;display:block;margin-bottom:8px}
+.no-desc p{font-size:13px;color:#9aa0a6;line-height:1.5}
+.read-full{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:linear-gradient(90deg,#1a73e8,#1557b0);color:#fff;border-radius:10px;font-size:14px;font-weight:700;margin-bottom:18px;text-decoration:none;transition:opacity .15s}
+.read-full:active{opacity:.85}
+.share-sec{border-top:1px solid #f1f3f4;padding-top:14px;margin-top:4px}
+.share-lbl{font-size:11px;font-weight:700;color:#9aa0a6;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.share-row{display:flex;gap:8px;flex-wrap:wrap}
+.shbtn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:99px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:opacity .15s}
+.shbtn:active{opacity:.8}
+.sh-wa{background:#25d366;color:#fff}
+.sh-tw{background:#000;color:#fff}
+.sh-tg{background:#0088cc;color:#fff}
+.sh-cp{background:#f1f3f4;color:#3c4043;border:1.5px solid #e8eaed}
+.tags-row{display:flex;flex-wrap:wrap;gap:7px;padding:14px 0 4px;border-top:1px solid #f1f3f4;margin-top:14px}
+.tag{font-size:12px;font-weight:600;color:#1a73e8;background:#e8f0fe;padding:4px 12px;border-radius:99px;cursor:pointer}
+.tag:active{background:#d2e3fc}
+.tag-src{font-size:12px;color:#5f6368;background:#f1f3f4;padding:4px 12px;border-radius:99px}
+.powered{text-align:center;padding:16px 0 2px}
+.powered a{display:inline-flex;align-items:center;gap:6px;background:#f0ebff;padding:9px 20px;border-radius:99px;font-size:13px;font-weight:700;color:#9334e6}
+.rel-sec{margin:0 12px 12px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.07)}
+.rel-hdr{padding:16px 16px 10px;display:flex;align-items:center;gap:10px}
+.rel-hdr-bar{width:4px;height:20px;background:linear-gradient(180deg,#1a73e8,#9334e6);border-radius:2px;flex-shrink:0}
+.rel-hdr-txt{font-size:15px;font-weight:700;color:#202124}
+.rel-card{display:flex;gap:12px;padding:10px 16px;cursor:pointer;transition:background .12s;border-top:1px solid #f5f5f5}
+.rel-card:active{background:#f8f9fa}
+.rel-thumb{width:84px;height:63px;border-radius:10px;object-fit:cover;flex-shrink:0;background:#e8eaed}
+.rel-ph{width:84px;height:63px;border-radius:10px;background:linear-gradient(135deg,#e8f0fe,#d2e3fc);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rel-ph i{color:#1a73e8;font-size:22px}
+.rel-body{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.rel-cat{font-size:10px;font-weight:700;color:#1a73e8;text-transform:uppercase;letter-spacing:.05em}
+.rel-title{font-size:13px;font-weight:600;color:#202124;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rel-meta{font-size:11px;color:#9aa0a6}
+.skel{background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);background-size:200% 100%;animation:sk .9s ease infinite;border-radius:6px}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+#toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#323232;color:#fff;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9999;white-space:nowrap;max-width:88vw;text-align:center}
+#toast.show{opacity:1}
+.bnav{position:fixed;bottom:0;left:0;right:0;height:58px;background:#fff;border-top:1px solid #e8eaed;display:flex;align-items:center;z-index:400}
+.bnavbtn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:100%;font-size:10px;font-weight:600;color:#9aa0a6;cursor:pointer;text-decoration:none}
+.bnavbtn i{font-size:21px}
+.bnavbtn.active{color:#1a73e8}
+.bnav-mid{flex:1;display:flex;align-items:center;justify-content:center}
+.bnav-fab{width:46px;height:46px;background:#9334e6;border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(147,52,230,.3)}
+.bnav-fab i{color:#fff;font-size:19px}
+@media(prefers-color-scheme:dark){
+  body{background:#0a0a14}
+  #ld{background:#0a0a14}
+  header{background:rgba(10,10,20,.96);border-bottom-color:#2e2e3e}
+  .hlogotext{color:#8ab4f8}
+  .hbk,.hbtn{color:#e8eaed}
+  .art-card,.rel-sec{background:#111118;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+  .art-h1{color:#f0ede8}
+  .rel-title{color:#e8eaed}
+  .rel-hdr-txt{color:#e8eaed}
+  .src-strip{background:#1c1c26}
+  .src-name{color:#e8eaed}
+  .sbtn{background:#1c1c26;border-color:#3c4043;color:#9aa0a6}
+  .art-body{color:#bdc1c6}
+  .no-desc{background:#1c1c26}
+  .tts-bar{background:#1c1c26}
+  .tts-info strong{color:#c084fc}
+  .tts-info span{color:#9aa0a6}
+  .sh-cp{background:#2e2e3e;color:#e8eaed;border-color:#3c4043}
+  .tags-row,.share-sec{border-top-color:#2e2e3e}
+  .tag-src{background:#2e2e3e;color:#9aa0a6}
+  .rel-card{border-top-color:#1f1f2e}
+  .rel-card:active{background:#1c1c26}
+  .rel-meta{color:#737373}
+  .powered a{background:#1c1c26;color:#c084fc}
+  .bnav{background:#0f0f0f;border-top-color:#2e2e3e}
+  .skel{background:linear-gradient(90deg,#1c1c26 25%,#2e2e3e 50%,#1c1c26 75%);background-size:200% 100%}
+  .hero-ph{background:linear-gradient(135deg,#1557b0,#7627cc)}
+}
+</style>
+</head>
+<body>
+
+<div id="ld">
+  <div class="ld-logo"><img src="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png" alt="NewsTally"></div>
+  <div class="ld-name">NewsTally</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+
+<div id="rpbar"><div id="rpfill"></div></div>
+
+<header>
+  <button class="hbk" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+  <a href="/" class="hlogo">
+    <img src="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png" alt="">
+    <span class="hlogotext">NewsTally</span>
+  </a>
+  <div class="hacts">
+    <button class="hbtn" id="btn-tts" onclick="toggleTTS()" title="Listen"><i class="fas fa-volume-up"></i></button>
+    <button class="hbtn" id="btn-save" onclick="toggleSave()" title="Save"><i class="far fa-bookmark"></i></button>
+    <button class="hbtn" onclick="toggleShareSec()" title="Share"><i class="fas fa-share-alt"></i></button>
+  </div>
+</header>
+
+<div class="page" id="page" style="display:none">
+
+  <div class="hero" id="hero">
+    <div class="hero-ph" id="hero-ph"><img src="https://i.postimg.cc/dLTgRxbL/cropped-circle-image.png" alt=""></div>
+    <div class="hero-gradient" id="hero-grad" style="display:none"></div>
+    <span class="hero-cat-badge" id="hero-cat">News</span>
+  </div>
+
+  <div class="art-card">
+    <div class="art-inner">
+
+      <div class="meta-row">
+        <span class="cat-pill" id="art-cat"><i class="fas fa-circle" style="font-size:6px"></i> News</span>
+        <span class="mdot"></span>
+        <span class="minfo"><i class="far fa-clock" style="font-size:10px"></i><span id="art-rt">2 min read</span></span>
+        <span class="mdot" id="lang-dot" style="display:none"></span>
+        <span class="minfo" id="lang-badge" style="display:none"><i class="fas fa-globe" style="font-size:10px"></i><span id="art-lang"></span></span>
+      </div>
+
+      <h1 class="art-h1" id="art-title">Loading...</h1>
+
+      <div class="src-strip">
+        <div>
+          <div class="src-name" id="art-src">NewsTally</div>
+          <div class="src-date" id="art-date"></div>
+        </div>
+        <div class="src-btns">
+          <button class="sbtn" id="save-bar" onclick="toggleSave()"><i class="far fa-bookmark"></i> Save</button>
+          <button class="sbtn" onclick="toggleShareSec()"><i class="fas fa-share-alt"></i> Share</button>
+        </div>
+      </div>
+
+      <div class="tts-bar" onclick="toggleTTS()">
+        <div class="tts-icon"><i class="fas fa-volume-up" id="tts-i"></i></div>
+        <div class="tts-info">
+          <strong id="tts-lbl">Listen to this article</strong>
+          <span id="tts-sub">Tap to start audio</span>
+        </div>
+      </div>
+
+      <div class="art-body" id="art-body"></div>
+
+      <a id="read-full" href="#" target="_blank" rel="noopener" class="read-full" style="display:none">
+        <i class="fas fa-external-link-alt"></i> Read Full Article on <span id="rfsrc">Source</span>
+      </a>
+
+      <div class="share-sec" id="share-sec" style="display:none">
+        <div class="share-lbl">Share this story</div>
+        <div class="share-row">
+          <button class="shbtn sh-wa" onclick="shareWA()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+          <button class="shbtn sh-tw" onclick="shareTW()"><i class="fab fa-x-twitter"></i> X</button>
+          <button class="shbtn sh-tg" onclick="shareTG()"><i class="fab fa-telegram"></i> Telegram</button>
+          <button class="shbtn sh-cp" onclick="shareCopy()"><i class="fas fa-link"></i> Copy</button>
+        </div>
+      </div>
+
+      <div class="tags-row" id="tags-row"></div>
+
+      <div class="powered"><a href="/"><i class="fas fa-bolt"></i> Join conversation on Socialgati</a></div>
+
+    </div>
+  </div>
+
+  <div class="rel-sec" id="rel-sec">
+    <div class="rel-hdr">
+      <div class="rel-hdr-bar"></div>
+      <div class="rel-hdr-txt">More like this</div>
+    </div>
+    <div id="rel-skel">
+      <div style="display:flex;gap:12px;padding:10px 16px;border-top:1px solid #f5f5f5"><div class="skel" style="width:84px;height:63px;border-radius:10px;flex-shrink:0"></div><div style="flex:1;display:flex;flex-direction:column;gap:7px;justify-content:center"><div class="skel" style="height:10px;width:35%"></div><div class="skel" style="height:13px;width:92%"></div><div class="skel" style="height:13px;width:70%"></div><div class="skel" style="height:10px;width:45%"></div></div></div>
+      <div style="display:flex;gap:12px;padding:10px 16px;border-top:1px solid #f5f5f5"><div class="skel" style="width:84px;height:63px;border-radius:10px;flex-shrink:0"></div><div style="flex:1;display:flex;flex-direction:column;gap:7px;justify-content:center"><div class="skel" style="height:10px;width:40%"></div><div class="skel" style="height:13px;width:88%"></div><div class="skel" style="height:13px;width:60%"></div><div class="skel" style="height:10px;width:50%"></div></div></div>
+      <div style="display:flex;gap:12px;padding:10px 16px;border-top:1px solid #f5f5f5"><div class="skel" style="width:84px;height:63px;border-radius:10px;flex-shrink:0"></div><div style="flex:1;display:flex;flex-direction:column;gap:7px;justify-content:center"><div class="skel" style="height:10px;width:30%"></div><div class="skel" style="height:13px;width:80%"></div><div class="skel" style="height:13px;width:65%"></div><div class="skel" style="height:10px;width:42%"></div></div></div>
+    </div>
+    <div id="rel-list"></div>
+  </div>
+
+</div>
+
+<nav class="bnav">
+  <a href="/" class="bnavbtn"><i class="fas fa-bolt" style="color:#9334e6"></i><span>Socialgati</span></a>
+  <a href="/" class="bnavbtn active"><i class="fas fa-newspaper"></i><span>News</span></a>
+  <a href="/" class="bnav-mid"><div class="bnav-fab"><i class="fas fa-pen"></i></div></a>
+  <button class="bnavbtn" onclick="toggleTTS()"><i class="fas fa-volume-up"></i><span>Listen</span></button>
+  <a href="/" class="bnavbtn"><i class="far fa-user"></i><span>Profile</span></a>
+</nav>
+
+<div id="toast"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js';
+import { getFirestore, collection, doc, query, orderBy, limit, getDocs, getDoc, where }
+  from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+
+const db = getFirestore(initializeApp({
+  apiKey:'AIzaSyA4zw5cZqxLwzkTy2e5NiHz-tGKqk1KGdI',
+  authDomain:'newstally-df03c.firebaseapp.com',
+  projectId:'newstally-df03c',
+  storageBucket:'newstally-df03c.appspot.com',
+  messagingSenderId:'506893212961',
+  appId:'1:506893212961:web:63882290195da992207260'
+}));
+
+let current=null, relNews=[], ttsActive=false, ttsU=null;
+let savedIds = JSON.parse(localStorage.getItem('nt_saved_news')||'[]');
+
+const $  = id => document.getElementById(id);
+const toast = msg => { const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2800); };
+const hideLd = () => { const l=$('ld'); l.classList.add('hide'); setTimeout(()=>l.style.display='none',380); };
+const fmtDate = d => {
+  if (!d) return '';
+  try {
+    const dt=new Date(d); if(isNaN(dt))return d;
+    const s=Math.floor((Date.now()-dt)/1000);
+    if(s<60) return 'just now';
+    if(s<3600) return Math.floor(s/60)+'m ago';
+    if(s<86400) return Math.floor(s/3600)+'h ago';
+    if(s<604800) return Math.floor(s/86400)+'d ago';
+    return dt.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  } catch{ return d; }
+};
+const mapDoc = (id,n) => ({
+  id:n.id||id, title:n.title||n.headline||'', source:n.source||'',
+  date:n.date||n.savedAt||'', description:n.description||'',
+  url:n.url||'', category:n.category||'General', image:n.image||'',
+  language:n.language||'', keywords:n.keywords||'',
+  sentiment:n.sentiment||'', country:n.country||''
+});
+
+// Reading progress
+window.addEventListener('scroll',()=>{
+  $('rpfill').style.width = Math.min(100,window.scrollY/Math.max(1,document.body.scrollHeight-window.innerHeight)*100)+'%';
+},{passive:true});
+
+// ── FIREBASE ──────────────────────────────────────────────
+async function fetchById(id) {
+  try { const s=await getDoc(doc(db,'news',id)); if(s.exists())return mapDoc(s.id,s.data()); } catch(e){}
+  try {
+    const s=await getDocs(query(collection(db,'news'),where('id','==',id),limit(1)));
+    if(!s.empty)return mapDoc(s.docs[0].id,s.docs[0].data());
+  } catch(e){}
+  return null;
+}
+async function fetchByTitle(title) {
+  try {
+    const t=decodeURIComponent(title).trim();
+    const prefix=t.substring(0,40);
+    const s=await getDocs(query(collection(db,'news'),where('title','>=',prefix),where('title','<=',prefix+''),limit(6)));
+    if(s.empty)return null;
+    const qw=t.toLowerCase().split(/\s+/).filter(w=>w.length>3);
+    let best=null,bestS=0;
+    s.docs.forEach(d=>{
+      const n=d.data(), tw=(n.title||'').toLowerCase().split(/\s+/);
+      const sc=qw.filter(w=>tw.some(t=>t.includes(w))).length;
+      if(sc>bestS){bestS=sc;best=mapDoc(d.id,n);}
+    });
+    return best||mapDoc(s.docs[0].id,s.docs[0].data());
+  } catch(e){return null;}
+}
+async function fetchRelated(cat,excludeId) {
+  try {
+    const [s1,s2] = await Promise.all([
+      getDocs(query(collection(db,'news'),where('category','==',cat),orderBy('savedAt','desc'),limit(10))),
+      getDocs(query(collection(db,'news'),orderBy('savedAt','desc'),limit(15)))
+    ]);
+    const same   = s1.docs.map(d=>mapDoc(d.id,d.data())).filter(n=>n.id!==excludeId&&n.title);
+    const latest = s2.docs.map(d=>mapDoc(d.id,d.data())).filter(n=>n.id!==excludeId&&n.title&&!same.find(x=>x.id===n.id));
+    return [...same,...latest].slice(0,8);
+  } catch(e){return [];}
+}
+
+// ── RENDER ────────────────────────────────────────────────
+function renderArt(a) {
+  current = a;
+  document.title = a.title+' — NewsTally';
+
+  // Hero image
+  if (a.image) {
+    const img = new Image();
+    img.className='hero-img'; img.alt=a.title;
+    img.onload  = ()=>{ $('hero-ph').style.display='none'; $('hero-grad').style.display='block'; };
+    img.src = a.image;
+    $('hero').insertBefore(img, $('hero-ph'));
+  }
+  $('hero-cat').textContent = a.category||'News';
+
+  // Meta
+  $('art-cat').innerHTML = '<i class="fas fa-circle" style="font-size:6px"></i> '+(a.category||'News');
+  $('art-rt').textContent = Math.max(1,Math.ceil(((a.title||'').length+(a.description||'').length)/200))+' min read';
+  if (a.language && a.language!=='en') {
+    $('art-lang').textContent = a.language.toUpperCase();
+    $('lang-badge').style.display='inline-flex';
+    $('lang-dot').style.display='inline-block';
+  }
+
+  // Title + source
+  $('art-title').textContent = a.title;
+  $('art-src').textContent   = a.source||'NewsTally';
+  $('art-date').textContent  = fmtDate(a.date);
+
+  // Sentiment
+  if (a.sentiment && a.sentiment!=='neutral') {
+    const sc=a.sentiment==='positive'?'#34a853':'#ea4335';
+    const si=a.sentiment==='positive'?'fa-arrow-trend-up':'fa-arrow-trend-down';
+    const span=document.createElement('span');
+    span.className='minfo sentiment-tag';
+    span.style.cssText='color:'+sc+';font-size:11px;font-weight:600';
+    span.innerHTML='<i class="fas '+si+'" style="font-size:10px"></i> '+a.sentiment;
+    document.querySelector('.meta-row').appendChild(span);
+  }
+
+  // Body
+  const bodyEl=$('art-body');
+  if (a.description) {
+    const paras=a.description.split(/(?<=[.!?।])\s+/).filter(s=>s.trim().length>8);
+    bodyEl.innerHTML = paras.length>1 ? paras.map(p=>'<p>'+p.trim()+'</p>').join('') : '<p>'+a.description+'</p>';
+  } else {
+    bodyEl.style.display='none';
+    const nd=document.createElement('div');
+    nd.className='no-desc';
+    nd.innerHTML='<i class="fas fa-newspaper"></i><p>Full article not available in this feed.<br>Read on the source website.</p>';
+    bodyEl.after(nd);
+  }
+
+  // Read full
+  if (a.url&&a.url!=='#') {
+    $('read-full').href=a.url; $('read-full').style.display='flex';
+    $('rfsrc').textContent=a.source||'Source';
+  }
+
+  // Tags
+  const tr=$('tags-row'); tr.innerHTML='';
+  if (a.category) tr.innerHTML+=`<span class="tag" onclick="filterCat('${a.category}')">#${a.category}</span>`;
+  if (a.source)   tr.innerHTML+=`<span class="tag-src">${a.source}</span>`;
+  if (a.keywords) {
+    a.keywords.split(',').slice(0,3).forEach(k=>{
+      const kw=k.trim();
+      if(kw&&kw!==a.category) tr.innerHTML+=`<span class="tag">#${kw}</span>`;
+    });
+  }
+  if (a.country) tr.innerHTML+=`<span class="tag-src"><i class="fas fa-map-marker-alt" style="font-size:9px"></i> ${a.country.toUpperCase()}</span>`;
+
+  updateSaveBtns();
+
+  // History
+  const hist=JSON.parse(localStorage.getItem('nt_history')||'[]');
+  const ei=hist.findIndex(h=>h.id===a.id);
+  if(ei>-1)hist.splice(ei,1);
+  hist.unshift({id:a.id,title:a.title,image:a.image,category:a.category,ts:Date.now()});
+  localStorage.setItem('nt_history',JSON.stringify(hist.slice(0,20)));
+
+  $('page').style.display='block';
+  hideLd();
+}
+
+// ── RELATED ───────────────────────────────────────────────
+function renderRelated(list) {
+  $('rel-skel').style.display='none';
+  const rl=$('rel-list');
+  if(!list.length){$('rel-sec').style.display='none';return;}
+  rl.innerHTML = list.map(n=>`
+    <div class="rel-card" onclick="openRelated('${n.id}')">
+      ${n.image
+        ? `<img class="rel-thumb" src="${n.image}" alt="" loading="lazy" onerror="this.style.display='none'">`
+        : `<div class="rel-ph"><i class="fas fa-newspaper"></i></div>`}
+      <div class="rel-body">
+        <div class="rel-cat">${n.category}</div>
+        <div class="rel-title">${n.title}</div>
+        <div class="rel-meta">${n.source} · ${fmtDate(n.date)}</div>
+      </div>
+    </div>`).join('');
+}
+
+window.openRelated = id => {
+  const a=relNews.find(n=>n.id===id);
+  if(!a)return;
+  stopTTS();
+  const p=new URLSearchParams({nid:a.id,q:a.title,cat:a.category,src:a.source});
+  window.history.pushState({},'','/newstallyopen.html?'+p);
+  resetPage();
+  renderArt(a);
+  window.scrollTo({top:0,behavior:'smooth'});
+  $('rel-skel').style.display='block';
+  $('rel-list').innerHTML='';
+  $('rel-sec').style.display='block';
+  fetchRelated(a.category,a.id).then(list=>{relNews=list;renderRelated(list);});
+};
+
+function resetPage() {
+  $('hero').querySelectorAll('.hero-img').forEach(i=>i.remove());
+  $('hero-ph').style.display='flex';
+  $('hero-grad').style.display='none';
+  $('art-body').style.display='';
+  $('art-body').innerHTML='';
+  $('lang-badge').style.display='none';
+  $('lang-dot').style.display='none';
+  $('read-full').style.display='none';
+  $('share-sec').style.display='none';
+  $('tags-row').innerHTML='';
+  document.querySelector('.no-desc')?.remove();
+  document.querySelectorAll('.sentiment-tag').forEach(e=>e.remove());
+}
+
+// ── SAVE ─────────────────────────────────────────────────
+function updateSaveBtns() {
+  if(!current)return;
+  const on=savedIds.includes(current.id);
+  $('btn-save').className='hbtn'+(on?' saved-on':'');
+  $('btn-save').innerHTML=`<i class="${on?'fas':'far'} fa-bookmark"></i>`;
+  $('save-bar').innerHTML=`<i class="${on?'fas':'far'} fa-bookmark"></i> ${on?'Saved':'Save'}`;
+  $('save-bar').className='sbtn'+(on?' on':'');
+}
+window.toggleSave = () => {
+  if(!current)return;
+  const i=savedIds.indexOf(current.id);
+  if(i>-1){savedIds.splice(i,1);toast('Removed from saved');}
+  else{savedIds.unshift(current.id);toast('Saved!');}
+  localStorage.setItem('nt_saved_news',JSON.stringify(savedIds));
+  updateSaveBtns();
+};
+
+// ── SHARE ────────────────────────────────────────────────
+const shareUrl=()=>current
+  ?`${location.origin}/newstallyopen.html?nid=${encodeURIComponent(current.id)}&q=${encodeURIComponent(current.title)}&cat=${encodeURIComponent(current.category)}&src=${encodeURIComponent(current.source)}`
+  :location.href;
+
+window.toggleShareSec=()=>{
+  const s=$('share-sec'),show=s.style.display==='none';
+  s.style.display=show?'block':'none';
+  if(show)s.scrollIntoView({behavior:'smooth',block:'nearest'});
+};
+window.shareWA=()=>{
+  const u=shareUrl(),d=(current?.description||'').substring(0,120);
+  window.open(`https://wa.me/?text=${encodeURIComponent('*'+current?.title+'*
+
+'+d+'...
+
+'+u+'
+
+NewsTally')}`, '_blank');
+};
+window.shareTW=()=>window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(current?.title||'')}&url=${encodeURIComponent(shareUrl())}&via=newstallyofficial`,'_blank');
+window.shareTG=()=>window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl())}&text=${encodeURIComponent(current?.title||'')}`,'_blank');
+window.shareCopy=()=>{
+  const u=shareUrl();
+  navigator.clipboard?.writeText(u).then(()=>toast('Link copied!')).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=u;ta.style.cssText='position:fixed;opacity:0';
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    toast('Link copied!');
+  });
+};
+
+// ── TTS ──────────────────────────────────────────────────
+window.toggleTTS=()=>{
+  if(!window.speechSynthesis)return toast('Audio not supported');
+  if(ttsActive){stopTTS();return;}
+  if(!current)return;
+  ttsU=new SpeechSynthesisUtterance(`${current.title}. ${current.description||''}`);
+  ttsU.lang='en-IN'; ttsU.rate=0.92; ttsU.pitch=1;
+  ttsU.onend=ttsU.onerror=()=>{ttsActive=false;setTTSBtn(false);};
+  window.speechSynthesis.speak(ttsU);
+  ttsActive=true; setTTSBtn(true);
+  toast('Playing article...');
+};
+function stopTTS(){window.speechSynthesis?.cancel();ttsActive=false;setTTSBtn(false);}
+function setTTSBtn(on){
+  $('btn-tts').className='hbtn'+(on?' tts-on':'');
+  $('tts-i').className=on?'fas fa-stop':'fas fa-volume-up';
+  $('tts-lbl').textContent=on?'Playing...':'Listen to this article';
+  $('tts-sub').textContent=on?'Tap to stop':'Tap to start audio';
+}
+
+window.goBack=()=>{ if(document.referrer.includes(location.hostname))window.history.back(); else window.location.href='/'; };
+window.filterCat=cat=>{ window.location.href='/?cat='+encodeURIComponent(cat); };
+
+// ── INIT ────────────────────────────────────────────────
+(async()=>{
+  const p=new URLSearchParams(location.search);
+  const nid=p.get('nid')||'', q=p.get('q')||'', cat=p.get('cat')||'', src=p.get('src')||'';
+
+  // Instant preview from URL
+  if(q){
+    $('art-title').textContent=decodeURIComponent(q);
+    $('art-cat').innerHTML='<i class="fas fa-circle" style="font-size:6px"></i> '+decodeURIComponent(cat||'News');
+    $('hero-cat').textContent=decodeURIComponent(cat||'News');
+    $('art-src').textContent=decodeURIComponent(src||'NewsTally');
+    $('page').style.display='block';
+    hideLd();
+  }
+
+  // Fetch full article
+  let art=null;
+  if(nid)art=await fetchById(nid);
+  if(!art&&q)art=await fetchByTitle(q);
+
+  if(art){
+    resetPage();
+    renderArt(art);
+    fetchRelated(art.category,art.id).then(list=>{relNews=list;renderRelated(list);});
+  } else {
+    if(q){
+      renderArt({id:nid||q,title:decodeURIComponent(q),category:decodeURIComponent(cat||'News'),source:decodeURIComponent(src||'NewsTally'),date:'',description:'',image:'',url:''});
+    } else {
+      hideLd();
+      $('page').innerHTML=`<div style="text-align:center;padding:60px 20px">
+        <i class="fas fa-newspaper" style="font-size:48px;color:#dadce0;display:block;margin-bottom:16px"></i>
+        <h2 style="font-size:20px;font-weight:700;margin-bottom:8px">Article not found</h2>
+        <a href="/" style="display:inline-flex;align-items:center;gap:8px;background:#1a73e8;color:#fff;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;margin-top:16px">
+          <i class="fas fa-newspaper"></i> Browse News</a></div>`;
+      $('page').style.display='block';
+    }
+    if(cat)fetchRelated(decodeURIComponent(cat),nid).then(list=>{relNews=list;renderRelated(list);});
+  }
+})();
+</script>
+</body>
+</html>
