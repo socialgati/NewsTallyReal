@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to Social Gati</title>
+    <!-- Meta refresh for automatic redirection after 3 seconds -->
+    <meta http-equiv="refresh" content="3;url=https://socialgati.online">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 flex flex-col items-center justify-center min-h-screen p-6 font-sans">
+
+    <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center border border-slate-100">
+        <!-- Brand Icon/Logo Placeholder -->
+        <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+        </div>
+
+        <h1 class="text-2xl font-bold text-slate-800 mb-2">We've Moved!</h1>
+        <p class="text-slate-600 mb-6">
+            <span class="font-semibold text-slate-400">newstally.online</span> is now 
+            <span class="font-bold text-blue-600">socialgati.online</span>
+        </p>
+
+        <!-- Loading Indicator -->
+        <div class="flex items-center justify-center space-x-2 mb-8">
+            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+        </div>
+
+        <p class="text-sm text-slate-400 mb-4">You are being redirected automatically...</p>
+        
+        <a href="https://socialgati.online" 
+           class="inline-block w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-blue-100 active:transform active:scale-95">
+            Click here if not redirected
+        </a>
+    </div>
+
+    <footer class="mt-8 text-slate-400 text-sm">
+        &copy; 2024 Social Gati. All rights reserved.
+    </footer>
+
+    <script>
+        // Fallback JavaScript redirect in case meta refresh fails
+        window.onload = function() {
+            setTimeout(function() {
+                window.location.href = "https://socialgati.online";
+            }, 3000);
+        };
+    </script>
+</body>
+</html>
+
