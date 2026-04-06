@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socialgati | Image Store</title>
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --success-color: #28a745;
+            --bg-color: #f8f9fa;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 { color: #333; margin-bottom: 5px; }
+        p { color: #666; margin-bottom: 30px; }
+        #upload_widget {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        #upload_widget:hover { transform: scale(1.05); background-color: #0056b3; }
+        .result-area {
+            margin-top: 30px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        #url-display {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f1f1f1;
+            font-family: monospace;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .copy-btn {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #preview {
+            margin-top: 20px;
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Socialgati</h1>
+    <p>Upload your image to get a direct URL</p>
+    
+    <button id="upload_widget">Upload Image</button>
+
+    <div id="result-area" class="result-area">
+        <input type="text" id="url-display" readonly>
+        <button class="copy-btn" onclick="copyUrl()">Copy URL</button>
+        <br>
+        <img id="preview" src="" alt="Preview">
+    </div>
+</div>
+
+<script>
+    // Cloudinary Configuration
+    const cloudName = "dkkaezsu2"; 
+    const uploadPreset = "socialgati"; // Make sure this is "Unsigned" in settings
+
+    const myWidget = cloudinary.createUploadWidget({
+        cloudName: cloudName,
+        uploadPreset: uploadPreset,
+        folder: "user_uploads", // Sab images is folder mein jayengi
+        clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
+        maxFileSize: 5000000, // 5MB limit
+    }, (error, result) => {
+        if (!error && result && result.event === "success") {
+            const imageUrl = result.info.secure_url;
+            
+            // Show result
+            document.getElementById("result-area").style.display = "block";
+            document.getElementById("url-display").value = imageUrl;
+            document.getElementById("preview").src = imageUrl;
+        }
+    });
+
+    document.getElementById("upload_widget").addEventListener("click", function(){
+        myWidget.open();
+    }, false);
+
+    function copyUrl() {
+        const copyText = document.getElementById("url-display");
+        copyText.select();
+        document.execCommand("copy");
+        alert("Link copy ho gaya hai!");
+    }
+</script>
+
+</body>
+</html>
