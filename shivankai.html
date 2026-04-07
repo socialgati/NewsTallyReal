@@ -1,0 +1,258 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ledger Elite | Professional Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #2563eb; --bg: #f8fafc; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg); color: #0f172a; line-height: 1.8; }
+        .serif { font-family: 'Lora', serif; }
+        
+        .article-wrapper {
+            max-width: 880px;
+            margin: 2rem auto;
+            background: #fff;
+            padding: 4.5rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px -12px rgba(0,0,0,0.03);
+            border: 1px solid #f1f5f9;
+        }
+
+        @media (max-width: 768px) { .article-wrapper { padding: 2rem 1.25rem; border-radius: 0; margin: 0; } }
+
+        .article-body h1 { font-family: 'Lora', serif; font-size: 3.25rem; font-weight: 800; line-height: 1.1; margin-bottom: 2rem; color: #000; text-align: center; }
+        .article-body h2 { font-size: 1.75rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1.25rem; color: #1e293b; border-left: 4px solid var(--accent); padding-left: 1.25rem; }
+        .article-body p { font-size: 1.15rem; margin-bottom: 1.75rem; color: #334155; text-align: justify; }
+
+        / Advanced Data Tables /
+        .article-body table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 2.5rem 0; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+        .article-body th { text-align: left; padding: 14px 18px; background: #0f172a; color: white; font-weight: 700; text-transform: uppercase; font-size: 0.75rem; }
+        .article-body td { padding: 14px 18px; border-bottom: 1px solid #f1f5f9; color: #475569; font-size: 0.95rem; }
+        .article-body tr:nth-child(even) td { background-color: #f8fafc; }
+        .article-body strong { font-weight: 800; color: #000; }
+
+        .briefing-box { background-color: #f1f5f9; padding: 2.25rem; border-radius: 20px; margin-bottom: 3.5rem; border: 1px solid #e2e8f0; }
+        
+        .loader-bar { height: 4px; width: 100%; background: #e2e8f0; position: relative; overflow: hidden; border-radius: 10px; }
+        .loader-progress { position: absolute; height: 100%; background: var(--accent); animation: pulse 1.5s infinite linear; }
+        @keyframes pulse { 0% { left: -40%; width: 40%; } 50% { left: 20%; width: 60%; } 100% { left: 100%; width: 40%; } }
+
+        .btn-action { background: #000; color: #fff; transition: all 0.3s ease; }
+        .btn-action:hover { background: #1e293b; transform: translateY(-1px); }
+        .btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+
+    <nav class="bg-white/90 backdrop-blur-md border-b border-slate-100 py-4 px-8 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-black flex items-center justify-center rounded text-white font-bold text-lg">L</div>
+                <span class="serif text-xl font-bold tracking-tight">THE LEDGER</span>
+            </div>
+            <div id="connectionStatus" class="text-[9px] font-black uppercase tracking-widest text-emerald-500 flex items-center gap-2">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> Systems Ready
+            </div>
+        </div>
+    </nav>
+
+    <main class="py-12 px-4">
+        <div class="max-w-2xl mx-auto mb-16 text-center">
+            <h1 class="serif text-5xl font-extrabold mb-6 tracking-tight">Elite News Engine</h1>
+            <p class="text-slate-500 text-lg mb-8">Professional real-time reports with statistical data visualization.</p>
+            
+            <div class="flex flex-col sm:flex-row gap-2 bg-white p-2 rounded-2xl shadow-xl border border-slate-100">
+                <input type="text" id="topicInput" 
+                    placeholder="Enter topic (e.g., India vs Aus Match, Stock Markets...)" 
+                    class="flex-1 px-6 py-4 focus:outline-none text-lg bg-transparent">
+                <button onclick="startPublishing()" id="pubBtn"
+                    class="btn-action px-10 py-4 rounded-xl font-bold flex items-center justify-center gap-2">
+                    <span id="btnText">Publish</span>
+                    <i id="btnIcon" class="fas fa-feather"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Overlay -->
+        <div id="loader" class="hidden max-w-xl mx-auto mb-16">
+            <div class="loader-bar mb-4">
+                <div class="loader-progress"></div>
+            </div>
+            <p id="statusMsg" class="text-center text-[10px] font-bold uppercase tracking-widest text-blue-600 animate-pulse">Initializing News Scrapers...</p>
+        </div>
+
+        <!-- Error UI -->
+        <div id="errorBox" class="hidden max-w-xl mx-auto mb-16 p-6 bg-red-50 border border-red-100 rounded-2xl text-center">
+            <i class="fas fa-exclamation-triangle text-red-500 text-2xl mb-3"></i>
+            <h3 class="font-bold text-red-800 mb-1">Publication Failed</h3>
+            <p id="errorDetails" class="text-sm text-red-600 mb-4"></p>
+            <button onclick="startPublishing()" class="text-xs font-bold uppercase tracking-widest text-red-700 underline">Try Re-submitting</button>
+        </div>
+
+        <!-- Result Section -->
+        <div id="articleResult" class="hidden">
+            <div class="article-wrapper">
+                <header class="mb-12 text-center">
+                    <div class="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600 mb-4">
+                        <span id="pubDate"></span> &bull; WORLD REPORT
+                    </div>
+                    <div id="headlineZone" class="article-body"></div>
+                </header>
+
+                <div class="briefing-box">
+                    <span class="text-[10px] font-black uppercase tracking-widest text-blue-600 block mb-3">Executive Summary</span>
+                    <p id="summaryText" class="text-xl font-semibold italic text-slate-700"></p>
+                </div>
+
+                <div id="contentZone" class="article-body"></div>
+
+                <footer class="mt-20 pt-10 border-t border-slate-100">
+                    <h5 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">Data References</h5>
+                    <div id="sourcesContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                </footer>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // API CONFIGURATION
+        const TAVILY_KEY = "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";
+        
+        /*  WEBSITE USERS: Replace "" with your actual key like "AIza..."
+         * CANVAS PREVIEW: Leave it as "" for the environment to inject the key.
+         */
+        const apiKey = ""; 
+
+        async function fetchWithRetry(url, options, retries = 5) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.status === 429) throw new Error("Rate limit exceeded.");
+                    if (!response.ok) throw new Error(“HTTP Error: ${response.status}”);
+                    return await response.json();
+                } catch (err) {
+                    if (i === retries - 1) throw err;
+                    const delay = Math.pow(2, i) * 1000;
+                    await new Promise(r => setTimeout(r, delay));
+                }
+            }
+        }
+
+        async function startPublishing() {
+            const topic = document.getElementById('topicInput').value.trim();
+            if(!topic) return;
+
+            // UI Reset
+            const btn = document.getElementById('pubBtn');
+            const btnText = document.getElementById('btnText');
+            const btnIcon = document.getElementById('btnIcon');
+            const loader = document.getElementById('loader');
+            const statusMsg = document.getElementById('statusMsg');
+            const errorBox = document.getElementById('errorBox');
+            const resultZone = document.getElementById('articleResult');
+
+            btn.disabled = true;
+            btnText.innerText = "Analyzing...";
+            btnIcon.className = "fas fa-circle-notch fa-spin";
+            loader.classList.remove('hidden');
+            errorBox.classList.add('hidden');
+            resultZone.classList.add('hidden');
+
+            try {
+                // 1. Tavily Search Call
+                statusMsg.innerText = "Accessing real-time data nodes...";
+                const searchRes = await fetch('https://api.tavily.com/search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        api_key: TAVILY_KEY,
+                        query: topic,
+                        search_depth: "advanced",
+                        max_results: 6
+                    })
+                });
+                
+                if (!searchRes.ok) throw new Error("Tavily API failed. Check your Tavily key.");
+                const sData = await searchRes.json();
+                if (!sData.results?.length) throw new Error("No live news found for this topic.");
+
+                // 2. Gemini Synthesis Call
+                statusMsg.innerText = "Synthesizing professional report & stats...";
+                const context = sData.results.map(r => “Source: ${r.title}\nInfo: ${r.content}”).join('\n\n');
+
+                const prompt = `
+                    Write an elite news report. Topic: ${topic}. Context: ${context}.
+                    
+                    MANDATORY RULES:
+                    1. Use sophisticated English.
+                    2. If statistics, rankings, or match scores are available, you MUST create an HTML <table>.
+                    3. Return ONLY a JSON object:
+                    {
+                        "headline": "Sharp Professional Headline",
+                        "summary": "2-sentence executive summary",
+                        "body": "Article in HTML using <h2>, <p>, <table>, <thead>, <tbody>, <tr>, <th>, <td>. Bold <strong> key data."
+                    }
+                `;
+
+                const gUrl = “https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}”;
+                
+                const gData = await fetchWithRetry(gUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { responseMimeType: "application/json", temperature: 0.7 }
+                    })
+                });
+
+                if (!gData.candidates?.[0]?.content?.parts?.[0]?.text) {
+                    throw new Error("Gemini failed to generate content.");
+                }
+
+                const content = JSON.parse(gData.candidates[0].content.parts[0].text);
+
+                // 3. Render
+                renderArticle(content, sData.results);
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('errorDetails').innerText = err.message;
+                errorBox.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btnText.innerText = "Publish";
+                btnIcon.className = "fas fa-feather";
+                loader.classList.add('hidden');
+            }
+        }
+
+        function renderArticle(data, sources) {
+            document.getElementById('pubDate').innerText = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            document.getElementById('headlineZone').innerHTML = “<h1>${data.headline}</h1>”;
+            document.getElementById('summaryText').innerText = data.summary;
+            document.getElementById('contentZone').innerHTML = data.body;
+
+            const container = document.getElementById('sourcesContainer');
+            container.innerHTML = sources.map(s => `
+                <a href="${s.url}" target="_blank" class="p-4 border border-slate-100 rounded-xl hover:bg-slate-50 transition-all flex justify-between items-center group">
+                    <div class="overflow-hidden">
+                        <span class="text-[9px] font-black text-blue-600 uppercase tracking-tighter">${new URL(s.url).hostname}</span>
+                        <p class="text-xs font-bold text-slate-800 line-clamp-1">${s.title}</p>
+                    </div>
+                    <i class="fas fa-external-link-alt text-[10px] text-slate-200 group-hover:text-black"></i>
+                </a>
+            `).join('');
+
+            document.getElementById('articleResult').classList.remove('hidden');
+            window.scrollTo({ top: document.getElementById('articleResult').offsetTop - 50, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
+
+```
