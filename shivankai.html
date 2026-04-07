@@ -3,204 +3,607 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Ledger Elite | Global Intelligence</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <title>NewsTally AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Newsreader:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <style>
-        :root { --accent: #2563eb; --slate-dark: #0f172a; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f9fafb; color: #1e293b; line-height: 1.8; }
-        .serif { font-family: 'Lora', serif; }
-        
-        .article-container {
-            max-width: 880px;
-            margin: 2rem auto;
-            background: #fff;
-            padding: 4.5rem 5.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 30px rgba(0,0,0,0.02);
-            border: 1px solid #f1f5f9;
+        /* ===== RESET ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --blue: #1a73e8;
+            --blue-dark: #0d47a1;
+            --blue-light: #e8f0fe;
+            --ink: #0a0a0a;
+            --ink-2: #1e293b;
+            --ink-3: #475569;
+            --ink-4: #94a3b8;
+            --bg: #f0f4f8;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --red: #ef4444;
+            --green: #10b981;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.10);
         }
 
-        @media (max-width: 768px) { .article-container { padding: 2rem 1.5rem; border-radius: 0; margin: 0; } }
+        html { scroll-behavior: smooth; }
 
-        /* Typography */
-        .article-body h1 { font-family: 'Lora', serif; font-size: 3.25rem; font-weight: 800; line-height: 1.15; margin-bottom: 2.5rem; color: #000; text-align: center; letter-spacing: -0.03em; }
-        .article-body h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.65rem; font-weight: 700; margin: 3rem 0 1.25rem; color: #111827; border-left: 5px solid var(--accent); padding-left: 1.25rem; }
-        .article-body p { font-size: 1.15rem; margin-bottom: 1.75rem; color: #374151; text-align: justify; }
+        body {
+            font-family: 'Syne', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-        /* Important Points */
-        .article-body strong, .article-body b { font-weight: 800; color: #000; }
+        /* BG Grid */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(26,115,232,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(26,115,232,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-        /* Stats Tables */
-        .article-body table { width: 100%; border-collapse: collapse; margin: 2.5rem 0; font-size: 0.95rem; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
-        .article-body th { text-align: left; padding: 14px 20px; background: #f8fafc; color: #1e293b; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; border-bottom: 2px solid #e2e8f0; }
-        .article-body td { padding: 14px 20px; border-bottom: 1px solid #f1f5f9; color: #475569; }
-        .article-body tr:nth-child(even) { background-color: #fbfcfe; }
+        /* ===== NAV ===== */
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px; height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-logo-icon {
+            width: 36px; height: 36px; background: var(--blue);
+            border-radius: 10px; display: flex; align-items: center;
+            justify-content: center; color: white; font-size: 16px; font-weight: 800;
+        }
+        .nav-brand { font-size: 17px; font-weight: 800; color: var(--ink); letter-spacing: -0.5px; }
+        .nav-brand span { color: var(--blue); }
+        .nav-status {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--green);
+        }
+        .nav-status-dot {
+            width: 8px; height: 8px; background: var(--green);
+            border-radius: 50%; animation: blink 2s infinite;
+        }
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 
-        .brief-box { background: #111827; color: #fff; padding: 2.5rem; border-radius: 12px; margin-bottom: 4rem; border-left: 6px solid var(--accent); }
-        
-        .loader-track { height: 4px; width: 100%; background: #e2e8f0; position: relative; overflow: hidden; border-radius: 10px; }
-        .loader-fill { height: 100%; background: var(--accent); position: absolute; animation: load-run 1.5s infinite ease-in-out; }
-        @keyframes load-run { 0% { left: -40%; width: 40%; } 100% { left: 100%; width: 40%; } }
+        /* ===== HERO ===== */
+        .hero {
+            position: relative; z-index: 1;
+            padding: 80px 24px 56px; text-align: center;
+            max-width: 760px; margin: 0 auto;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--blue-light); color: var(--blue);
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; padding: 6px 16px; border-radius: 100px;
+            margin-bottom: 28px; border: 1px solid rgba(26,115,232,0.2);
+        }
+        .hero-title {
+            font-size: clamp(40px, 7vw, 70px); font-weight: 800;
+            line-height: 1.0; letter-spacing: -2px; color: var(--ink); margin-bottom: 18px;
+        }
+        .hero-title span { color: var(--blue); }
+        .hero-sub {
+            font-family: 'Newsreader', serif; font-size: 18px;
+            color: var(--ink-3); margin-bottom: 0; line-height: 1.7; font-style: italic;
+        }
 
-        .btn-black { background: #000; color: #fff; transition: all 0.3s ease; }
-        .btn-black:hover { background: #1e293b; transform: translateY(-1px); }
-        .btn-black:disabled { opacity: 0.4; }
+        /* ===== SEARCH ===== */
+        .search-container {
+            position: relative; z-index: 1;
+            max-width: 680px; margin: 40px auto 20px; padding: 0 24px;
+        }
+        .search-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 20px; padding: 8px;
+            box-shadow: var(--shadow-lg);
+            display: flex; gap: 8px; align-items: stretch;
+        }
+        .search-input-wrap {
+            flex: 1; display: flex; align-items: center;
+            gap: 12px; padding: 0 16px;
+        }
+        .search-input-wrap i { color: var(--ink-4); font-size: 15px; flex-shrink: 0; }
+        #topicInput {
+            flex: 1; border: none; outline: none;
+            font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 500;
+            color: var(--ink); background: transparent; padding: 14px 0;
+        }
+        #topicInput::placeholder { color: var(--ink-4); font-weight: 400; }
+        .search-btn {
+            background: var(--blue); color: white; border: none;
+            border-radius: 14px; padding: 14px 26px;
+            font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            transition: all 0.2s ease; white-space: nowrap;
+        }
+        .search-btn:hover:not(:disabled) {
+            background: var(--blue-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(26,115,232,0.3);
+        }
+        .search-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+        /* ===== SUGGESTIONS ===== */
+        .suggestions {
+            position: relative; z-index: 1;
+            max-width: 680px; margin: 0 auto 64px; padding: 0 24px;
+            text-align: center;
+        }
+        .suggestions-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--ink-4); margin-bottom: 14px;
+        }
+        .suggestions-pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .pill {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 100px; padding: 8px 16px;
+            font-size: 12px; font-weight: 600; color: var(--ink-2);
+            cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .pill i { font-size: 10px; color: var(--blue); }
+        .pill:hover { background: var(--blue-light); border-color: rgba(26,115,232,0.3); color: var(--blue); }
+
+        /* ===== LOADER ===== */
+        .loader-wrap {
+            position: relative; z-index: 1;
+            max-width: 500px; margin: 0 auto 40px; padding: 0 24px;
+            display: none;
+        }
+        .loader-wrap.visible { display: block; }
+        .loader-card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 32px;
+            text-align: center; box-shadow: var(--shadow);
+        }
+        .loader-spinner {
+            width: 44px; height: 44px;
+            border: 3px solid var(--blue-light);
+            border-top-color: var(--blue);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-text {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--blue); margin-bottom: 18px;
+        }
+        .progress-bar { height: 4px; background: var(--blue-light); border-radius: 10px; overflow: hidden; }
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, var(--blue), #60a5fa);
+            border-radius: 10px; width: 40%;
+            animation: pgr 1.8s ease-in-out infinite;
+        }
+        @keyframes pgr { 0% { transform: translateX(-150%); } 100% { transform: translateX(400%); } }
+
+        /* ===== ERROR ===== */
+        .error-wrap {
+            position: relative; z-index: 1;
+            max-width: 500px; margin: 0 auto 40px; padding: 0 24px;
+            display: none;
+        }
+        .error-wrap.visible { display: block; }
+        .error-card {
+            background: #fff5f5; border: 1px solid #fecaca;
+            border-radius: var(--radius); padding: 28px 32px; text-align: center;
+        }
+        .error-card > i { font-size: 28px; color: var(--red); margin-bottom: 12px; display: block; }
+        .error-title { font-size: 15px; font-weight: 700; color: #991b1b; margin-bottom: 8px; }
+        .error-msg { font-family: 'Newsreader', serif; font-size: 14px; color: #b91c1c; margin-bottom: 18px; line-height: 1.6; }
+        .error-retry {
+            background: none; border: 1px solid #fca5a5; color: #dc2626;
+            font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; padding: 9px 22px;
+            border-radius: 100px; cursor: pointer; transition: all 0.2s;
+        }
+        .error-retry:hover { background: #fef2f2; }
+
+        /* ===== ARTICLE ===== */
+        .article-outer {
+            position: relative; z-index: 1;
+            padding: 0 24px 80px; display: none;
+        }
+        .article-outer.visible { display: block; animation: fadeUp 0.5s ease; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+        .article-wrapper {
+            max-width: 860px; margin: 0 auto;
+            background: var(--surface); border-radius: 24px;
+            box-shadow: var(--shadow-lg); border: 1px solid var(--border); overflow: hidden;
+        }
+        .article-topbar {
+            background: var(--ink); padding: 15px 48px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .article-topbar-side { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.4); }
+        .article-topbar-center { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; color: white; }
+
+        .article-content { padding: 56px 64px; }
+
+        .article-header { text-align: center; margin-bottom: 48px; padding-bottom: 40px; border-bottom: 1px solid var(--border); }
+        .article-category {
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px; font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--blue); margin-bottom: 22px;
+        }
+        .article-category .line { display: block; width: 28px; height: 1px; background: var(--blue); opacity: 0.35; }
+        .article-headline {
+            font-family: 'Newsreader', serif; font-size: clamp(26px, 4vw, 42px);
+            font-weight: 600; line-height: 1.25; color: var(--ink); letter-spacing: -0.5px;
+        }
+
+        .summary-box {
+            background: var(--blue-light); border-left: 4px solid var(--blue);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            padding: 22px 28px; margin-bottom: 44px;
+        }
+        .summary-label {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--blue); margin-bottom: 8px;
+        }
+        .summary-text {
+            font-family: 'Newsreader', serif; font-size: 17px;
+            font-style: italic; color: var(--ink-2); line-height: 1.75;
+        }
+
+        /* Body */
+        .article-body h2 {
+            font-family: 'Syne', sans-serif; font-size: 19px; font-weight: 700;
+            color: var(--ink); margin: 40px 0 14px; padding-bottom: 10px;
+            border-bottom: 2px solid var(--border); letter-spacing: -0.3px;
+        }
+        .article-body p {
+            font-family: 'Newsreader', serif; font-size: 17px;
+            color: var(--ink-3); line-height: 1.9; margin-bottom: 18px;
+        }
+        .article-body strong { font-weight: 700; color: var(--ink); }
+        .article-body ul, .article-body ol {
+            font-family: 'Newsreader', serif; font-size: 16px;
+            color: var(--ink-3); padding-left: 24px; margin-bottom: 18px; line-height: 1.9;
+        }
+
+        /* Table */
+        .article-body table {
+            width: 100%; border-collapse: collapse; margin: 28px 0;
+            border-radius: var(--radius); overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+        .article-body thead tr { background: var(--ink); }
+        .article-body th {
+            text-align: left; padding: 13px 18px; color: white;
+            font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .article-body td {
+            padding: 12px 18px; color: var(--ink-3);
+            border-bottom: 1px solid var(--border);
+            font-family: 'Newsreader', serif; font-size: 15px;
+        }
+        .article-body tr:last-child td { border-bottom: none; }
+        .article-body tbody tr:nth-child(even) td { background: var(--bg); }
+        .article-body tbody tr:hover td { background: var(--blue-light); transition: background 0.15s; }
+
+        /* Sources */
+        .sources-section { margin-top: 52px; padding-top: 28px; border-top: 1px solid var(--border); }
+        .sources-label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 2px; color: var(--ink-4); margin-bottom: 16px;
+        }
+        .sources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+        .source-card {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 12px; padding: 13px 15px;
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); text-decoration: none; transition: all 0.2s;
+        }
+        .source-card:hover {
+            background: var(--blue-light); border-color: rgba(26,115,232,0.3);
+            transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,115,232,0.1);
+        }
+        .source-info { overflow: hidden; }
+        .source-domain { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--blue); margin-bottom: 3px; }
+        .source-title { font-size: 12px; font-weight: 600; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .source-icon { font-size: 10px; color: var(--ink-4); flex-shrink: 0; transition: color 0.2s; }
+        .source-card:hover .source-icon { color: var(--blue); }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            position: relative; z-index: 1; text-align: center;
+            padding: 28px 24px; border-top: 1px solid var(--border);
+            background: rgba(255,255,255,0.5);
+            font-size: 12px; font-weight: 600; color: var(--ink-4);
+        }
+        .footer span { color: var(--blue); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .article-topbar { padding: 13px 20px; }
+            .article-topbar-side { display: none; }
+            .article-content { padding: 28px 20px; }
+            nav { padding: 0 16px; }
+            .search-btn span { display: none; }
+            .search-btn { padding: 14px 18px; }
+        }
     </style>
 </head>
 <body>
 
-    <nav class="bg-white border-b border-gray-100 py-5 px-10 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-black flex items-center justify-center rounded-lg text-white font-bold text-xl">L</div>
-                <span class="serif text-2xl font-bold tracking-tighter">THE LEDGER</span>
-            </div>
-            <div class="text-[9px] font-black uppercase tracking-[0.4em] text-slate-400">Elite News Suite</div>
+    <!-- NAV -->
+    <nav>
+        <a class="nav-logo" href="#">
+            <div class="nav-logo-icon">N</div>
+            <span class="nav-brand">NewsTally <span>AI</span></span>
+        </a>
+        <div class="nav-status">
+            <div class="nav-status-dot"></div>
+            Live
         </div>
     </nav>
 
-    <main class="py-16 px-6">
-        <div class="max-w-2xl mx-auto mb-20 text-center">
-            <h1 class="serif text-6xl font-extrabold mb-6 tracking-tight text-slate-900">Digital Editorial</h1>
-            <p class="text-slate-500 text-xl font-light mb-10">Generate publish-ready news articles with real-time global statistics.</p>
-            
-            <div class="flex flex-col sm:flex-row gap-3 bg-white p-2.5 rounded-2xl shadow-xl border border-slate-100">
-                <input type="text" id="topicInput" placeholder="Enter topic for reporting..." class="flex-1 px-6 py-4 focus:outline-none text-xl bg-transparent">
-                <button onclick="publishArticle()" id="pubBtn" class="btn-black px-12 py-4 rounded-xl font-bold flex items-center justify-center gap-3">
-                    <span id="btnText">Publish</span>
-                    <i id="btnIcon" class="fas fa-feather-pointed"></i>
-                </button>
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-badge"><i class="fas fa-bolt"></i> AI-Powered News Reports</div>
+        <h1 class="hero-title">Real News,<br><span>Intelligent</span> Analysis</h1>
+        <p class="hero-sub">Enter any topic and get a professionally synthesized<br>report with live data, stats &amp; expert analysis.</p>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-container">
+        <div class="search-card">
+            <div class="search-input-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" id="topicInput"
+                    placeholder="e.g., IPL 2025, India Economy, AI News..."
+                    onkeydown="if(event.key==='Enter') startPublishing()">
             </div>
+            <button class="search-btn" id="pubBtn" onclick="startPublishing()">
+                <i id="btnIcon" class="fas fa-feather-alt"></i>
+                <span id="btnText">Generate Report</span>
+            </button>
         </div>
+    </div>
 
-        <div id="loader" class="hidden max-w-xl mx-auto mb-20 text-center">
-            <div class="loader-track mb-5"><div class="loader-fill"></div></div>
-            <p id="statusMsg" class="text-[11px] font-black uppercase tracking-[0.4em] text-blue-600">Gathering Intelligence...</p>
+    <!-- SUGGESTIONS -->
+    <div class="suggestions">
+        <div class="suggestions-label">Trending Topics</div>
+        <div class="suggestions-pills">
+            <div class="pill" onclick="setTopic('IPL 2025 latest match results')"><i class="fas fa-circle-dot"></i> IPL 2025</div>
+            <div class="pill" onclick="setTopic('India stock market today')"><i class="fas fa-chart-line"></i> Stock Market</div>
+            <div class="pill" onclick="setTopic('Artificial Intelligence news 2025')"><i class="fas fa-microchip"></i> AI News</div>
+            <div class="pill" onclick="setTopic('India economy GDP growth')"><i class="fas fa-globe-asia"></i> India Economy</div>
+            <div class="pill" onclick="setTopic('Bitcoin crypto market today')"><i class="fab fa-bitcoin"></i> Crypto</div>
+            <div class="pill" onclick="setTopic('Bollywood box office latest')"><i class="fas fa-film"></i> Bollywood</div>
         </div>
+    </div>
 
-        <div id="errorDisplay" class="hidden max-w-xl mx-auto mb-20 p-8 bg-red-50 border border-red-100 rounded-2xl text-center">
-            <h4 class="font-bold text-red-800 text-xl mb-2">Error</h4>
-            <p id="errorMsg" class="text-red-600 text-sm"></p>
+    <!-- LOADER -->
+    <div class="loader-wrap" id="loader">
+        <div class="loader-card">
+            <div class="loader-spinner"></div>
+            <div class="loader-text" id="statusMsg">Initializing...</div>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
         </div>
+    </div>
 
-        <div id="resultArea" class="hidden">
-            <div class="article-container">
-                <header class="mb-16 text-center">
-                    <div class="text-[11px] font-black uppercase tracking-[0.4em] text-blue-600 mb-6">
-                        <span id="pDate"></span> &bull; OFFICIAL REPORT
+    <!-- ERROR -->
+    <div class="error-wrap" id="errorBox">
+        <div class="error-card">
+            <i class="fas fa-triangle-exclamation"></i>
+            <div class="error-title">Report Generation Failed</div>
+            <div class="error-msg" id="errorDetails"></div>
+            <button class="error-retry" onclick="startPublishing()">
+                <i class="fas fa-rotate-right" style="margin-right:6px"></i>Try Again
+            </button>
+        </div>
+    </div>
+
+    <!-- RESULT -->
+    <div class="article-outer" id="articleResult">
+        <div class="article-wrapper">
+            <div class="article-topbar">
+                <div class="article-topbar-side" id="pubDate"></div>
+                <div class="article-topbar-center">NewsTally AI &bull; World Report</div>
+                <div class="article-topbar-side">Gemini 2.0 Flash</div>
+            </div>
+            <div class="article-content">
+                <div class="article-header">
+                    <div class="article-category" id="articleCategory">
+                        <span class="line"></span> World Report <span class="line"></span>
                     </div>
-                    <div id="headlineZone" class="article-body"></div>
-                </header>
-
-                <div class="brief-box">
-                    <p id="summaryZone" class="text-xl font-medium italic leading-relaxed opacity-95"></p>
+                    <h1 class="article-headline" id="headlineZone"></h1>
                 </div>
-
-                <div id="bodyZone" class="article-body"></div>
-
-                <footer class="mt-24 pt-12 border-t border-slate-100">
-                    <h5 class="text-[10px] font-black uppercase text-slate-400 mb-8 tracking-widest text-center">Verified Data Sources</h5>
-                    <div id="sourcesZone" class="grid grid-cols-1 sm:grid-cols-2 gap-5"></div>
-                </footer>
+                <div class="summary-box">
+                    <div class="summary-label"><i class="fas fa-align-left" style="margin-right:6px"></i>Executive Summary</div>
+                    <div class="summary-text" id="summaryText"></div>
+                </div>
+                <div class="article-body" id="contentZone"></div>
+                <div class="sources-section">
+                    <div class="sources-label"><i class="fas fa-link" style="margin-right:6px"></i>Data References</div>
+                    <div class="sources-grid" id="sourcesContainer"></div>
+                </div>
             </div>
         </div>
-    </main>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span>NewsTally AI</span> &mdash; Powered by Gemini 2.0 Flash &amp; Tavily Search
+    </div>
 
     <script>
-        // --- 1. APNI KEYS YAHAN DALEIN ---
+        /* ===== CONFIG ===== */
         const TAVILY_KEY = "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";
-        const apiKey = "AIzaSyDP5c5PEtZXqt95BbEcfWkFZK_yFBQvHWw"; // Yahan Gemini Key rahegi
+        const GEMINI_KEY = "AIzaSyDP5c5PEtZXqt95BbEcfWkFZK_yFBQvHWw";
+        const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+        const TAVILY_URL = "https://api.tavily.com/search";
 
-        async function publishArticle() {
+        /* ===== HELPERS ===== */
+        function setTopic(text) {
+            document.getElementById('topicInput').value = text;
+            document.getElementById('topicInput').focus();
+        }
+
+        function setStatus(msg) { document.getElementById('statusMsg').textContent = msg; }
+        function showLoader(v) { document.getElementById('loader').classList.toggle('visible', v); }
+        function showError(msg) {
+            document.getElementById('errorDetails').textContent = msg;
+            document.getElementById('errorBox').classList.add('visible');
+        }
+        function hideError() { document.getElementById('errorBox').classList.remove('visible'); }
+        function showResult(v) { document.getElementById('articleResult').classList.toggle('visible', v); }
+
+        async function fetchWithRetry(url, options, retries = 3) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const res = await fetch(url, options);
+                    if (res.status === 429) throw new Error("Rate limit hit. Please wait a moment.");
+                    if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                    return await res.json();
+                } catch (err) {
+                    if (i === retries - 1) throw err;
+                    await new Promise(r => setTimeout(r, Math.pow(2, i) * 1200));
+                }
+            }
+        }
+
+        /* ===== MAIN ===== */
+        async function startPublishing() {
             const topic = document.getElementById('topicInput').value.trim();
-            if(!topic) return;
+            if (!topic) { document.getElementById('topicInput').focus(); return; }
 
             const btn = document.getElementById('pubBtn');
-            const loader = document.getElementById('loader');
-            const statusMsg = document.getElementById('statusMsg');
-            const errorDisplay = document.getElementById('errorDisplay');
-            const resultArea = document.getElementById('resultArea');
-
             btn.disabled = true;
-            loader.classList.remove('hidden');
-            errorDisplay.classList.add('hidden');
-            resultArea.classList.add('hidden');
+            document.getElementById('btnText').textContent = "Generating...";
+            document.getElementById('btnIcon').className = "fas fa-circle-notch fa-spin";
+            showLoader(true);
+            hideError();
+            showResult(false);
 
             try {
-                // 1. Tavily Search
-                statusMsg.innerText = "Accessing live news databases...";
-                const sRes = await fetch('https://api.tavily.com/search', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ api_key: TAVILY_KEY, query: topic, search_depth: "advanced", max_results: 6 })
-                });
-                const sData = await sRes.json();
-                if (!sData.results?.length) throw new Error("No data found.");
-
-                // 2. Gemini Synthesis (Stable v1 Endpoint)
-                statusMsg.innerText = "Compiling statistics & editorial text...";
-                const context = sData.results.map(r => `Title: ${r.title}\nInfo: ${r.content}`).join('\n\n');
-                
-                // Using stable 'v1' and 'gemini-1.5-flash' for production stability
-                const gUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
-                const prompt = `Write an elite news report on: ${topic}. Context: ${context}.
-                1. If statistics exist, you MUST use HTML <table> tags.
-                2. Return ONLY a JSON object with keys: "headline", "summary", "body". 
-                3. Body should use <h2>, <p>, <table> and sparse <strong> tags.`;
-
-                const gRes = await fetch(gUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                /* Step 1 — Tavily */
+                setStatus("Fetching live news data...");
+                const searchData = await fetchWithRetry(TAVILY_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { temperature: 0.7 }
+                        api_key: TAVILY_KEY,
+                        query: topic,
+                        search_depth: "advanced",
+                        max_results: 7
                     })
                 });
 
-                if (!gRes.ok) {
-                    const errInfo = await gRes.json();
-                    throw new Error(errInfo.error?.message || "AI Error");
-                }
+                if (!searchData.results?.length) throw new Error("No live news found for this topic. Try a different keyword.");
 
-                const gData = await gRes.json();
-                const rawText = gData.candidates[0].content.parts[0].text;
-                
-                // Robust JSON Parsing
-                const cleanJson = rawText.replace(/```json|```/gi, '').trim();
-                const content = JSON.parse(cleanJson);
+                /* Step 2 — Gemini */
+                setStatus("AI synthesizing professional report...");
+                const context = searchData.results
+                    .map(r => `SOURCE: ${r.title}\nCONTENT: ${r.content}`)
+                    .join("\n\n---\n\n");
 
-                // 3. UI Update
-                document.getElementById('pDate').innerText = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-                document.getElementById('headlineZone').innerHTML = `<h1>${content.headline}</h1>`;
-                document.getElementById('summaryZone').innerText = content.summary;
-                document.getElementById('bodyZone').innerHTML = content.body;
+                const prompt = `You are an elite news journalist. Write a professional report on: "${topic}".
 
-                document.getElementById('sourcesZone').innerHTML = sData.results.map(s => `
-                    <a href="${s.url}" target="_blank" class="p-5 border border-slate-100 rounded-2xl hover:bg-blue-50 transition-all flex justify-between items-center group bg-white">
-                        <div class="overflow-hidden">
-                            <span class="text-[9px] font-black text-blue-600 uppercase tracking-widest">${new URL(s.url).hostname}</span>
-                            <p class="text-sm font-bold text-slate-800 line-clamp-1 mt-1">${s.title}</p>
-                        </div>
-                        <i class="fas fa-external-link-alt text-[10px] text-slate-200 group-hover:text-blue-600"></i>
-                    </a>`).join('');
+Use this live data:
+${context}
 
-                resultArea.classList.remove('hidden');
-                window.scrollTo({ top: resultArea.offsetTop - 50, behavior: 'smooth' });
+STRICT RULES:
+1. Sophisticated, authoritative English only.
+2. If ANY statistics, scores, rankings, or numbers exist in the data — you MUST include an HTML <table> with proper <thead> and <tbody>.
+3. Use <h2> for section headings, <p> for paragraphs, <strong> for key facts/numbers.
+4. Return ONLY a valid JSON object — no markdown, no backticks, no extra text:
+{
+  "headline": "Concise, impactful headline (max 12 words)",
+  "category": "Sports / Business / Technology / Politics / etc.",
+  "summary": "2 punchy sentences summarizing the key development.",
+  "body": "Full article as HTML string. Must contain at least 3 <h2> sections, multiple <p> tags, and a <table> if data permits."
+}`;
+
+                const geminiData = await fetchWithRetry(GEMINI_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            responseMimeType: "application/json",
+                            temperature: 0.6,
+                            maxOutputTokens: 2048
+                        }
+                    })
+                });
+
+                const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!rawText) throw new Error("Gemini returned empty response. Check API key or quota.");
+
+                const cleanText = rawText.replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim();
+                let content;
+                try { content = JSON.parse(cleanText); }
+                catch { throw new Error("AI response format error. Please try again."); }
+
+                /* Step 3 — Render */
+                renderArticle(content, searchData.results);
 
             } catch (err) {
-                console.error(err);
-                document.getElementById('errorMsg').innerText = err.message;
-                errorDisplay.classList.remove('hidden');
+                console.error("NewsTally AI Error:", err);
+                showError(err.message);
             } finally {
                 btn.disabled = false;
-                loader.classList.add('hidden');
+                document.getElementById('btnText').textContent = "Generate Report";
+                document.getElementById('btnIcon').className = "fas fa-feather-alt";
+                showLoader(false);
             }
+        }
+
+        /* ===== RENDER ===== */
+        function renderArticle(data, sources) {
+            document.getElementById('pubDate').textContent = new Date().toLocaleDateString('en-IN', {
+                weekday: 'short', day: 'numeric', month: 'long', year: 'numeric'
+            });
+
+            document.getElementById('headlineZone').textContent = data.headline || "Breaking Report";
+
+            const cat = document.getElementById('articleCategory');
+            cat.innerHTML = `<span class="line"></span> ${data.category || "World Report"} <span class="line"></span>`;
+
+            document.getElementById('summaryText').textContent = data.summary || "";
+            document.getElementById('contentZone').innerHTML = data.body || "<p>No content generated.</p>";
+
+            const container = document.getElementById('sourcesContainer');
+            container.innerHTML = sources.map(s => {
+                try {
+                    const host = new URL(s.url).hostname.replace('www.', '');
+                    return `<a href="${s.url}" target="_blank" rel="noopener" class="source-card">
+                        <div class="source-info">
+                            <div class="source-domain">${host}</div>
+                            <div class="source-title">${s.title}</div>
+                        </div>
+                        <i class="fas fa-arrow-up-right-from-square source-icon"></i>
+                    </a>`;
+                } catch { return ''; }
+            }).join('');
+
+            showResult(true);
+            setTimeout(() => {
+                document.getElementById('articleResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
     </script>
 </body>
 </html>
-
-```
